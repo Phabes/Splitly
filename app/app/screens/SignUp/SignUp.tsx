@@ -1,9 +1,10 @@
 import { Button, Typography } from "@/app/components";
 import { useTheme } from "@/app/hooks";
 import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
+import { FC } from "react";
 import { View } from "react-native";
 
-export const SignUp = () => {
+export const SignUp: FC = () => {
   const navigation = useAuthNavigation();
   const theme = useTheme();
 
