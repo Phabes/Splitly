@@ -10,6 +10,7 @@ app/.expo/
 app/dist/
 app/web-build/
 app/expo-env.d.ts
+app/.gitignore
 
 # Native
 .kotlin/

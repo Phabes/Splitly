@@ -1,0 +1,42 @@
+import { Button, Typography } from "@/app/components";
+import { useTheme } from "@/app/hooks";
+import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
+import { View } from "react-native";
+
+export const SignIn = () => {
+  const navigation = useAuthNavigation();
+  const theme = useTheme();
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors["background-app"],
+      }}
+    >
+      <Typography text={"Sign In"} />
+      <Typography
+        text={"Sign In"}
+        color="text-secondary"
+      />
+      <Typography
+        text={"Sign In"}
+        color="text-disabled"
+      />
+      <Typography
+        text={"Sign In"}
+        color="text-error"
+      />
+      <Typography
+        text={"Sign In"}
+        color="text-success"
+      />
+      <Button
+        text={"Sign Up"}
+        onPress={() => navigation.replace("SignUp")}
+      />
+    </View>
+  );
+};
+
+export default SignIn;
