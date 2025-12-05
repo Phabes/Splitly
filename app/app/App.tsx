@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AuthNavigation } from "./navigation";
 import { useAuth, useTheme } from "./hooks";
@@ -10,21 +10,26 @@ const App = () => {
   const { isLoading, userToken } = useAuth();
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: theme.colors["background-app"],
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-      }}
+    <TouchableWithoutFeedback
+      onPress={Keyboard.dismiss}
+      accessible={false}
     >
-      <LoadingWrapper
-        isLoading={isLoading}
-        text="Loading"
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors["background-app"],
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+        }}
       >
-        {userToken ? <></> : <AuthNavigation />}
-      </LoadingWrapper>
-    </View>
+        <LoadingWrapper
+          isLoading={isLoading}
+          text="Loading"
+        >
+          {userToken ? <></> : <AuthNavigation />}
+        </LoadingWrapper>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

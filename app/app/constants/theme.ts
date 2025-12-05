@@ -72,7 +72,7 @@ const darkColors: Record<ColorKeys, string> = {
   "background-disabled": "#333333",
 };
 
-type AppTheme = {
+export type AppTheme = {
   spacing: (num: number) => number;
   typography: Record<TypographyKeys, StyleProp<TextStyle>>;
   colors: Record<ColorKeys, string>;

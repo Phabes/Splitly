@@ -1,4 +1,4 @@
-import { Button, Typography } from "@/app/components";
+import { Button, Input, Typography } from "@/app/components";
 import { useTheme } from "@/app/hooks";
 import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
 import { FC } from "react";
@@ -31,6 +31,10 @@ export const SignIn: FC = () => {
       <Typography
         text={"Sign In"}
         color="text-success"
+      />
+      <Input
+        text={"asca"}
+        onChange={function (value: string): void {}}
       />
       <Button
         text={"Sign Up"}

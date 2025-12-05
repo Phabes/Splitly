@@ -5,7 +5,7 @@ import { FC } from "react";
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
-export const AuthNavigation: FC = () => {
+export const AuthNavigation = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
