@@ -45,7 +45,7 @@ const useStyles = (
     ? "background-disabled"
     : variant === "primary"
     ? "background-primary"
-    : "background-app";
+    : "background-secondary";
 
   const addBackground = variant === "secondary" && !disabled;
 

@@ -36,11 +36,16 @@ export const Input: FC<InputProps> = ({
     setType("active");
   }, []);
 
+  const onBlurInput = useCallback(() => {
+    setType(variant);
+  }, []);
+
   useEffect(() => {
     setType(variant);
   }, [variant]);
 
   const styles = useStyles(type, disabled, text, centerText, theme);
+
   return (
     <TextInput
       placeholder={type === "active" ? "" : placeholder}
@@ -48,9 +53,11 @@ export const Input: FC<InputProps> = ({
       keyboardType={keyboardType}
       onChangeText={onChangeInput}
       onFocus={onFocusInput}
+      onBlur={onBlurInput}
       editable={!disabled}
       secureTextEntry={password}
       autoCapitalize={autoCapitalize}
+      placeholderTextColor={theme.colors["text-secondary"]}
       style={[styles.input, theme.typography["body-medium"]]}
     />
   );
@@ -64,31 +71,31 @@ const useStyles = (
   theme: AppTheme
 ) => {
   const borderColor =
-    type == "default"
+    type === "default"
       ? "text-secondary"
       : type === "active"
-      ? "text-secondary"
+      ? "text-success"
       : type === "error"
-      ? "text-secondary"
+      ? "text-error"
       : "text-secondary";
   const textColor = disabled
     ? "text-disabled"
     : text !== ""
     ? "text-primary"
     : "text-secondary";
-  const elevation = !disabled ? 2 : 1;
+  const backgroundColor = disabled
+    ? "background-disabled"
+    : "background-secondary";
   const textAlign = centerText ? "center" : "left";
 
   return StyleSheet.create({
     input: {
-      color: theme.colors[textColor],
-      borderColor: theme.colors[borderColor],
       borderWidth: 1,
-      elevation,
       borderRadius: theme.spacing(2),
+      borderColor: theme.colors[borderColor],
+      color: theme.colors[textColor],
       paddingHorizontal: theme.spacing(4),
       paddingVertical: theme.spacing(2),
-      backgroundColor: theme.colors["background-primary"],
       textAlign,
     },
   });

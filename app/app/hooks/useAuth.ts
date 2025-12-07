@@ -13,10 +13,10 @@ export const useAuth = () => {
       } catch (e) {
         console.error("Failed to restore token from storage:", e);
       } finally {
-        setTimeout(() => {
-          setUserToken(token);
-          setIsLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        setUserToken(token);
+        setIsLoading(false);
+        // }, 2000);
       }
     };
 
