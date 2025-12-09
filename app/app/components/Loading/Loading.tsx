@@ -1,4 +1,4 @@
-import { ColorKeys } from "@/app/constants/theme";
+import { AppTheme, ColorKeys } from "@/app/constants/theme";
 import { FC } from "react";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { Typography } from "../Typography";
@@ -16,6 +16,7 @@ export const Loading: FC<LoadingProps> = ({
   text,
 }) => {
   const theme = useTheme();
+  const styles = useStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -33,12 +34,15 @@ export const Loading: FC<LoadingProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+const useStyles = (theme: AppTheme) => {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors["background-app"],
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  });
+};
 
 export default Loading;

@@ -1,6 +1,9 @@
 {
+  "loading": "Loading",
   "email": "Email",
   "password": "Password",
   "repeatPassword": "Repeat Password",
-  "username": "Username"
+  "username": "Username",
+  "signUp": "Sign Up",
+  "signIn": "Sign In"
 }

@@ -4,10 +4,13 @@ import pl from "./translations/pl.json";
 export type LanguageKeys = "en" | "pl";
 
 export type TranslationKeys =
+  | "loading"
   | "email"
   | "username"
   | "password"
-  | "repeatPassword";
+  | "repeatPassword"
+  | "signUp"
+  | "signIn";
 
 export const translations: Record<
   LanguageKeys,

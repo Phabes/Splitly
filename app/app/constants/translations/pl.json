@@ -1,6 +1,9 @@
 {
+  "loading": "Ładowanie",
   "email": "Email",
   "password": "Hasło",
   "repeatPassword": "Powtórz Hasło",
-  "username": "Nazwa Użytkownika"
+  "username": "Nazwa Użytkownika",
+  "signUp": "Załóż Konto",
+  "signIn": "Zaloguj Się"
 }

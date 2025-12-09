@@ -83,9 +83,6 @@ const useStyles = (
     : text !== ""
     ? "text-primary"
     : "text-secondary";
-  const backgroundColor = disabled
-    ? "background-disabled"
-    : "background-secondary";
   const textAlign = centerText ? "center" : "left";
 
   return StyleSheet.create({

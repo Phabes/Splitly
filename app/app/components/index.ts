@@ -1,5 +1,7 @@
 export * from "./Button";
 export * from "./Input";
+export * from "./Label";
+export * from "./LayoutProvider";
 export * from "./Loading";
 export * from "./LoadingWrapper";
 export * from "./Typography";
