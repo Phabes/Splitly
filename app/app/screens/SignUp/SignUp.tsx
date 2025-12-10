@@ -1,9 +1,10 @@
 import {
   Button,
   Input,
-  Label,
+  FormLabel,
   LayoutProvider,
   LoadingWrapper,
+  FormData,
 } from "@/app/components";
 import { useTranslations } from "@/app/hooks";
 import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
@@ -22,31 +23,39 @@ export const SignUp: FC = () => {
   return (
     <LoadingWrapper isLoading={isLoading}>
       <LayoutProvider>
-        <Label text={translations["email"]} />
-        <Input
-          text={email}
-          placeholder={translations["email"] + "..."}
-          keyboardType="email-address"
-          onChange={setEmail}
-        />
-        <Label text={translations["username"]} />
-        <Input
-          text={username}
-          placeholder={translations["username"] + "..."}
-          onChange={setUsername}
-        />
-        <Label text={translations["password"]} />
-        <Input
-          text={password}
-          placeholder={translations["password"] + "..."}
-          onChange={setPassword}
-        />
-        <Label text={translations["repeatPassword"]} />
-        <Input
-          text={repeatedPassword}
-          placeholder={translations["repeatPassword"] + "..."}
-          onChange={setRepeatedPassword}
-        />
+        <FormData
+          labelText={translations["email"]}
+          messageText="asdsdfssd dasdavsd "
+          isErrorMessage={true}
+        >
+          <Input
+            text={email}
+            placeholder={translations["email"] + "..."}
+            keyboardType="email-address"
+            onChange={setEmail}
+          />
+        </FormData>
+        <FormData labelText={translations["username"]}>
+          <Input
+            text={username}
+            placeholder={translations["username"] + "..."}
+            onChange={setUsername}
+          />
+        </FormData>
+        <FormData labelText={translations["password"]}>
+          <Input
+            text={password}
+            placeholder={translations["password"] + "..."}
+            onChange={setPassword}
+          />
+        </FormData>
+        <FormData labelText={translations["repeatPassword"]}>
+          <Input
+            text={repeatedPassword}
+            placeholder={translations["repeatPassword"] + "..."}
+            onChange={setRepeatedPassword}
+          />
+        </FormData>
         <Button
           text={translations["signUp"]}
           onPress={() => {}}

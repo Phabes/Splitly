@@ -1,4 +1,4 @@
-export { Label } from "./Label";
+export { FormData } from "./FormData";
 
 export default function Index() {
   return null;

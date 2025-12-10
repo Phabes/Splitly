@@ -2,13 +2,17 @@ import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { Typography } from "../Typography";
 
-type LabelProps = {
+type FormLabelProps = {
   text: string;
   message?: string;
   isError?: boolean;
 };
 
-export const Label: FC<LabelProps> = ({ text, message, isError = false }) => {
+export const FormLabel: FC<FormLabelProps> = ({
+  text,
+  message,
+  isError = false,
+}) => {
   const styles = useStyles();
   const messageColor = isError ? "text-error" : "text-primary";
 
@@ -45,4 +49,5 @@ const useStyles = () => {
     },
   });
 };
-export default Label;
+
+export default FormLabel;
