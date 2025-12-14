@@ -1,6 +1,8 @@
-import translations, { LanguageKeys } from "../constants/translations";
+import { translations } from "../constants/translations";
+import { useLanguageContext } from "./useLanguageContext";
 
-export const useTranslations = (language: LanguageKeys) => {
+export const useTranslations = () => {
+  const { language } = useLanguageContext();
   return translations[language];
 };
 

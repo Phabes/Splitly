@@ -5,5 +5,11 @@
   "repeatPassword": "Powtórz Hasło",
   "username": "Nazwa Użytkownika",
   "signUp": "Załóż Konto",
-  "signIn": "Zaloguj Się"
+  "signIn": "Zaloguj Się",
+  "fieldRequired": "Wymagane",
+  "notValidEmail": "Niepoprawny email",
+  "tooShortPassword": "Zbyt krótkie",
+  "weakPassword": "Słabe hasło",
+  "confirmPassword": "Potwierdź hasło",
+  "matchPasswords": "Niezgodne hasła"
 }

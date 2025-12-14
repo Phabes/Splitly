@@ -1,73 +1,109 @@
 import {
   Button,
   Input,
-  FormLabel,
-  LayoutProvider,
   LoadingWrapper,
   FormData,
+  Navbar,
 } from "@/app/components";
-import { useTranslations } from "@/app/hooks";
+import { useTheme, useTranslations } from "@/app/hooks";
 import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
-import { FC, useState } from "react";
+import { FC } from "react";
+import { useSignUpData } from "./hooks";
+import { StyleSheet, View } from "react-native";
+import { LayoutProvider } from "@/app/providers";
 
 export const SignUp: FC = () => {
+  const translations = useTranslations();
+  const styles = useStyles();
   const navigation = useAuthNavigation();
-  const translations = useTranslations("en");
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatedPassword, setRepeatedPassword] = useState("");
+  const {
+    isLoading,
+    loadingText,
+    emailField,
+    usernameField,
+    passwordField,
+    repeatedPasswordField,
+    validateSignUp,
+  } = useSignUpData();
 
   return (
-    <LoadingWrapper isLoading={isLoading}>
-      <LayoutProvider>
-        <FormData
-          labelText={translations["email"]}
-          messageText="asdsdfssd dasdavsd "
-          isErrorMessage={true}
-        >
-          <Input
-            text={email}
-            placeholder={translations["email"] + "..."}
-            keyboardType="email-address"
-            onChange={setEmail}
+    <LoadingWrapper
+      isLoading={isLoading}
+      text={loadingText}
+    >
+      <LayoutProvider navbar={<Navbar text={translations["signUp"]} />}>
+        <View style={styles.inputs}>
+          <FormData
+            labelText={translations["email"]}
+            messageText={emailField.error}
+          >
+            <Input
+              text={emailField.value}
+              placeholder={translations["email"] + "..."}
+              keyboardType="email-address"
+              onChange={emailField.setValue}
+              variant={emailField.error ? "error" : "default"}
+            />
+          </FormData>
+          <FormData
+            labelText={translations["username"]}
+            messageText={usernameField.error}
+          >
+            <Input
+              text={usernameField.value}
+              placeholder={translations["username"] + "..."}
+              onChange={usernameField.setValue}
+              variant={usernameField.error ? "error" : "default"}
+            />
+          </FormData>
+          <FormData
+            labelText={translations["password"]}
+            messageText={passwordField.error}
+          >
+            <Input
+              text={passwordField.value}
+              placeholder={translations["password"] + "..."}
+              password={true}
+              onChange={passwordField.setValue}
+              variant={passwordField.error ? "error" : "default"}
+            />
+          </FormData>
+          <FormData
+            labelText={translations["repeatPassword"]}
+            messageText={repeatedPasswordField.error}
+          >
+            <Input
+              text={repeatedPasswordField.value}
+              placeholder={translations["repeatPassword"] + "..."}
+              password={true}
+              onChange={repeatedPasswordField.setValue}
+              variant={repeatedPasswordField.error ? "error" : "default"}
+            />
+          </FormData>
+        </View>
+        <View style={styles.buttons}>
+          <Button
+            text={translations["signUp"]}
+            onPress={validateSignUp}
           />
-        </FormData>
-        <FormData labelText={translations["username"]}>
-          <Input
-            text={username}
-            placeholder={translations["username"] + "..."}
-            onChange={setUsername}
+          <Button
+            text={translations["signIn"]}
+            variant="secondary"
+            onPress={() => navigation.replace("SignIn")}
           />
-        </FormData>
-        <FormData labelText={translations["password"]}>
-          <Input
-            text={password}
-            placeholder={translations["password"] + "..."}
-            onChange={setPassword}
-          />
-        </FormData>
-        <FormData labelText={translations["repeatPassword"]}>
-          <Input
-            text={repeatedPassword}
-            placeholder={translations["repeatPassword"] + "..."}
-            onChange={setRepeatedPassword}
-          />
-        </FormData>
-        <Button
-          text={translations["signUp"]}
-          onPress={() => {}}
-        />
-        <Button
-          text={translations["signIn"]}
-          variant="secondary"
-          onPress={() => navigation.replace("SignIn")}
-        />
+        </View>
       </LayoutProvider>
     </LoadingWrapper>
   );
+};
+
+const useStyles = () => {
+  const theme = useTheme();
+
+  return StyleSheet.create({
+    inputs: { gap: theme.spacing(3) },
+    buttons: { gap: theme.spacing(3) },
+  });
 };
 
 export default SignUp;

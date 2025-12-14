@@ -1,13 +1,13 @@
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AuthNavigation } from "./navigation";
-import { useAuth, useTheme, useTranslations } from "./hooks";
+import { useAuth, useTheme } from "./hooks";
 import { LoadingWrapper } from "./components";
+import { LanguageProvider } from "./providers";
 
 const App = () => {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
-  const translations = useTranslations("en");
   const { isLoading, userToken } = useAuth();
 
   return (
@@ -19,12 +19,11 @@ const App = () => {
         paddingBottom: insets.bottom,
       }}
     >
-      <LoadingWrapper
-        isLoading={isLoading}
-        text={translations["loading"]}
-      >
-        {userToken ? <></> : <AuthNavigation />}
-      </LoadingWrapper>
+      <LanguageProvider>
+        <LoadingWrapper isLoading={isLoading}>
+          {userToken ? <></> : <AuthNavigation />}
+        </LoadingWrapper>
+      </LanguageProvider>
     </View>
   );
 };

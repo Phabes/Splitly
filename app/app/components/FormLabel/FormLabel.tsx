@@ -5,16 +5,10 @@ import { Typography } from "../Typography";
 type FormLabelProps = {
   text: string;
   message?: string;
-  isError?: boolean;
 };
 
-export const FormLabel: FC<FormLabelProps> = ({
-  text,
-  message,
-  isError = false,
-}) => {
+export const FormLabel: FC<FormLabelProps> = ({ text, message }) => {
   const styles = useStyles();
-  const messageColor = isError ? "text-error" : "text-primary";
 
   return (
     <View style={styles.container}>
@@ -29,7 +23,7 @@ export const FormLabel: FC<FormLabelProps> = ({
           <Typography
             text={message}
             variant="body-small"
-            color={messageColor}
+            color="text-error"
           />
         )}
       </View>

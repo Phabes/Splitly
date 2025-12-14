@@ -37,7 +37,7 @@ export const Input: FC<InputProps> = ({
   }, []);
 
   const onBlurInput = useCallback(() => {
-    setType(variant);
+    setType("default");
   }, []);
 
   useEffect(() => {

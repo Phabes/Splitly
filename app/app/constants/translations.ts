@@ -1,7 +1,9 @@
 import en from "./translations/en.json";
 import pl from "./translations/pl.json";
 
-export type LanguageKeys = "en" | "pl";
+export const SUPPORTED_LANGUAGES = ["en", "pl"] as const;
+
+export type LanguageKeys = (typeof SUPPORTED_LANGUAGES)[number];
 
 export type TranslationKeys =
   | "loading"
@@ -10,7 +12,13 @@ export type TranslationKeys =
   | "password"
   | "repeatPassword"
   | "signUp"
-  | "signIn";
+  | "signIn"
+  | "fieldRequired"
+  | "notValidEmail"
+  | "tooShortPassword"
+  | "weakPassword"
+  | "confirmPassword"
+  | "matchPasswords";
 
 export const translations: Record<
   LanguageKeys,
@@ -20,4 +28,6 @@ export const translations: Record<
   pl: pl,
 };
 
-export default translations;
+export default function Index() {
+  return null;
+}

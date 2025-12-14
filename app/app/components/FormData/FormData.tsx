@@ -6,13 +6,11 @@ import { useTheme } from "@/app/hooks";
 type FormDataProps = PropsWithChildren<{
   labelText: string;
   messageText?: string;
-  isErrorMessage?: boolean;
 }>;
 
 export const FormData: FC<FormDataProps> = ({
   labelText,
   messageText,
-  isErrorMessage,
   children,
 }) => {
   const styles = useStyles();
@@ -22,7 +20,6 @@ export const FormData: FC<FormDataProps> = ({
       <FormLabel
         text={labelText}
         message={messageText}
-        isError={isErrorMessage}
       />
       {children}
     </View>
@@ -34,7 +31,7 @@ const useStyles = () => {
 
   return StyleSheet.create({
     container: {
-      gap: theme.spacing(2),
+      gap: theme.spacing(1),
     },
   });
 };
