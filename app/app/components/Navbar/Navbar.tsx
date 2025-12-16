@@ -2,7 +2,7 @@ import { TypographyKeys } from "@/app/constants/theme";
 import { FC, JSX } from "react";
 import { StyleSheet, View } from "react-native";
 import { Typography } from "../Typography";
-import { useTheme } from "@/app/hooks";
+import { useThemeContext } from "@/app/hooks";
 
 export type NavbarProps = {
   text: string;
@@ -31,7 +31,7 @@ export const Navbar: FC<NavbarProps> = ({
 };
 
 const useStyles = () => {
-  const theme = useTheme();
+  const theme = useThemeContext();
 
   return StyleSheet.create({
     container: {

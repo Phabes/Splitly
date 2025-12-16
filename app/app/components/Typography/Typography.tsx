@@ -1,5 +1,5 @@
 import { ColorKeys, TypographyKeys } from "@/app/constants/theme";
-import { useTheme } from "@/app/hooks";
+import { useThemeContext } from "@/app/hooks";
 import { FC } from "react";
 import { Text } from "react-native";
 
@@ -14,7 +14,7 @@ export const Typography: FC<TypographyProps> = ({
   variant = "body-medium",
   color = "text-primary",
 }) => {
-  const theme = useTheme();
+  const theme = useThemeContext();
 
   return (
     <Text style={[theme.typography[variant], { color: theme.colors[color] }]}>

@@ -5,7 +5,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FC, PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { LanguageContext } from "@/app/contexts";
-import { Loading } from "@/app/components";
+import { LoadingWrapper } from "@/app/components";
 
 const defaultLanguage: LanguageKeys = "en";
 
@@ -13,7 +13,7 @@ type LanguageProviderProps = PropsWithChildren;
 
 export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguage] = useState<LanguageKeys>(defaultLanguage);
-  const [isLanguageLoading, setIsLanguageLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const setLanguageCode = async (lang: LanguageKeys) => {
     setLanguage(lang);
@@ -35,7 +35,7 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
             : defaultLanguage;
         setLanguage(finalLanguage);
         // setTimeout(() => {
-        setIsLanguageLoading(false);
+        setIsLoading(false);
         // }, 1000);
       }
     };
@@ -47,19 +47,16 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
     () => ({
       language,
       setLanguageCode,
-      isLanguageLoading,
     }),
-    [language, isLanguageLoading]
+    [language, isLoading]
   );
 
-  if (isLanguageLoading) {
-    return <Loading />;
-  }
-
   return (
-    <LanguageContext.Provider value={contextValue}>
-      {children}
-    </LanguageContext.Provider>
+    <LoadingWrapper isLoading={isLoading}>
+      <LanguageContext.Provider value={contextValue}>
+        {children}
+      </LanguageContext.Provider>
+    </LoadingWrapper>
   );
 };
 

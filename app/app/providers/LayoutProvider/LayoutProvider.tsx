@@ -1,4 +1,4 @@
-import { useTheme } from "@/app/hooks";
+import { useThemeContext } from "@/app/hooks";
 import { FC, JSX, PropsWithChildren } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
@@ -26,7 +26,7 @@ export const LayoutProvider: FC<LayoutProviderProps> = ({
 };
 
 const useStyles = () => {
-  const theme = useTheme();
+  const theme = useThemeContext();
 
   return StyleSheet.create({
     container: {

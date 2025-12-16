@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren } from "react";
 import { StyleSheet, View } from "react-native";
 import { FormLabel } from "../FormLabel";
-import { useTheme } from "@/app/hooks";
+import { useThemeContext } from "@/app/hooks";
 
 type FormDataProps = PropsWithChildren<{
   labelText: string;
@@ -27,7 +27,7 @@ export const FormData: FC<FormDataProps> = ({
 };
 
 const useStyles = () => {
-  const theme = useTheme();
+  const theme = useThemeContext();
 
   return StyleSheet.create({
     container: {

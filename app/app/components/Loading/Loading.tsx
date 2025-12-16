@@ -2,7 +2,7 @@ import { AppTheme, ColorKeys } from "@/app/constants/theme";
 import { FC } from "react";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { Typography } from "../Typography";
-import { useTheme } from "@/app/hooks";
+import { useThemeContext } from "@/app/hooks";
 
 type LoadingProps = {
   size?: "small" | "large";
@@ -15,7 +15,7 @@ export const Loading: FC<LoadingProps> = ({
   color = "text-success",
   text,
 }) => {
-  const theme = useTheme();
+  const theme = useThemeContext();
   const styles = useStyles(theme);
 
   return (

@@ -1,9 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { LoadingWrapper } from "@/app/components";
+import { AuthContext } from "@/app/contexts";
+import { useTranslations } from "@/app/hooks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FC, PropsWithChildren, useEffect, useMemo, useState } from "react";
 
-export const useAuth = () => {
+type AuthProviderProps = PropsWithChildren;
+
+export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const [userToken, setUserToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const translations = useTranslations();
 
   useEffect(() => {
     const bootstrapAsync = async () => {
@@ -41,7 +48,16 @@ export const useAuth = () => {
     [userToken, isLoading]
   );
 
-  return authContext;
+  return (
+    <LoadingWrapper
+      isLoading={isLoading}
+      text={translations["loading"]}
+    >
+      <AuthContext.Provider value={authContext}>
+        {children}
+      </AuthContext.Provider>
+    </LoadingWrapper>
+  );
 };
 
-export default useAuth;
+export default AuthProvider;

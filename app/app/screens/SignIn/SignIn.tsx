@@ -1,5 +1,5 @@
 import { Button, LoadingWrapper, Navbar } from "@/app/components";
-import { useTheme, useTranslations } from "@/app/hooks";
+import { useThemeContext, useTranslations } from "@/app/hooks";
 import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
@@ -31,7 +31,7 @@ export const SignIn: FC = () => {
 };
 
 const useStyles = () => {
-  const theme = useTheme();
+  const theme = useThemeContext();
 
   return StyleSheet.create({
     inputs: { gap: theme.spacing(3) },

@@ -1,5 +1,5 @@
 import { AppTheme } from "@/app/constants/theme";
-import { useTheme } from "@/app/hooks";
+import { useThemeContext } from "@/app/hooks";
 import { FC, useCallback, useEffect, useState } from "react";
 import { StyleSheet, TextInput } from "react-native";
 
@@ -27,7 +27,7 @@ export const Input: FC<InputProps> = ({
   password = false,
   onChange,
 }) => {
-  const theme = useTheme();
+  const theme = useThemeContext();
   const [type, setType] = useState<InputProps["variant"] | "active">(variant);
 
   const onChangeInput = useCallback(onChange, [onChange]);
