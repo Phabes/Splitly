@@ -24,8 +24,6 @@ export const useSignUpData = () => {
   };
 
   const validateSignUp = () => {
-    setLoadingText(translations["loading"]);
-    setIsLoading(true);
     const emailError = validateEmail(emailField.value);
     const usernameError = validateUsername(usernameField.value);
     const passwordError = validatePassword(passwordField.value);
@@ -43,14 +41,37 @@ export const useSignUpData = () => {
     repeatedPasswordField.setError(
       repeatedPasswordError ? translations[repeatedPasswordError] : undefined
     );
-    // emailField.setError(emailError);
-    // usernameField.setError(usernameError);
-    // passwordField.setError(passwordError);
-    // repeatedPasswordField.setError(repeatedPasswordError);
     setTimeout(() => {
       setIsLoading(false);
       setLoadingText("");
     }, 1000);
+  };
+
+  const handleSignUp = async () => {
+    setLoadingText(translations["loading"]);
+    setIsLoading(true);
+    // validateSignUp();
+    try {
+      const response = await fetch("http://{ip_address}}:5000/user/signUp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: emailField.value,
+          username: usernameField.value,
+          password: passwordField.value,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+      } else {
+      }
+    } catch (error) {
+      console.error("Sign up error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return {
@@ -60,7 +81,7 @@ export const useSignUpData = () => {
     usernameField,
     passwordField,
     repeatedPasswordField,
-    validateSignUp,
+    handleSignUp,
   };
 };
 

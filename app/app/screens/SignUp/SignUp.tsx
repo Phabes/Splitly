@@ -14,7 +14,6 @@ import { LayoutProvider } from "@/app/providers";
 
 export const SignUp: FC = () => {
   const translations = useTranslations();
-  const styles = useStyles();
   const navigation = useAuthNavigation();
   const {
     isLoading,
@@ -23,8 +22,9 @@ export const SignUp: FC = () => {
     usernameField,
     passwordField,
     repeatedPasswordField,
-    validateSignUp,
+    handleSignUp,
   } = useSignUpData();
+  const styles = useStyles();
 
   return (
     <LoadingWrapper
@@ -84,7 +84,7 @@ export const SignUp: FC = () => {
         <View style={styles.buttons}>
           <Button
             text={translations["signUp"]}
-            onPress={validateSignUp}
+            onPress={handleSignUp}
           />
           <Button
             text={translations["signIn"]}
