@@ -11,5 +11,9 @@
   "tooShortPassword": "Zbyt krótkie",
   "weakPassword": "Słabe hasło",
   "confirmPassword": "Potwierdź hasło",
-  "matchPasswords": "Niezgodne hasła"
+  "matchPasswords": "Niezgodne hasła",
+  "emailTaken": "Email zajęty",
+  "usernameTaken": "Nazwa użytkownika zajęta",
+  "userNotFound": "Użytkownik nie istnieje",
+  "invalidPassword": "Złe hasło"
 }

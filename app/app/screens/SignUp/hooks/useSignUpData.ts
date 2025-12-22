@@ -1,4 +1,6 @@
-import { useFormData, useTranslations } from "@/app/hooks";
+import { useAuthContext, useFormData, useTranslations } from "@/app/hooks";
+import { signUpCall } from "@/app/services";
+import { ResponseMessage } from "@/app/types";
 import {
   validateEmail,
   validatePassword,
@@ -7,14 +9,30 @@ import {
 } from "@/app/utils";
 import { useState } from "react";
 
+type SignUpResponse = ResponseMessage & {
+  userToken: string;
+  refreshToken: string;
+};
+
+type SignUpFailResponse = ResponseMessage & {
+  errorFields: Array<{
+    field: "email" | "username";
+    code: "emailTaken" | "usernameTaken";
+    message: string;
+  }>;
+};
+
 export const useSignUpData = () => {
+  const { signUp } = useAuthContext();
   const translations = useTranslations();
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState("");
+
   const emailField = useFormData();
   const usernameField = useFormData();
   const passwordField = useFormData();
   const repeatedPasswordField = useFormData();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState(translations["loading"]);
 
   const clearAllErrors = () => {
     emailField.setError(undefined);
@@ -31,6 +49,7 @@ export const useSignUpData = () => {
       passwordField.value,
       repeatedPasswordField.value
     );
+
     emailField.setError(emailError ? translations[emailError] : undefined);
     usernameField.setError(
       usernameError ? translations[usernameError] : undefined
@@ -41,31 +60,42 @@ export const useSignUpData = () => {
     repeatedPasswordField.setError(
       repeatedPasswordError ? translations[repeatedPasswordError] : undefined
     );
-    setTimeout(() => {
-      setIsLoading(false);
-      setLoadingText("");
-    }, 1000);
   };
 
   const handleSignUp = async () => {
-    setLoadingText(translations["loading"]);
     setIsLoading(true);
+    clearAllErrors();
     // validateSignUp();
     try {
-      const response = await fetch("http://{ip_address}}:5000/user/signUp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: emailField.value,
-          username: usernameField.value,
-          password: passwordField.value,
-        }),
-      });
-
-      const data = await response.json();
+      const response = await signUpCall(
+        emailField.value,
+        usernameField.value,
+        passwordField.value
+      );
 
       if (response.ok) {
+        const data: SignUpResponse = await response.json();
+        await signUp(data.userToken, data.refreshToken);
+      } else if (response.status === 400) {
+        const data: SignUpFailResponse = await response.json();
+        if (data.code === "fieldsValidationError") {
+          data.errorFields.forEach((errorField) => {
+            if (
+              errorField.field === "email" &&
+              errorField.code === "emailTaken"
+            ) {
+              emailField.setError(translations[errorField.code]);
+            } else if (
+              errorField.field === "username" &&
+              errorField.code === "usernameTaken"
+            ) {
+              usernameField.setError(translations[errorField.code]);
+            }
+          });
+        }
       } else {
+        const data: ResponseMessage = await response.json();
+        console.error("Server error:", data.message);
       }
     } catch (error) {
       console.error("Sign up error:", error);

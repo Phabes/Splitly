@@ -11,6 +11,7 @@ app/dist/
 app/web-build/
 app/expo-env.d.ts
 app/.gitignore
+app/.env
 
 # Native
 .kotlin/

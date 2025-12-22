@@ -15,13 +15,8 @@ import { useSignInData } from "./hooks";
 export const SignIn: FC = () => {
   const translations = useTranslations();
   const navigation = useAuthNavigation();
-  const {
-    isLoading,
-    loadingText,
-    usernameField,
-    passwordField,
-    validateSignIn,
-  } = useSignInData();
+  const { isLoading, loadingText, usernameField, passwordField, handleSignIn } =
+    useSignInData();
   const styles = useStyles();
 
   return (
@@ -58,7 +53,7 @@ export const SignIn: FC = () => {
         <View style={styles.buttons}>
           <Button
             text={translations["signIn"]}
-            onPress={validateSignIn}
+            onPress={handleSignIn}
           />
           <Button
             text={translations["signUp"]}

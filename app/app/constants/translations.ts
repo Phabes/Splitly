@@ -18,7 +18,11 @@ export type TranslationKeys =
   | "tooShortPassword"
   | "weakPassword"
   | "confirmPassword"
-  | "matchPasswords";
+  | "matchPasswords"
+  | "emailTaken"
+  | "usernameTaken"
+  | "userNotFound"
+  | "invalidPassword";
 
 export const translations: Record<
   LanguageKeys,

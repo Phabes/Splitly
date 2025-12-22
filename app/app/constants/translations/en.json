@@ -11,5 +11,9 @@
   "tooShortPassword": "Too short",
   "weakPassword": "Weak password",
   "confirmPassword": "Confirm password",
-  "matchPasswords": "Different passwords"
+  "matchPasswords": "Different passwords",
+  "emailTaken": "Email already used",
+  "usernameTaken": "Username already used",
+  "userNotFound": "User doesn't exist",
+  "invalidPassword": "Wrong password"
 }
