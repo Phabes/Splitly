@@ -1,15 +1,13 @@
-import User from "../models/user.js";
+import { Request, Response } from "express";
 import { signInValidator, signUpValidator } from "../validators/user.js";
 import { generateTokens } from "../utils/generateTokens.js";
 import { verifyToken } from "../utils/verifyToken.js";
+import { AuthRequest } from "middleware/authMiddleware.js";
+import User from "models/user.js";
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "REFRESH_KEY";
 
-/**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
-export const verifyUser = async (req, res) => {
+export const verifyUser = async (req: AuthRequest, res: Response) => {
   try {
     const user = await User.findById(req.userId).select("-password");
 
@@ -30,11 +28,7 @@ export const verifyUser = async (req, res) => {
   }
 };
 
-/**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
-export const refresh = async (req, res) => {
+export const refresh = async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
   if (!refreshToken)
     return res
@@ -62,11 +56,7 @@ export const refresh = async (req, res) => {
   }
 };
 
-/**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
-export const signUp = async (req, res) => {
+export const signUp = async (req: Request, res: Response) => {
   try {
     const { email, username, password } = req.body;
 
@@ -98,11 +88,7 @@ export const signUp = async (req, res) => {
   }
 };
 
-/**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
-export const signIn = async (req, res) => {
+export const signIn = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
@@ -119,7 +105,7 @@ export const signIn = async (req, res) => {
       });
     }
 
-    const { userToken, refreshToken } = generateTokens(user._id.toString());
+    const { userToken, refreshToken } = generateTokens(user!._id.toString());
 
     return res.status(201).json({
       code: "signInSuccess",

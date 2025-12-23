@@ -1,13 +1,17 @@
+import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/verifyToken.js";
+
+export type AuthRequest = Request & {
+  userId?: string;
+};
 
 const JWT_SECRET = process.env.JWT_SECRET || "SECRET_KEY";
 
-/**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
- */
-export const protect = async (req, res, next) => {
+export const protect = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
   let token;
 
   if (
@@ -22,7 +26,7 @@ export const protect = async (req, res, next) => {
       req.userId = decoded.userId;
 
       next();
-    } catch (error) {
+    } catch (error: any) {
       if (error.name === "TokenExpiredError") {
         return res
           .status(401)

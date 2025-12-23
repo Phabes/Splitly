@@ -1,11 +1,7 @@
 import bcrypt from "bcrypt";
-import User from "../models/user.js";
+import User from "models/user";
 
-/**
- * @param {string} email
- * @param {string} username
- */
-export const signUpValidator = async (email, username) => {
+export const signUpValidator = async (email: string, username: string) => {
   const validationErrors = [];
   const existingEmail = await User.findOne({ email });
   if (existingEmail) {
@@ -28,11 +24,7 @@ export const signUpValidator = async (email, username) => {
   return validationErrors;
 };
 
-/**
- * @param {string} username
- * @param {string} password
- */
-export const signInValidator = async (username, password) => {
+export const signInValidator = async (username: string, password: string) => {
   const validationErrors = [];
   const user = await User.findOne({ username });
 
@@ -45,7 +37,7 @@ export const signInValidator = async (username, password) => {
     return { validationErrors, user };
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password as string);
   if (!isMatch) {
     validationErrors.push({
       field: "password",

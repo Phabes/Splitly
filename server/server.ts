@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import routerUser from "./routes/user.js";
+import routerUser from "routes/user";
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/App";
 const PORT = process.env.PORT || 5000;
