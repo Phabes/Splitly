@@ -1,0 +1,19 @@
+{
+  "loading": "Ładowanie",
+  "email": "Email",
+  "password": "Hasło",
+  "repeatPassword": "Powtórz Hasło",
+  "username": "Nazwa Użytkownika",
+  "signUp": "Załóż Konto",
+  "signIn": "Zaloguj Się",
+  "fieldRequired": "Wymagane",
+  "notValidEmail": "Niepoprawny email",
+  "tooShortPassword": "Zbyt krótkie",
+  "weakPassword": "Słabe hasło",
+  "confirmPassword": "Potwierdź hasło",
+  "matchPasswords": "Niezgodne hasła",
+  "emailTaken": "Email zajęty",
+  "usernameTaken": "Nazwa użytkownika zajęta",
+  "userNotFound": "Użytkownik nie istnieje",
+  "invalidPassword": "Złe hasło"
+}

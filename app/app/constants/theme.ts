@@ -56,7 +56,7 @@ const lightColors: Record<ColorKeys, string> = {
   "text-success": "#1ABC9C",
   "background-app": "#EDf3F7",
   "background-primary": "#8EC4E8",
-  "background-secondary": "#5E5EAB",
+  "background-secondary": "#60a2cc",
   "background-disabled": "#666666",
 };
 
@@ -72,7 +72,7 @@ const darkColors: Record<ColorKeys, string> = {
   "background-disabled": "#333333",
 };
 
-type AppTheme = {
+export type AppTheme = {
   spacing: (num: number) => number;
   typography: Record<TypographyKeys, StyleProp<TextStyle>>;
   colors: Record<ColorKeys, string>;

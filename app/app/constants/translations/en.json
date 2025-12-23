@@ -1,0 +1,19 @@
+{
+  "loading": "Loading",
+  "email": "Email",
+  "password": "Password",
+  "repeatPassword": "Repeat Password",
+  "username": "Username",
+  "signUp": "Sign Up",
+  "signIn": "Sign In",
+  "fieldRequired": "Required",
+  "notValidEmail": "Not valid email",
+  "tooShortPassword": "Too short",
+  "weakPassword": "Weak password",
+  "confirmPassword": "Confirm password",
+  "matchPasswords": "Different passwords",
+  "emailTaken": "Email already used",
+  "usernameTaken": "Username already used",
+  "userNotFound": "User doesn't exist",
+  "invalidPassword": "Wrong password"
+}

@@ -1,0 +1,5 @@
+export { RootNavigation } from "./RootNavigation";
+
+export default function Index() {
+  return null;
+}

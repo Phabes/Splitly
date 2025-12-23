@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Typography } from "../Typography";
-import { useTheme } from "@/app/hooks";
+import { useThemeContext } from "@/app/hooks";
 
 type ButtonProps = {
   text: string;
@@ -39,13 +39,13 @@ const useStyles = (
   variant: ButtonProps["variant"],
   disabled: ButtonProps["disabled"]
 ) => {
-  const theme = useTheme();
+  const theme = useThemeContext();
 
   const buttonColor = disabled
     ? "background-disabled"
     : variant === "primary"
     ? "background-primary"
-    : "background-app";
+    : "background-secondary";
 
   const addBackground = variant === "secondary" && !disabled;
 

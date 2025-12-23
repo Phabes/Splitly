@@ -1,23 +1,15 @@
-import { View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AuthNavigation } from "./navigation";
-import { useTheme } from "./hooks";
+import { RootNavigation } from "./navigation";
+import { AuthProvider, LanguageProvider, ThemeProvider } from "./providers";
 
 const App = () => {
-  const insets = useSafeAreaInsets();
-  const theme = useTheme();
-
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: theme.colors["background-app"],
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-      }}
-    >
-      <AuthNavigation />
-    </View>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <RootNavigation />
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 };
 

@@ -1,42 +1,109 @@
-import { Button, Typography } from "@/app/components";
-import { useTheme } from "@/app/hooks";
+import {
+  Button,
+  Input,
+  LoadingWrapper,
+  FormData,
+  Navbar,
+} from "@/app/components";
+import { useThemeContext, useTranslations } from "@/app/hooks";
 import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
-import { View } from "react-native";
+import { FC } from "react";
+import { useSignUpData } from "./hooks";
+import { StyleSheet, View } from "react-native";
+import { LayoutProvider } from "@/app/providers";
 
-export const SignUp = () => {
+export const SignUp: FC = () => {
+  const translations = useTranslations();
   const navigation = useAuthNavigation();
-  const theme = useTheme();
+  const {
+    isLoading,
+    loadingText,
+    emailField,
+    usernameField,
+    passwordField,
+    repeatedPasswordField,
+    handleSignUp,
+  } = useSignUpData();
+  const styles = useStyles();
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: theme.colors["background-app"],
-      }}
+    <LoadingWrapper
+      isLoading={isLoading}
+      text={loadingText}
     >
-      <Typography text={"Sign Up"} />
-      <Typography
-        text={"Sign Up"}
-        color="text-secondary"
-      />
-      <Typography
-        text={"Sign Up"}
-        color="text-disabled"
-      />
-      <Typography
-        text={"Sign Up"}
-        color="text-error"
-      />
-      <Typography
-        text={"Sign Up"}
-        color="text-success"
-      />
-      <Button
-        text={"Sign In"}
-        onPress={() => navigation.replace("SignIn")}
-      />
-    </View>
+      <LayoutProvider navbar={<Navbar text={translations["signUp"]} />}>
+        <View style={styles.inputs}>
+          <FormData
+            labelText={translations["email"]}
+            messageText={emailField.error}
+          >
+            <Input
+              text={emailField.value}
+              placeholder={translations["email"] + "..."}
+              keyboardType="email-address"
+              onChange={emailField.setValue}
+              variant={emailField.error ? "error" : "default"}
+            />
+          </FormData>
+          <FormData
+            labelText={translations["username"]}
+            messageText={usernameField.error}
+          >
+            <Input
+              text={usernameField.value}
+              placeholder={translations["username"] + "..."}
+              onChange={usernameField.setValue}
+              variant={usernameField.error ? "error" : "default"}
+            />
+          </FormData>
+          <FormData
+            labelText={translations["password"]}
+            messageText={passwordField.error}
+          >
+            <Input
+              text={passwordField.value}
+              placeholder={translations["password"] + "..."}
+              password={true}
+              onChange={passwordField.setValue}
+              variant={passwordField.error ? "error" : "default"}
+            />
+          </FormData>
+          <FormData
+            labelText={translations["repeatPassword"]}
+            messageText={repeatedPasswordField.error}
+          >
+            <Input
+              text={repeatedPasswordField.value}
+              placeholder={translations["repeatPassword"] + "..."}
+              password={true}
+              onChange={repeatedPasswordField.setValue}
+              variant={repeatedPasswordField.error ? "error" : "default"}
+            />
+          </FormData>
+        </View>
+        <View style={styles.buttons}>
+          <Button
+            text={translations["signUp"]}
+            onPress={handleSignUp}
+          />
+          <Button
+            text={translations["signIn"]}
+            variant="secondary"
+            onPress={() => navigation.replace("SignIn")}
+          />
+        </View>
+      </LayoutProvider>
+    </LoadingWrapper>
   );
+};
+
+const useStyles = () => {
+  const theme = useThemeContext();
+
+  return StyleSheet.create({
+    inputs: { gap: theme.spacing(3) },
+    buttons: { gap: theme.spacing(3) },
+  });
 };
 
 export default SignUp;
