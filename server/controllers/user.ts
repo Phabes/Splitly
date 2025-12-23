@@ -59,6 +59,7 @@ export const refresh = async (req: Request, res: Response) => {
 export const signUp = async (req: Request, res: Response) => {
   try {
     const { email, username, password } = req.body;
+    console.log(email);
 
     const validationErrors = await signUpValidator(email, username);
 

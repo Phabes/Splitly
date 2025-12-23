@@ -1,13 +1,8 @@
 import { useAuthContext, useFormData, useTranslations } from "@/app/hooks";
 import { signInCall } from "@/app/services";
-import { ResponseMessage } from "@/app/types";
+import { ResponseMessage, SignInResponse } from "@/app/types";
 import { validatePassword, validateUsername } from "@/app/utils";
 import { useState } from "react";
-
-type SignInResponse = ResponseMessage & {
-  userToken: string;
-  refreshToken: string;
-};
 
 type SignInFailResponse = ResponseMessage & {
   errorFields: Array<{
@@ -25,7 +20,7 @@ export const useSignInData = () => {
   const passwordField = useFormData();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState("");
+  const [loadingText, setLoadingText] = useState(translations["loading"]);
 
   const clearAllErrors = () => {
     usernameField.setError(undefined);
@@ -33,8 +28,6 @@ export const useSignInData = () => {
   };
 
   const validateSignIn = () => {
-    setLoadingText(translations["loading"]);
-    setIsLoading(true);
     const usernameError = validateUsername(usernameField.value);
     const passwordError = validatePassword(passwordField.value);
     usernameField.setError(
@@ -43,12 +36,20 @@ export const useSignInData = () => {
     passwordField.setError(
       passwordError ? translations[passwordError] : undefined
     );
+
+    const isError = usernameError !== undefined || passwordError !== undefined;
+
+    return isError;
   };
 
   const handleSignIn = async () => {
     setIsLoading(true);
-    clearAllErrors();
-    // validateSignIn();
+    // clearAllErrors();
+    const isError = validateSignIn();
+    if (isError) {
+      setIsLoading(false);
+      return;
+    }
     try {
       const response = await signInCall(
         usernameField.value,

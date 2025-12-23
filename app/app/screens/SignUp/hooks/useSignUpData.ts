@@ -1,6 +1,6 @@
 import { useAuthContext, useFormData, useTranslations } from "@/app/hooks";
 import { signUpCall } from "@/app/services";
-import { ResponseMessage } from "@/app/types";
+import { ResponseMessage, SignInResponse } from "@/app/types";
 import {
   validateEmail,
   validatePassword,
@@ -8,11 +8,6 @@ import {
   validateUsername,
 } from "@/app/utils";
 import { useState } from "react";
-
-type SignUpResponse = ResponseMessage & {
-  userToken: string;
-  refreshToken: string;
-};
 
 type SignUpFailResponse = ResponseMessage & {
   errorFields: Array<{
@@ -60,12 +55,24 @@ export const useSignUpData = () => {
     repeatedPasswordField.setError(
       repeatedPasswordError ? translations[repeatedPasswordError] : undefined
     );
+
+    const isError =
+      emailError !== undefined ||
+      usernameError !== undefined ||
+      passwordError !== undefined ||
+      repeatedPasswordError !== undefined;
+
+    return isError;
   };
 
   const handleSignUp = async () => {
     setIsLoading(true);
-    clearAllErrors();
-    // validateSignUp();
+    // clearAllErrors();
+    const isError = validateSignUp();
+    if (isError) {
+      setIsLoading(false);
+      return;
+    }
     try {
       const response = await signUpCall(
         emailField.value,
@@ -74,7 +81,7 @@ export const useSignUpData = () => {
       );
 
       if (response.ok) {
-        const data: SignUpResponse = await response.json();
+        const data: SignInResponse = await response.json();
         await signUp(data.userToken, data.refreshToken);
       } else if (response.status === 400) {
         const data: SignUpFailResponse = await response.json();
