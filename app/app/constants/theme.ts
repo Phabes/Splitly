@@ -50,7 +50,7 @@ const typography: Record<TypographyKeys, StyleProp<TextStyle>> = {
 
 const lightColors: Record<ColorKeys, string> = {
   "text-primary": "#171717",
-  "text-secondary": "#9494B0",
+  "text-secondary": "#737275",
   "text-disabled": "#BDBDBD",
   "text-error": "#E74C3C",
   "text-success": "#1ABC9C",
