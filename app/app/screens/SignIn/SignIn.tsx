@@ -3,7 +3,7 @@ import {
   Input,
   LoadingWrapper,
   FormData,
-  Navbar,
+  NavBar,
 } from "@/app/components";
 import { useThemeContext, useTranslations } from "@/app/hooks";
 import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
@@ -20,11 +20,11 @@ export const SignIn: FC = () => {
   const styles = useStyles();
 
   return (
-    <LoadingWrapper
-      isLoading={isLoading}
-      text={loadingText}
-    >
-      <LayoutProvider navbar={<Navbar text={translations["signIn"]} />}>
+    <LayoutProvider navbar={<NavBar text={translations["signIn"]} />}>
+      <LoadingWrapper
+        isLoading={isLoading}
+        text={loadingText}
+      >
         <View style={styles.inputs}>
           <FormData
             labelText={translations["username"]}
@@ -61,8 +61,8 @@ export const SignIn: FC = () => {
             onPress={() => navigation.replace("SignUp")}
           />
         </View>
-      </LayoutProvider>
-    </LoadingWrapper>
+      </LoadingWrapper>
+    </LayoutProvider>
   );
 };
 

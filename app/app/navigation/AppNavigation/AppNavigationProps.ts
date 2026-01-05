@@ -1,7 +1,8 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type AppStackParamList = {
-  Main: undefined;
+  Friends: undefined;
+  Groups: undefined;
 };
 
 export type AppNavigationProps = NativeStackNavigationProp<AppStackParamList>;
