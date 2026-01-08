@@ -20,7 +20,7 @@ export const Input: FC<InputProps> = ({
   text,
   keyboardType = "default",
   placeholder = "",
-  autoCapitalize = "sentences",
+  autoCapitalize = "none",
   variant = "default",
   centerText = false,
   disabled = false,

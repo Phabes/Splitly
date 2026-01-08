@@ -1,7 +1,7 @@
 import { useAuthContext, useFormData, useTranslations } from "@/app/hooks";
 import { signInCall } from "@/app/services";
 import { ResponseMessage, SignInResponse } from "@/app/types";
-import { validatePassword, validateUsername } from "@/app/utils";
+import { validateSignInPassword, validateUsername } from "@/app/utils";
 import { useState } from "react";
 
 type SignInFailResponse = ResponseMessage & {
@@ -29,7 +29,7 @@ export const useSignInData = () => {
 
   const validateSignIn = () => {
     const usernameError = validateUsername(usernameField.value);
-    const passwordError = validatePassword(passwordField.value);
+    const passwordError = validateSignInPassword(passwordField.value);
     usernameField.setError(
       usernameError ? translations[usernameError] : undefined
     );
