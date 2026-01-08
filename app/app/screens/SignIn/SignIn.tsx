@@ -11,6 +11,7 @@ import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSignInData } from "./hooks";
+import useLoadingContext from "@/app/hooks/useLoadingContext";
 
 export const SignIn: FC = () => {
   const translations = useTranslations();
@@ -18,6 +19,7 @@ export const SignIn: FC = () => {
   const { isLoading, loadingText, usernameField, passwordField, handleSignIn } =
     useSignInData();
   const styles = useStyles();
+  const { showLoading } = useLoadingContext();
 
   return (
     <LayoutProvider navbar={<NavBar text={translations["signIn"]} />}>
@@ -59,6 +61,11 @@ export const SignIn: FC = () => {
             text={translations["signUp"]}
             variant="secondary"
             onPress={() => navigation.replace("SignUp")}
+          />
+          <Button
+            text={translations["signUp"]}
+            variant="secondary"
+            onPress={() => showLoading()}
           />
         </View>
       </LoadingWrapper>

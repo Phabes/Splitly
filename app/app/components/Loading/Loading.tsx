@@ -38,7 +38,7 @@ const useStyles = (theme: AppTheme) => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors["background-app"],
+      // backgroundColor: theme.colors["background-app"],
       justifyContent: "center",
       alignItems: "center",
     },
