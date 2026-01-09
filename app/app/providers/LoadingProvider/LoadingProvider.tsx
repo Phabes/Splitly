@@ -1,17 +1,21 @@
 import { Loading } from "@/app/components";
 import { LoadingContext } from "@/app/contexts";
+import { useTranslations } from "@/app/hooks";
 import { FC, PropsWithChildren, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { LayoutProvider } from "../LayoutProvider";
+import { Keyboard, StyleSheet, View } from "react-native";
 
 type LoadingProviderProps = PropsWithChildren;
 
 export const LoadingProvider: FC<LoadingProviderProps> = ({ children }) => {
-  const styles = useStyles();
-  const [visible, setVisible] = useState(false);
-  const [message, setMessage] = useState("Loading...");
+  const translations = useTranslations();
 
-  const showLoading = (msg: string = "Please wait...") => {
+  const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState(translations["loading"]);
+
+  const styles = useStyles();
+
+  const showLoading = (msg: string = translations["loading"]) => {
+    Keyboard.dismiss();
     setMessage(msg);
     setVisible(true);
   };
@@ -23,14 +27,10 @@ export const LoadingProvider: FC<LoadingProviderProps> = ({ children }) => {
       {children}
       {visible && (
         <View style={[StyleSheet.absoluteFill, styles.overlay]}>
-          {/* <View style={styles.loadingBox}> */}
-          <LayoutProvider x={0}>
-            <Loading
-              text={message}
-              color="text-success"
-            />
-          </LayoutProvider>
-          {/* </View> */}
+          <Loading
+            text={message}
+            color="text-success"
+          />
         </View>
       )}
     </LoadingContext.Provider>
@@ -40,22 +40,8 @@ export const LoadingProvider: FC<LoadingProviderProps> = ({ children }) => {
 const useStyles = () => {
   return StyleSheet.create({
     overlay: {
-      backgroundColor: "rgba(0,0,0,0.7)",
-      // backgroundColor: "red",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 9999, // Blocks interaction with everything underneath
-    },
-    loadingBox: {
-      backgroundColor: "white",
-      padding: 32,
-      borderRadius: 24,
-      alignItems: "center",
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 12,
-      elevation: 8,
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      zIndex: 9999,
     },
   });
 };

@@ -9,13 +9,13 @@ import {
 const App = () => {
   return (
     <ThemeProvider>
-      <LoadingProvider>
-        <LanguageProvider>
-          <AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <LoadingProvider>
             <RootNavigation />
-          </AuthProvider>
-        </LanguageProvider>
-      </LoadingProvider>
+          </LoadingProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 };

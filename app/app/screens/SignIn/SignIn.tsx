@@ -19,7 +19,7 @@ export const SignIn: FC = () => {
   const { isLoading, loadingText, usernameField, passwordField, handleSignIn } =
     useSignInData();
   const styles = useStyles();
-  const { showLoading } = useLoadingContext();
+  const { showLoading, hideLoading } = useLoadingContext();
 
   return (
     <LayoutProvider navbar={<NavBar text={translations["signIn"]} />}>
@@ -63,9 +63,14 @@ export const SignIn: FC = () => {
             onPress={() => navigation.replace("SignUp")}
           />
           <Button
-            text={translations["signUp"]}
+            text={"Loading Overlay"}
             variant="secondary"
-            onPress={() => showLoading()}
+            onPress={() => {
+              showLoading();
+              setTimeout(() => {
+                hideLoading();
+              }, 1000);
+            }}
           />
         </View>
       </LoadingWrapper>

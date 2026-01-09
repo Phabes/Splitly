@@ -4,15 +4,13 @@ import { ScrollView, StyleSheet, View } from "react-native";
 
 type LayoutProviderProps = PropsWithChildren<{
   navbar?: JSX.Element;
-  x?: number;
 }>;
 
 export const LayoutProvider: FC<LayoutProviderProps> = ({
   navbar,
-  x = 1,
   children,
 }) => {
-  const styles = useStyles(x);
+  const styles = useStyles();
 
   return (
     <View style={styles.container}>
@@ -27,15 +25,13 @@ export const LayoutProvider: FC<LayoutProviderProps> = ({
   );
 };
 
-const useStyles = (x: number) => {
+const useStyles = () => {
   const theme = useThemeContext();
-  const color =
-    x == 1 ? { backgroundColor: theme.colors["background-app"] } : {};
 
   return StyleSheet.create({
     container: {
       flex: 1,
-      ...color,
+      backgroundColor: theme.colors["background-app"],
     },
     scrollView: { flexGrow: 1 },
     content: {
