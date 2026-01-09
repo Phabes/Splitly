@@ -1,7 +1,8 @@
 export {
   validateEmail,
   validateUsername,
-  validatePassword,
+  validateSignInPassword,
+  validateSignUpPassword,
   validateRepeatedPassword,
 } from "./signUpValidation";
 

@@ -4,13 +4,13 @@ import { StyleSheet, View } from "react-native";
 import { Typography } from "../Typography";
 import { useThemeContext } from "@/app/hooks";
 
-export type NavbarProps = {
+export type NavBarProps = {
   text: string;
   variant?: TypographyKeys;
   button?: JSX.Element;
 };
 
-export const Navbar: FC<NavbarProps> = ({
+export const NavBar: FC<NavBarProps> = ({
   text,
   variant = "header-medium",
   button,
@@ -41,8 +41,10 @@ const useStyles = () => {
       alignItems: "center",
       paddingHorizontal: theme.spacing(7),
       backgroundColor: theme.colors["background-secondary"],
+      // borderBottomWidth: 1,
+      // borderBottomColor: theme.colors["text-primary"],
     },
   });
 };
 
-export default Navbar;
+export default NavBar;

@@ -1,20 +1,26 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Friends, Groups } from "@/app/screens";
 import { AppStackParamList } from "./AppNavigationProps";
-import { Main } from "@/app/screens/Main";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { TabBar } from "@/app/components";
 
-const Stack = createNativeStackNavigator<AppStackParamList>();
+const Tab = createBottomTabNavigator<AppStackParamList>();
 
 export const AppNavigation = () => {
   return (
-    <Stack.Navigator
+    <Tab.Navigator
+      tabBar={(props) => <TabBar {...props} />}
       screenOptions={{ headerShown: false }}
-      initialRouteName="Main"
+      initialRouteName="Friends"
     >
-      <Stack.Screen
-        name={"Main"}
-        component={Main}
+      <Tab.Screen
+        name="Friends"
+        component={Friends}
       />
-    </Stack.Navigator>
+      <Tab.Screen
+        name="Groups"
+        component={Groups}
+      />
+    </Tab.Navigator>
   );
 };
 

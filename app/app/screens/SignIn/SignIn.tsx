@@ -3,7 +3,7 @@ import {
   Input,
   LoadingWrapper,
   FormData,
-  Navbar,
+  NavBar,
 } from "@/app/components";
 import { useThemeContext, useTranslations } from "@/app/hooks";
 import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
@@ -11,6 +11,7 @@ import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSignInData } from "./hooks";
+import useLoadingContext from "@/app/hooks/useLoadingContext";
 
 export const SignIn: FC = () => {
   const translations = useTranslations();
@@ -18,13 +19,14 @@ export const SignIn: FC = () => {
   const { isLoading, loadingText, usernameField, passwordField, handleSignIn } =
     useSignInData();
   const styles = useStyles();
+  const { showLoading, hideLoading } = useLoadingContext();
 
   return (
-    <LoadingWrapper
-      isLoading={isLoading}
-      text={loadingText}
-    >
-      <LayoutProvider navbar={<Navbar text={translations["signIn"]} />}>
+    <LayoutProvider navbar={<NavBar text={translations["signIn"]} />}>
+      <LoadingWrapper
+        isLoading={isLoading}
+        text={loadingText}
+      >
         <View style={styles.inputs}>
           <FormData
             labelText={translations["username"]}
@@ -60,9 +62,19 @@ export const SignIn: FC = () => {
             variant="secondary"
             onPress={() => navigation.replace("SignUp")}
           />
+          <Button
+            text={"Loading Overlay"}
+            variant="secondary"
+            onPress={() => {
+              showLoading();
+              setTimeout(() => {
+                hideLoading();
+              }, 1000);
+            }}
+          />
         </View>
-      </LayoutProvider>
-    </LoadingWrapper>
+      </LoadingWrapper>
+    </LayoutProvider>
   );
 };
 

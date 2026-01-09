@@ -8,7 +8,7 @@ export const AuthNavigation = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="SignUp"
+      initialRouteName="SignIn"
     >
       <Stack.Screen
         name={"SignIn"}

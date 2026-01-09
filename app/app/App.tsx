@@ -1,12 +1,19 @@
 import { RootNavigation } from "./navigation";
-import { AuthProvider, LanguageProvider, ThemeProvider } from "./providers";
+import {
+  AuthProvider,
+  LanguageProvider,
+  LoadingProvider,
+  ThemeProvider,
+} from "./providers";
 
 const App = () => {
   return (
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
-          <RootNavigation />
+          <LoadingProvider>
+            <RootNavigation />
+          </LoadingProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>

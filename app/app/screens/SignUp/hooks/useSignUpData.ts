@@ -3,7 +3,7 @@ import { signUpCall } from "@/app/services";
 import { ResponseMessage, SignInResponse } from "@/app/types";
 import {
   validateEmail,
-  validatePassword,
+  validateSignUpPassword,
   validateRepeatedPassword,
   validateUsername,
 } from "@/app/utils";
@@ -39,7 +39,7 @@ export const useSignUpData = () => {
   const validateSignUp = () => {
     const emailError = validateEmail(emailField.value);
     const usernameError = validateUsername(usernameField.value);
-    const passwordError = validatePassword(passwordField.value);
+    const passwordError = validateSignUpPassword(passwordField.value);
     const repeatedPasswordError = validateRepeatedPassword(
       passwordField.value,
       repeatedPasswordField.value

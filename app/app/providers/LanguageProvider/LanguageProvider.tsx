@@ -34,9 +34,7 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
             ? (storageLanguage as LanguageKeys)
             : defaultLanguage;
         setLanguage(finalLanguage);
-        // setTimeout(() => {
         setIsLoading(false);
-        // }, 1000);
       }
     };
 
