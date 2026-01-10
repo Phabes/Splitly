@@ -4,7 +4,7 @@ import { LayoutProvider } from "@/app/providers";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FC, useState } from "react";
 
-export const Friends: FC = () => {
+export const AddFriend: FC = () => {
   const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
@@ -15,7 +15,8 @@ export const Friends: FC = () => {
     <LayoutProvider
       navbar={
         <NavBar
-          text={translations["friends"]}
+          text={translations["addFriend"]}
+          onBackPress={navigation.goBack}
           button={
             <Button
               text={translations["signOut"]}
@@ -32,13 +33,9 @@ export const Friends: FC = () => {
           placeholder={translations["searchFriends"]}
           beginIcon={faSearch}
         />
-        <Button
-          text={translations["addFriend"]}
-          onPress={() => navigation.navigate("AddFriend")}
-        />
       </LoadingWrapper>
     </LayoutProvider>
   );
 };
 
-export default Friends;
+export default AddFriend;

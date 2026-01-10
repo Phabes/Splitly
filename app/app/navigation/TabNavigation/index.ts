@@ -1,4 +1,4 @@
-export * from "./RootNavigation";
+export { TabNavigation } from "./TabNavigation";
 
 export default function Index() {
   return null;
