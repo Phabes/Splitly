@@ -20,7 +20,7 @@ export const Groups: FC = () => {
         />
       }
     >
-      <LoadingWrapper isLoading={false}></LoadingWrapper>
+      <LoadingWrapper isLoading={true}></LoadingWrapper>
     </LayoutProvider>
   );
 };

@@ -15,5 +15,6 @@
   "emailTaken": "Email already used",
   "usernameTaken": "Username already used",
   "userNotFound": "User doesn't exist",
-  "invalidPassword": "Wrong password"
+  "invalidPassword": "Wrong password",
+  "searchFriends": "Search friends..."
 }

@@ -22,7 +22,8 @@ export type TranslationKeys =
   | "emailTaken"
   | "usernameTaken"
   | "userNotFound"
-  | "invalidPassword";
+  | "invalidPassword"
+  | "searchFriends";
 
 export const translations: Record<
   LanguageKeys,
