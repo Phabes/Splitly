@@ -1,10 +1,14 @@
-import { Button, LoadingWrapper, NavBar } from "@/app/components";
-import { useAuthContext } from "@/app/hooks";
+import { Button, Input, LoadingWrapper, NavBar } from "@/app/components";
+import { useAuthContext, useTranslations } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
-import { FC } from "react";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FC, useState } from "react";
 
 export const Friends: FC = () => {
   const { signOut } = useAuthContext();
+  const translations = useTranslations();
+
+  const [value, setValue] = useState("");
 
   return (
     <LayoutProvider
@@ -20,7 +24,14 @@ export const Friends: FC = () => {
         />
       }
     >
-      <LoadingWrapper isLoading={true}></LoadingWrapper>
+      <LoadingWrapper isLoading={false}>
+        <Input
+          text={value}
+          onChange={setValue}
+          placeholder={translations["searchFriends"]}
+          beginIcon={faSearch}
+        />
+      </LoadingWrapper>
     </LayoutProvider>
   );
 };

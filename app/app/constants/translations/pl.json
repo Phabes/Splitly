@@ -15,5 +15,6 @@
   "emailTaken": "Email zajęty",
   "usernameTaken": "Nazwa użytkownika zajęta",
   "userNotFound": "Użytkownik nie istnieje",
-  "invalidPassword": "Złe hasło"
+  "invalidPassword": "Złe hasło",
+  "searchFriends": "Przeszukaj znajomych..."
 }
