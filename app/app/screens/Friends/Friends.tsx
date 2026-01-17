@@ -1,4 +1,10 @@
-import { Button, Input, LoadingWrapper, NavBar } from "@/app/components";
+import {
+  Button,
+  Input,
+  LoadingWrapper,
+  NavBar,
+  Scroll,
+} from "@/app/components";
 import { useAppNavigation, useAuthContext, useTranslations } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -36,6 +42,7 @@ export const Friends: FC = () => {
           text={translations["addFriend"]}
           onPress={() => navigation.navigate("AddFriend")}
         />
+        <Scroll></Scroll>
       </LoadingWrapper>
     </LayoutProvider>
   );

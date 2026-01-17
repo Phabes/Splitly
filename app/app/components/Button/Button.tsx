@@ -25,7 +25,7 @@ export const Button: FC<ButtonProps> = ({
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.5}
-      style={[styles.container]}
+      style={styles.container}
     >
       <Typography
         text={text}
@@ -37,15 +37,15 @@ export const Button: FC<ButtonProps> = ({
 
 const useStyles = (
   variant: ButtonProps["variant"],
-  disabled: ButtonProps["disabled"]
+  disabled: ButtonProps["disabled"],
 ) => {
   const theme = useThemeContext();
 
   const buttonColor = disabled
     ? "background-disabled"
     : variant === "primary"
-    ? "background-primary"
-    : "background-secondary";
+      ? "background-primary"
+      : "background-secondary";
 
   const addBackground = variant === "secondary" && !disabled;
 

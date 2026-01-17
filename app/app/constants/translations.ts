@@ -27,7 +27,8 @@ export type TranslationKeys =
   | "friends"
   | "groups"
   | "searchFriends"
-  | "addFriend";
+  | "addFriend"
+  | "searchedUsers";
 
 export const translations: Record<
   LanguageKeys,
