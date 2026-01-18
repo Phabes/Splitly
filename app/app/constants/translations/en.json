@@ -21,5 +21,8 @@
   "groups": "Groups",
   "searchFriends": "Search friends...",
   "addFriend": "Add friend",
-  "searchedUsers": "Searched users"
+  "searchedUsers": "Searched users",
+  "loadingMoreUsers": "Loading more users...",
+  "noMoreUsersFound": "No more users found.",
+  "noUsersFoundMatching": "No users found matching your search."
 }

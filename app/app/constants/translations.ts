@@ -28,7 +28,10 @@ export type TranslationKeys =
   | "groups"
   | "searchFriends"
   | "addFriend"
-  | "searchedUsers";
+  | "searchedUsers"
+  | "loadingMoreUsers"
+  | "noMoreUsersFound"
+  | "noUsersFoundMatching";
 
 export const translations: Record<
   LanguageKeys,

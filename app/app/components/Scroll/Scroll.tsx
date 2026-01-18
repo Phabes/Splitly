@@ -1,22 +1,48 @@
 import { useThemeContext } from "@/app/hooks";
 import { FC, PropsWithChildren } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 
-type ScrollInputs = {
+type ScrollProps = {
   gapSize?: "small" | "large";
+  keyboardPersist?: "never" | "handled";
+  handleScrollEnd?: () => void;
 };
 
-export const Scroll: FC<PropsWithChildren<ScrollInputs>> = ({
+export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   children,
   gapSize = "large",
+  keyboardPersist = "handled",
+  handleScrollEnd = () => {},
 }) => {
   const size = gapSize === "large" ? 5 : 2;
+
   const styles = useStyles(size);
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+
+    const isCloseToBottom =
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - layoutMeasurement.height;
+
+    if (isCloseToBottom) {
+      handleScrollEnd();
+    }
+  };
 
   return (
     <ScrollView
       contentContainerStyle={styles.scrollView}
-      keyboardShouldPersistTaps="handled"
+      onScroll={handleScroll}
+      keyboardDismissMode="on-drag"
+      scrollEventThrottle={16}
+      keyboardShouldPersistTaps={keyboardPersist}
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.content}>{children}</View>
