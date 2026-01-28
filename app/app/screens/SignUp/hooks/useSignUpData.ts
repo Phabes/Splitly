@@ -42,18 +42,18 @@ export const useSignUpData = () => {
     const passwordError = validateSignUpPassword(passwordField.value);
     const repeatedPasswordError = validateRepeatedPassword(
       passwordField.value,
-      repeatedPasswordField.value
+      repeatedPasswordField.value,
     );
 
     emailField.setError(emailError ? translations[emailError] : undefined);
     usernameField.setError(
-      usernameError ? translations[usernameError] : undefined
+      usernameError ? translations[usernameError] : undefined,
     );
     passwordField.setError(
-      passwordError ? translations[passwordError] : undefined
+      passwordError ? translations[passwordError] : undefined,
     );
     repeatedPasswordField.setError(
-      repeatedPasswordError ? translations[repeatedPasswordError] : undefined
+      repeatedPasswordError ? translations[repeatedPasswordError] : undefined,
     );
 
     const isError =
@@ -77,7 +77,7 @@ export const useSignUpData = () => {
       const response = await signUpCall(
         emailField.value,
         usernameField.value,
-        passwordField.value
+        passwordField.value,
       );
 
       if (response.ok) {

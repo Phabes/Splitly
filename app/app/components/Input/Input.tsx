@@ -1,10 +1,11 @@
 import { AppTheme } from "@/app/constants/theme";
 import { useThemeContext } from "@/app/hooks";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { TogglePassword } from "./components/TogglePassword";
 import { InputIcon } from "./components/InputIcon";
+import { TouchableOpacity } from "react-native";
 
 type InputProps = {
   text: string;
@@ -33,6 +34,7 @@ export const Input: FC<InputProps> = ({
 }) => {
   const theme = useThemeContext();
 
+  const inputRef = useRef<TextInput>(null);
   const [type, setType] = useState<InputProps["variant"] | "active">(variant);
   const [passwordShown, setPasswordShown] = useState(password);
 
@@ -50,13 +52,27 @@ export const Input: FC<InputProps> = ({
     setType(variant);
   }, [variant]);
 
+  const handleIconPress = () => {
+    if (!disabled) {
+      inputRef.current?.focus();
+    }
+  };
+
   const styles = useStyles(type, disabled, text, centerText, theme);
 
   return (
     <View style={styles.container}>
-      {beginIcon && <InputIcon icon={beginIcon} />}
+      {beginIcon && (
+        <TouchableOpacity
+          onPress={handleIconPress}
+          activeOpacity={1}
+        >
+          <InputIcon icon={beginIcon} />
+        </TouchableOpacity>
+      )}
       <View style={{ flex: 1 }}>
         <TextInput
+          ref={inputRef}
           placeholder={type === "active" ? "" : placeholder}
           value={text}
           keyboardType={keyboardType}
@@ -85,21 +101,21 @@ const useStyles = (
   disabled: InputProps["disabled"],
   text: InputProps["text"],
   centerText: InputProps["centerText"],
-  theme: AppTheme
+  theme: AppTheme,
 ) => {
   const borderColor =
     type === "default"
       ? "text-secondary"
       : type === "active"
-      ? "text-success"
-      : type === "error"
-      ? "text-error"
-      : "text-secondary";
+        ? "text-success"
+        : type === "error"
+          ? "text-error"
+          : "text-secondary";
   const textColor = disabled
     ? "text-disabled"
     : text !== ""
-    ? "text-primary"
-    : "text-secondary";
+      ? "text-primary"
+      : "text-secondary";
   const textAlign = centerText ? "center" : "left";
 
   return StyleSheet.create({
