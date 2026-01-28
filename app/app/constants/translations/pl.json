@@ -24,5 +24,6 @@
   "searchedUsers": "Znalezieni użytkownicy",
   "loadingMoreUsers": "Ładowanie użytkowników...",
   "noMoreUsersFound": "Nie znaleziono więcej użytkowników.",
-  "noUsersFoundMatching": "Nie znaleziono pasujących użytkowników."
+  "noUsersFoundMatching": "Nie znaleziono pasujących użytkowników.",
+  "friendRequests": "Zaproszenia"
 }

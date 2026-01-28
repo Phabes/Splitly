@@ -24,5 +24,6 @@
   "searchedUsers": "Searched users",
   "loadingMoreUsers": "Loading more users...",
   "noMoreUsersFound": "No more users found.",
-  "noUsersFoundMatching": "No users found matching your search."
+  "noUsersFoundMatching": "No users found matching your search.",
+  "friendRequests": "Requests"
 }

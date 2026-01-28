@@ -48,6 +48,8 @@ export const AddFriend: FC = () => {
     console.log("Sending friend request to:", userId);
   };
 
+  const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
+
   return (
     <LayoutProvider
       navbar={
@@ -73,13 +75,16 @@ export const AddFriend: FC = () => {
         <LoadingWrapper isLoading={isSearching}>
           {users.length > 0 ? (
             <>
-              <Typography text={`${translations["searchedUsers"]}:`} />
+              <Typography
+                text={`${translations["searchedUsers"]}:`}
+                variant="header-small"
+              />
               <Scroll
                 gapSize="small"
                 keyboardPersist="never"
                 handleScrollEnd={loadMoreUsers}
                 isAtEnd={!hasMore}
-                onManualRefresh={forceLoadMore}
+                onManualRefresh={handleManualRefresh}
               >
                 {users.map((item, i) => {
                   return (

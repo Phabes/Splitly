@@ -1,4 +1,5 @@
 export const REFRESH_THRESHOLD = 60;
+export const TOUCH_ADDITIONAL_REFRESH_THRESHOLD = 10;
 
 export const ADD_FRIENDS_PAGE_SIZE = 20;
 export const ADD_FRIENDS_MIN_SEARCH_LENGTH = 1;

@@ -5,10 +5,16 @@ import {
   NavBar,
   Scroll,
 } from "@/app/components";
-import { useAppNavigation, useAuthContext, useTranslations } from "@/app/hooks";
+import {
+  useAppNavigation,
+  useAuthContext,
+  useThemeContext,
+  useTranslations,
+} from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FC, useState } from "react";
+import { StyleSheet, View } from "react-native";
 
 export const Friends: FC = () => {
   const { signOut } = useAuthContext();
@@ -16,6 +22,8 @@ export const Friends: FC = () => {
   const navigation = useAppNavigation();
 
   const [searchValue, setSearchValue] = useState("");
+
+  const styles = useStyles();
 
   return (
     <LayoutProvider
@@ -38,14 +46,30 @@ export const Friends: FC = () => {
           placeholder={translations["searchFriends"]}
           beginIcon={faSearch}
         />
-        <Button
-          text={translations["addFriend"]}
-          onPress={() => navigation.navigate("AddFriend")}
-        />
+        <View style={styles.mainButtons}>
+          <Button
+            text={translations["addFriend"]}
+            onPress={() => navigation.navigate("AddFriend")}
+            fullWidth={true}
+          />
+          <Button
+            text={translations["friendRequests"]}
+            onPress={() => {}}
+            fullWidth={true}
+          />
+        </View>
         <Scroll></Scroll>
       </LoadingWrapper>
     </LayoutProvider>
   );
+};
+
+const useStyles = () => {
+  const theme = useThemeContext();
+
+  return StyleSheet.create({
+    mainButtons: { flexDirection: "row", gap: theme.spacing(4) },
+  });
 };
 
 export default Friends;

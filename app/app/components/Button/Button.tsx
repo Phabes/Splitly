@@ -8,6 +8,7 @@ type ButtonProps = {
   onPress: () => any;
   variant?: "primary" | "secondary";
   disabled?: boolean;
+  fullWidth?: boolean;
 };
 
 export const Button: FC<ButtonProps> = ({
@@ -15,8 +16,9 @@ export const Button: FC<ButtonProps> = ({
   onPress,
   variant = "primary",
   disabled = false,
+  fullWidth = false,
 }) => {
-  const styles = useStyles(variant, disabled);
+  const styles = useStyles(variant, disabled, fullWidth);
 
   const textColor = disabled ? "text-disabled" : "text-primary";
 
@@ -38,6 +40,7 @@ export const Button: FC<ButtonProps> = ({
 const useStyles = (
   variant: ButtonProps["variant"],
   disabled: ButtonProps["disabled"],
+  fullWidth: ButtonProps["fullWidth"],
 ) => {
   const theme = useThemeContext();
 
@@ -55,6 +58,8 @@ const useStyles = (
     ? { borderWidth, borderColor: theme.colors["background-primary"] }
     : {};
 
+  const widthStyle = fullWidth ? { flex: 1 } : {};
+
   return StyleSheet.create({
     container: {
       justifyContent: "center",
@@ -64,6 +69,7 @@ const useStyles = (
       paddingVertical: theme.spacing(2) - borderWidth,
       borderRadius: theme.spacing(2),
       ...borderStyle,
+      ...widthStyle,
     },
   });
 };
