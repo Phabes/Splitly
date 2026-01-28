@@ -1,46 +1,17 @@
 import {
   ADD_FRIENDS_MIN_SEARCH_LENGTH,
-  ADD_FRIENDS_PAGE_SIZE,
   ADD_FRIENDS_SEARCH_DELAY,
 } from "@/app/constants/pagination";
-import { usePaging } from "@/app/hooks";
-import { useEffect, useState } from "react";
-
-interface UserResult {
-  id: string;
-  username: string;
-  email: string;
-}
-
-const fetchUsersFromServer = async (query: string, pageNum: number) => {
-  await new Promise((resolve) => setTimeout(resolve, 800));
-
-  const totalMockData: UserResult[] = Array.from({ length: 22 }, (_, i) => ({
-    id: `${i + 1}`,
-    username: `User ${i + 1}`,
-    email: `user${i + 1}@example.com`,
-  })).filter(
-    (user) =>
-      user.username.toLowerCase().includes(query.toLowerCase()) ||
-      user.email.toLowerCase().includes(query.toLowerCase()),
-  );
-
-  const startIndex = (pageNum - 1) * ADD_FRIENDS_PAGE_SIZE;
-  const paginatedData = totalMockData.slice(
-    startIndex,
-    startIndex + ADD_FRIENDS_PAGE_SIZE,
-  );
-
-  return {
-    data: paginatedData,
-    total: totalMockData.length,
-  };
-};
+import { useAuthContext, usePaging } from "@/app/hooks";
+import { getAddFriendList } from "@/app/services/friend";
+import { AddFriendList, UserResult } from "@/app/types";
+import { useCallback, useEffect, useState } from "react";
 
 export const useAddFriendData = () => {
   const [searchValue, setSearchValue] = useState("");
   const [users, setUsers] = useState<UserResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const { userToken } = useAuthContext();
 
   const {
     page,
@@ -51,6 +22,50 @@ export const useAddFriendData = () => {
     setHasMore,
   } = usePaging();
 
+  const retrieveData = async () => {
+    const nextPage = page + 1;
+    const userIDs = users.map((user) => user._id);
+
+    const response = await getAddFriendList(
+      userToken!,
+      searchValue,
+      nextPage,
+      userIDs,
+    );
+
+    if (response.ok) {
+      const result: AddFriendList = await response.json();
+
+      if (result.users.length > 0) {
+        setUsers((prev) => [...prev, ...result.users]);
+        setPage(nextPage);
+        setHasMore(result.hasMore);
+      } else {
+        setHasMore(false);
+      }
+    }
+  };
+
+  const forceLoadMore = useCallback(async () => {
+    if (
+      isLoadingMore ||
+      isSearching ||
+      searchValue.trim().length < ADD_FRIENDS_MIN_SEARCH_LENGTH
+    ) {
+      return;
+    }
+
+    setIsLoadingMore(true);
+
+    try {
+      await retrieveData();
+    } catch (error) {
+      console.error("Manual force load failed:", error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [isLoadingMore, isSearching, searchValue, page]);
+
   useEffect(() => {
     if (searchValue.trim().length < ADD_FRIENDS_MIN_SEARCH_LENGTH) {
       return;
@@ -58,9 +73,13 @@ export const useAddFriendData = () => {
 
     const delayDebounceFn = setTimeout(async () => {
       try {
-        const result = await fetchUsersFromServer(searchValue, 1);
-        setUsers(result.data);
-        setHasMore(result.data.length < result.total);
+        const response = await getAddFriendList(userToken!, searchValue, 1, []);
+
+        if (response.ok) {
+          const result: AddFriendList = await response.json();
+          setUsers(result.users);
+          setHasMore(result.hasMore);
+        }
       } catch (error) {
         console.error("Initial search failed:", error);
       } finally {
@@ -78,17 +97,8 @@ export const useAddFriendData = () => {
 
     setIsLoadingMore(true);
 
-    const nextPage = page + 1;
-
     try {
-      const result = await fetchUsersFromServer(searchValue, nextPage);
-      if (result.data.length > 0) {
-        setUsers((prev) => [...prev, ...result.data]);
-        setPage(nextPage);
-        setHasMore(users.length + result.data.length < result.total);
-      } else {
-        setHasMore(false);
-      }
+      await retrieveData();
     } catch (error) {
       console.error("Load more failed:", error);
     } finally {
@@ -116,6 +126,7 @@ export const useAddFriendData = () => {
     hasMore,
     handleSearchChange,
     loadMoreUsers,
+    forceLoadMore,
   };
 };
 

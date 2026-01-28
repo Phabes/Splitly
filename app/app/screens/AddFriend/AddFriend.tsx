@@ -35,6 +35,7 @@ export const AddFriend: FC = () => {
     hasMore,
     handleSearchChange,
     loadMoreUsers,
+    forceLoadMore,
   } = useAddFriendData();
 
   const styles = useStyles();
@@ -77,17 +78,19 @@ export const AddFriend: FC = () => {
                 gapSize="small"
                 keyboardPersist="never"
                 handleScrollEnd={loadMoreUsers}
+                isAtEnd={!hasMore}
+                onManualRefresh={forceLoadMore}
               >
                 {users.map((item, i) => {
                   return (
                     <ListItem
                       key={`AddFriend/${i}`}
                       text={item.username}
-                      onPress={() => handleShowFriend(item.id)}
+                      onPress={() => handleShowFriend(item._id)}
                     >
                       <TouchableIcon
                         icon={faAdd}
-                        onPress={() => handleAddFriend(item.id)}
+                        onPress={() => handleAddFriend(item._id)}
                       />
                     </ListItem>
                   );
@@ -103,7 +106,7 @@ export const AddFriend: FC = () => {
                     </>
                   )}
 
-                  {!hasMore && (
+                  {!isLoadingMore && !hasMore && (
                     <Typography
                       text={translations["noMoreUsersFound"]}
                       variant="body-small"

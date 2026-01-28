@@ -11,7 +11,6 @@ export const generateTokens = (userId: string) => {
     expiresIn: JWT_TIME as SignOptions["expiresIn"],
   });
 
-  /** @type {string} */
   const refreshToken = jwt.sign({ userId }, JWT_REFRESH_SECRET, {
     expiresIn: JWT_REFRESH_TIME as SignOptions["expiresIn"],
   });

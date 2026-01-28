@@ -1,13 +1,15 @@
 export const signUpCall = (
   email: string,
   username: string,
-  password: string
+  password: string,
 ) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  return fetch(`${baseUrl}/user/signUp`, {
+  const url = `${baseUrl}/user/signUp`;
+
+  return fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
