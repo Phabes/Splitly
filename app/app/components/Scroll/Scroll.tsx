@@ -44,40 +44,41 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
 
   const styles = useStyles(size);
 
+  const isShortList = contentHeight <= layoutHeight;
+
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
 
-    if (contentSize.height > layoutMeasurement.height) {
-      const scrollBottom = layoutMeasurement.height + contentOffset.y;
+    const scrollBottom = layoutMeasurement.height + contentOffset.y;
 
-      const overScroll = scrollBottom - contentSize.height + REFRESH_THRESHOLD;
+    const actualContentHeight =
+      contentSize.height - (isAtEnd && onManualRefresh ? REFRESH_THRESHOLD : 0);
+    const overScroll = scrollBottom - actualContentHeight;
 
-      if (isAtEnd && onManualRefresh) {
-        const currentPull = Math.min(overScroll, REFRESH_THRESHOLD);
-        if (currentPull > 0) {
-          setPullAmount(currentPull);
-        }
-      } else if (!isAtEnd && handleScrollEnd) {
-        const isCloseToBottom =
-          scrollBottom >= contentSize.height - layoutMeasurement.height;
-        if (isCloseToBottom) {
-          handleScrollEnd();
-        }
+    if (isAtEnd && onManualRefresh) {
+      if (overScroll > 0) {
+        setPullAmount(Math.min(overScroll, REFRESH_THRESHOLD));
+      } else {
+        setPullAmount(0);
+      }
+    } else if (!isAtEnd && handleScrollEnd) {
+      const isCloseToBottom =
+        scrollBottom >= actualContentHeight - layoutMeasurement.height;
+      if (isCloseToBottom) {
+        handleScrollEnd();
       }
     }
   };
 
   const handleScrollEndDrag = () => {
-    setIsTouched(false);
-
-    if (contentHeight <= layoutHeight) {
-      return;
-    }
-
-    if (isAtEnd && onManualRefresh && pullAmount >= REFRESH_THRESHOLD) {
+    if (
+      isAtEnd &&
+      onManualRefresh &&
+      pullAmount >= REFRESH_THRESHOLD - TOUCH_ADDITIONAL_REFRESH_THRESHOLD
+    ) {
       onManualRefresh();
     }
-
+    setIsTouched(false);
     setPullAmount(0);
   };
 
@@ -87,7 +88,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   };
 
   const handleTouchMove = (e: GestureResponderEvent) => {
-    if (contentHeight < layoutHeight && isAtEnd && onManualRefresh) {
+    if (isAtEnd && onManualRefresh) {
       const currentY = e.nativeEvent.pageY;
       const deltaY = touchStartY.current - currentY;
       const deltaYWithThreshold = deltaY - TOUCH_ADDITIONAL_REFRESH_THRESHOLD;
@@ -103,15 +104,15 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   const handleTouchEnd = () => {
     setIsTouched(false);
 
-    if (contentHeight >= layoutHeight) {
-      return;
+    if (isAtEnd && onManualRefresh) {
+      if (
+        pullAmount >=
+        REFRESH_THRESHOLD - TOUCH_ADDITIONAL_REFRESH_THRESHOLD
+      ) {
+        onManualRefresh();
+      }
+      setPullAmount(0);
     }
-
-    if (isAtEnd && onManualRefresh && pullAmount >= REFRESH_THRESHOLD) {
-      onManualRefresh();
-    }
-
-    setPullAmount(0);
   };
 
   const onLayout = (e: LayoutChangeEvent) => {
@@ -119,7 +120,9 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   };
 
   const onContentSizeChange = (w: number, h: number) => {
-    setContentHeight(h);
+    const loaderHeight =
+      isTouched && isAtEnd && onManualRefresh ? REFRESH_THRESHOLD : 0;
+    setContentHeight(h - loaderHeight);
   };
 
   return (
@@ -139,29 +142,40 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
       showsVerticalScrollIndicator={false}
       alwaysBounceVertical={true}
     >
-      <View style={styles.content}>{children}</View>
+      <View
+        style={{
+          flex: 1,
+          transform: [{ translateY: isShortList ? -pullAmount : 0 }],
+        }}
+      >
+        <View style={styles.content}>{children}</View>
 
-      {isTouched && isAtEnd && pullAmount > 0 && onManualRefresh && (
-        <View style={styles.pullUpContainer}>
-          <View
-            style={{
-              transform: [
-                {
-                  rotateZ: `${(Math.round(pullAmount) / REFRESH_THRESHOLD) * 360}deg`,
-                },
-                {
-                  scale: 0.5 + (pullAmount / REFRESH_THRESHOLD) * 0.5,
-                },
-              ],
-            }}
-          >
-            <Icon
-              icon={faRotateRight}
-              size="large"
-            />
-          </View>
-        </View>
-      )}
+        {isTouched &&
+          isAtEnd &&
+          onManualRefresh &&
+          (!isShortList || (isShortList && pullAmount > 0)) && (
+            <View style={styles.pullUpContainer}>
+              <View
+                style={{
+                  transform: [
+                    {
+                      rotateZ: `${(pullAmount / REFRESH_THRESHOLD) * 360}deg`,
+                    },
+                    {
+                      scale: 0.5 + (pullAmount / REFRESH_THRESHOLD) * 0.5,
+                    },
+                  ],
+                  opacity: 0.5 + (pullAmount / REFRESH_THRESHOLD) * 0.5,
+                }}
+              >
+                <Icon
+                  icon={faRotateRight}
+                  size="large"
+                />
+              </View>
+            </View>
+          )}
+      </View>
     </ScrollView>
   );
 };
