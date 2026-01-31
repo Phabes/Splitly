@@ -2,6 +2,7 @@ import { useThemeContext } from "@/app/hooks";
 import { FC, PropsWithChildren, useRef, useState } from "react";
 import {
   GestureResponderEvent,
+  Keyboard,
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -39,12 +40,16 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
 
   const [layoutHeight, setLayoutHeight] = useState(0);
   const [contentHeight, setContentHeight] = useState(0);
-
   const touchStartY = useRef(0);
 
-  const styles = useStyles(size);
-
   const isShortList = contentHeight <= layoutHeight;
+  const moveY = isShortList ? -pullAmount : 0;
+
+  const styles = useStyles(size, moveY);
+
+  const handleScrollBeginDrag = () => {
+    setIsTouched(true);
+  };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
@@ -83,6 +88,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   };
 
   const handleTouchStart = (e: GestureResponderEvent) => {
+    Keyboard.dismiss();
     setIsTouched(true);
     touchStartY.current = e.nativeEvent.pageY;
   };
@@ -116,20 +122,21 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   };
 
   const onLayout = (e: LayoutChangeEvent) => {
-    setLayoutHeight(e.nativeEvent.layout.height);
+    const height = Math.floor(e.nativeEvent.layout.height);
+    setLayoutHeight(height);
   };
 
   const onContentSizeChange = (w: number, h: number) => {
-    const loaderHeight =
-      isTouched && isAtEnd && onManualRefresh ? REFRESH_THRESHOLD : 0;
-    setContentHeight(h - loaderHeight);
+    const loaderHeight = pullAmount > 0 ? REFRESH_THRESHOLD : 0;
+    const height = Math.floor(h - loaderHeight);
+    setContentHeight(height);
   };
 
   return (
     <ScrollView
       contentContainerStyle={styles.scrollView}
       onScroll={handleScroll}
-      onScrollBeginDrag={() => setIsTouched(true)}
+      onScrollBeginDrag={handleScrollBeginDrag}
       onScrollEndDrag={handleScrollEndDrag}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -142,12 +149,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
       showsVerticalScrollIndicator={false}
       alwaysBounceVertical={true}
     >
-      <View
-        style={{
-          flex: 1,
-          transform: [{ translateY: isShortList ? -pullAmount : 0 }],
-        }}
-      >
+      <View style={styles.container}>
         <View style={styles.content}>{children}</View>
 
         {isTouched &&
@@ -180,12 +182,16 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   );
 };
 
-const useStyles = (gapSize: number) => {
+const useStyles = (gapSize: number, moveY: number) => {
   const theme = useThemeContext();
 
   return StyleSheet.create({
     scrollView: {
       // flexGrow: 1,
+    },
+    container: {
+      flex: 1,
+      transform: [{ translateY: moveY }],
     },
     content: {
       flex: 1,
