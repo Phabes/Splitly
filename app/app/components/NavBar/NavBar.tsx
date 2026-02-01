@@ -1,30 +1,44 @@
 import { TypographyKeys } from "@/app/constants/theme";
 import { FC, JSX } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Typography } from "../Typography";
 import { useThemeContext } from "@/app/hooks";
+import { Icon } from "../Icon";
+import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 
 export type NavBarProps = {
   text: string;
   variant?: TypographyKeys;
+  onBackPress?: () => void;
   button?: JSX.Element;
 };
 
 export const NavBar: FC<NavBarProps> = ({
   text,
   variant = "header-medium",
+  onBackPress,
   button,
 }) => {
   const styles = useStyles();
 
   return (
     <View style={styles.container}>
-      <View>
+      <TouchableOpacity
+        onPress={onBackPress}
+        style={styles.leftSide}
+        disabled={!onBackPress}
+      >
+        {onBackPress && (
+          <Icon
+            icon={faAngleLeft}
+            size="large"
+          />
+        )}
         <Typography
           variant={variant}
           text={text}
         />
-      </View>
+      </TouchableOpacity>
       {button}
     </View>
   );
@@ -41,8 +55,11 @@ const useStyles = () => {
       alignItems: "center",
       paddingHorizontal: theme.spacing(7),
       backgroundColor: theme.colors["background-secondary"],
-      // borderBottomWidth: 1,
-      // borderBottomColor: theme.colors["text-primary"],
+    },
+    leftSide: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(2),
     },
   });
 };

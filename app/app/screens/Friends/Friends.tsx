@@ -1,23 +1,38 @@
-import { Button, Input, LoadingWrapper, NavBar } from "@/app/components";
-import { useAuthContext, useTranslations } from "@/app/hooks";
+import {
+  Button,
+  Input,
+  LoadingWrapper,
+  NavBar,
+  Scroll,
+} from "@/app/components";
+import {
+  useAppNavigation,
+  useAuthContext,
+  useThemeContext,
+  useTranslations,
+} from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FC, useState } from "react";
+import { StyleSheet, View } from "react-native";
 
 export const Friends: FC = () => {
   const { signOut } = useAuthContext();
   const translations = useTranslations();
+  const navigation = useAppNavigation();
 
-  const [value, setValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+
+  const styles = useStyles();
 
   return (
     <LayoutProvider
       navbar={
         <NavBar
-          text="Friends"
+          text={translations["friends"]}
           button={
             <Button
-              text="Sign Out"
+              text={translations["signOut"]}
               onPress={signOut}
             />
           }
@@ -26,14 +41,35 @@ export const Friends: FC = () => {
     >
       <LoadingWrapper isLoading={false}>
         <Input
-          text={value}
-          onChange={setValue}
+          text={searchValue}
+          onChange={setSearchValue}
           placeholder={translations["searchFriends"]}
           beginIcon={faSearch}
         />
+        <View style={styles.mainButtons}>
+          <Button
+            text={translations["addFriend"]}
+            onPress={() => navigation.navigate("AddFriend")}
+            fullWidth={true}
+          />
+          <Button
+            text={translations["friendRequests"]}
+            onPress={() => {}}
+            fullWidth={true}
+          />
+        </View>
+        <Scroll></Scroll>
       </LoadingWrapper>
     </LayoutProvider>
   );
+};
+
+const useStyles = () => {
+  const theme = useThemeContext();
+
+  return StyleSheet.create({
+    mainButtons: { flexDirection: "row", gap: theme.spacing(4) },
+  });
 };
 
 export default Friends;

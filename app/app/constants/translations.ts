@@ -13,6 +13,7 @@ export type TranslationKeys =
   | "repeatPassword"
   | "signUp"
   | "signIn"
+  | "signOut"
   | "fieldRequired"
   | "notValidEmail"
   | "tooShortPassword"
@@ -23,7 +24,15 @@ export type TranslationKeys =
   | "usernameTaken"
   | "userNotFound"
   | "invalidPassword"
-  | "searchFriends";
+  | "friends"
+  | "groups"
+  | "searchFriends"
+  | "addFriend"
+  | "searchedUsers"
+  | "loadingMoreUsers"
+  | "noMoreUsersFound"
+  | "noUsersFoundMatching"
+  | "friendRequests";
 
 export const translations: Record<
   LanguageKeys,

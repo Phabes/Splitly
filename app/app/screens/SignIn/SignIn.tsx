@@ -4,6 +4,7 @@ import {
   LoadingWrapper,
   FormData,
   NavBar,
+  Scroll,
 } from "@/app/components";
 import { useThemeContext, useTranslations } from "@/app/hooks";
 import { useAuthNavigation } from "@/app/hooks/useAuthNavigation";
@@ -25,42 +26,44 @@ export const SignIn: FC = () => {
         isLoading={isLoading}
         text={loadingText}
       >
-        <View style={styles.inputs}>
-          <FormData
-            labelText={translations["username"]}
-            messageText={usernameField.error}
-          >
-            <Input
-              text={usernameField.value}
-              placeholder={translations["username"] + "..."}
-              onChange={usernameField.setValue}
-              variant={usernameField.error ? "error" : "default"}
+        <Scroll>
+          <View style={styles.inputs}>
+            <FormData
+              labelText={translations["username"]}
+              messageText={usernameField.error}
+            >
+              <Input
+                text={usernameField.value}
+                placeholder={translations["username"] + "..."}
+                onChange={usernameField.setValue}
+                variant={usernameField.error ? "error" : "default"}
+              />
+            </FormData>
+            <FormData
+              labelText={translations["password"]}
+              messageText={passwordField.error}
+            >
+              <Input
+                text={passwordField.value}
+                placeholder={translations["password"] + "..."}
+                password={true}
+                onChange={passwordField.setValue}
+                variant={passwordField.error ? "error" : "default"}
+              />
+            </FormData>
+          </View>
+          <View style={styles.buttons}>
+            <Button
+              text={translations["signIn"]}
+              onPress={handleSignIn}
             />
-          </FormData>
-          <FormData
-            labelText={translations["password"]}
-            messageText={passwordField.error}
-          >
-            <Input
-              text={passwordField.value}
-              placeholder={translations["password"] + "..."}
-              password={true}
-              onChange={passwordField.setValue}
-              variant={passwordField.error ? "error" : "default"}
+            <Button
+              text={translations["signUp"]}
+              variant="secondary"
+              onPress={() => navigation.replace("SignUp")}
             />
-          </FormData>
-        </View>
-        <View style={styles.buttons}>
-          <Button
-            text={translations["signIn"]}
-            onPress={handleSignIn}
-          />
-          <Button
-            text={translations["signUp"]}
-            variant="secondary"
-            onPress={() => navigation.replace("SignUp")}
-          />
-        </View>
+          </View>
+        </Scroll>
       </LoadingWrapper>
     </LayoutProvider>
   );

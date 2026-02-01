@@ -3,7 +3,9 @@ export const signInCall = (username: string, password: string) => {
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  return fetch(`${baseUrl}/user/signIn`, {
+  const url = `${baseUrl}/user/signIn`;
+
+  return fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

@@ -1,6 +1,11 @@
 import { useThemeContext } from "@/app/hooks";
 import { FC, JSX, PropsWithChildren } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 type LayoutProviderProps = PropsWithChildren<{
   navbar?: JSX.Element;
@@ -13,15 +18,16 @@ export const LayoutProvider: FC<LayoutProviderProps> = ({
   const styles = useStyles();
 
   return (
-    <View style={styles.container}>
-      {navbar}
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        keyboardShouldPersistTaps="handled"
-      >
+    <TouchableWithoutFeedback
+      onPress={Keyboard.dismiss}
+      accessible={false}
+    >
+      <View style={styles.container}>
+        {navbar}
+
         <View style={styles.content}>{children}</View>
-      </ScrollView>
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

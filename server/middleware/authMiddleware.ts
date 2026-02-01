@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "SECRET_KEY";
 export const protect = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   let token;
 

@@ -1,16 +1,12 @@
 import { useAuthContext, useFormData, useTranslations } from "@/app/hooks";
 import { signInCall } from "@/app/services";
-import { ResponseMessage, SignInResponse } from "@/app/types";
+import {
+  ResponseMessage,
+  SignInFailResponse,
+  SignInResponse,
+} from "@/app/types";
 import { validateSignInPassword, validateUsername } from "@/app/utils";
 import { useState } from "react";
-
-type SignInFailResponse = ResponseMessage & {
-  errorFields: Array<{
-    field: "username" | "password";
-    code: "userNotFound" | "invalidPassword";
-    message: string;
-  }>;
-};
 
 export const useSignInData = () => {
   const { signIn } = useAuthContext();
@@ -31,10 +27,10 @@ export const useSignInData = () => {
     const usernameError = validateUsername(usernameField.value);
     const passwordError = validateSignInPassword(passwordField.value);
     usernameField.setError(
-      usernameError ? translations[usernameError] : undefined
+      usernameError ? translations[usernameError] : undefined,
     );
     passwordField.setError(
-      passwordError ? translations[passwordError] : undefined
+      passwordError ? translations[passwordError] : undefined,
     );
 
     const isError = usernameError !== undefined || passwordError !== undefined;
@@ -53,7 +49,7 @@ export const useSignInData = () => {
     try {
       const response = await signInCall(
         usernameField.value,
-        passwordField.value
+        passwordField.value,
       );
 
       if (response.ok) {
