@@ -26,9 +26,9 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     setRefreshToken(null);
   };
 
-  const performTokenRefresh = async (refreshToken: string) => {
+  const performTokenRefresh = async (currentRefreshToken: string) => {
     try {
-      const response = await refreshCall(refreshToken);
+      const response = await refreshCall(currentRefreshToken);
 
       if (!response.ok) {
         throw new Error("Refresh failed");
@@ -40,8 +40,11 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       await AsyncStorage.setItem("refreshToken", data.refreshToken);
       setUserToken(data.userToken);
       setRefreshToken(data.refreshToken);
+
+      return data.userToken;
     } catch (error) {
       await clearSession();
+      return null;
     }
   };
 
@@ -53,6 +56,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
           AsyncStorage.getItem("userToken"),
           AsyncStorage.getItem("refreshToken"),
         ]);
+
         if (userToken && refreshToken) {
           const response = await verifyCall(userToken);
 
@@ -95,8 +99,9 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         setUserToken(token);
         setRefreshToken(refresh);
       },
+      performTokenRefresh,
     }),
-    [userToken, isLoading]
+    [userToken, isLoading],
   );
 
   return (

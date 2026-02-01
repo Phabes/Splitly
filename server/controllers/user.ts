@@ -30,6 +30,7 @@ export const verifyUser = async (req: AuthRequest, res: Response) => {
 
 export const refresh = async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
+
   if (!refreshToken)
     return res
       .status(401)
@@ -39,7 +40,7 @@ export const refresh = async (req: Request, res: Response) => {
     const decoded = verifyToken(refreshToken, JWT_REFRESH_SECRET);
 
     const { userToken, refreshToken: newRefreshToken } = generateTokens(
-      decoded.userId
+      decoded.userId,
     );
 
     return res.status(200).json({
@@ -94,7 +95,7 @@ export const signIn = async (req: Request, res: Response) => {
 
     const { validationErrors, user } = await signInValidator(
       username,
-      password
+      password,
     );
 
     if (validationErrors.length > 0) {
