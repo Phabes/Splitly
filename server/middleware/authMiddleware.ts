@@ -25,7 +25,7 @@ export const protect = async (
 
       req.userId = decoded.userId;
 
-      next();
+      return next();
     } catch (error: any) {
       if (error.name === "TokenExpiredError") {
         return res
@@ -42,7 +42,7 @@ export const protect = async (
 
   if (!token) {
     return res.status(401).json({
-      code: "noToenProvided",
+      code: "noTokenProvided",
       message: "Not authorized. No token provided.",
     });
   }
