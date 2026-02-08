@@ -1,5 +1,7 @@
+import { ResponseCodeKeys } from "../constants/responseCodeKeys";
+
 export type ResponseMessage = {
-  code: string;
+  code: ResponseCodeKeys;
   message: string;
 };
 

@@ -19,7 +19,7 @@ import { LayoutProvider } from "@/app/providers";
 import { faAdd, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
-import { useAddFriendData } from "./hooks";
+import { useUsers } from "./hooks";
 import { ADD_FRIENDS_MIN_SEARCH_LENGTH } from "@/app/constants/pagination";
 
 export const AddFriend: FC = () => {
@@ -36,17 +36,11 @@ export const AddFriend: FC = () => {
     handleSearchChange,
     loadMoreUsers,
     forceLoadMore,
-  } = useAddFriendData();
+    handleAddFriend,
+    handleShowFriend,
+  } = useUsers();
 
   const styles = useStyles();
-
-  const handleShowFriend = (userId: string) => {
-    console.log("Show friend profile:", userId);
-  };
-
-  const handleAddFriend = (userId: string) => {
-    console.log("Sending friend request to:", userId);
-  };
 
   const isManualRefreshDisabled =
     isLoadingMore || searchValue.length < ADD_FRIENDS_MIN_SEARCH_LENGTH;

@@ -25,5 +25,6 @@
   "loadingMoreUsers": "Ładowanie użytkowników...",
   "noMoreUsersFound": "Nie znaleziono więcej użytkowników.",
   "noUsersFoundMatching": "Nie znaleziono pasujących użytkowników.",
-  "friendRequests": "Zaproszenia"
+  "friendRequests": "Zaproszenia",
+  "sendingFriendRequest": "Wysyłanie zaproszenia"
 }

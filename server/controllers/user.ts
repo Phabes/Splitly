@@ -14,27 +14,31 @@ export const verifyUser = async (req: AuthRequest, res: Response) => {
     if (!user) {
       return res
         .status(404)
-        .json({ code: "userNotFound", message: "User not found." });
+        .json({ code: "verifyUser/userNotFound", message: "User not found." });
     }
 
     return res.status(200).json({
-      code: "validationSuccess",
+      code: "verifyUser/verifySuccess",
       message: "Validation success.",
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ code: "internalError", message: "Internal server error." });
+    return res.status(500).json({
+      code: "verifyUser/verifyError",
+      message: "Internal server error.",
+    });
   }
 };
 
-export const refresh = async (req: Request, res: Response) => {
+export const refreshToken = async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken)
     return res
       .status(401)
-      .json({ code: "noRefreshToken", message: "Refresh token required" });
+      .json({
+        code: "refreshToken/noRefreshToken",
+        message: "Refresh token required",
+      });
 
   try {
     const decoded = verifyToken(refreshToken, JWT_REFRESH_SECRET);
@@ -44,14 +48,14 @@ export const refresh = async (req: Request, res: Response) => {
     );
 
     return res.status(200).json({
-      code: "refreshSuccess",
+      code: "refreshToken/refreshTokenSuccess",
       message: "Tokens successfully refreshed.",
       userToken,
       refreshToken: newRefreshToken,
     });
   } catch (error) {
     return res.status(403).json({
-      code: "invalidRefreshToken",
+      code: "refreshToken/refreshTokenError",
       message: "Session expired. Please sign in again.",
     });
   }
@@ -65,7 +69,7 @@ export const signUp = async (req: Request, res: Response) => {
 
     if (validationErrors.length > 0) {
       return res.status(400).json({
-        code: "fieldsValidationError",
+        code: "signUp/fieldsValidationError",
         message: "Fields validation error.",
         errorFields: validationErrors,
       });
@@ -77,7 +81,7 @@ export const signUp = async (req: Request, res: Response) => {
     const { userToken, refreshToken } = generateTokens(newUser._id.toString());
 
     return res.status(201).json({
-      code: "signUpSuccess",
+      code: "signUp/signUpSuccess",
       message: "User created.",
       userToken,
       refreshToken,
@@ -85,7 +89,7 @@ export const signUp = async (req: Request, res: Response) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ code: "internalError", message: "Internal server error." });
+      .json({ code: "signUp/signUpError", message: "Internal server error." });
   }
 };
 
@@ -100,7 +104,7 @@ export const signIn = async (req: Request, res: Response) => {
 
     if (validationErrors.length > 0) {
       return res.status(400).json({
-        code: "fieldsValidationError",
+        code: "signIn/fieldsValidationError",
         message: "Fields validation error.",
         errorFields: validationErrors,
       });
@@ -109,7 +113,7 @@ export const signIn = async (req: Request, res: Response) => {
     const { userToken, refreshToken } = generateTokens(user!._id.toString());
 
     return res.status(201).json({
-      code: "signInSuccess",
+      code: "signIn/signInSuccess",
       message: "User logged in.",
       userToken,
       refreshToken,
@@ -117,6 +121,6 @@ export const signIn = async (req: Request, res: Response) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ code: "internalError", message: "Internal server error." });
+      .json({ code: "signIn/signInError", message: "Internal server error." });
   }
 };
