@@ -48,7 +48,12 @@ export const AddFriend: FC = () => {
     console.log("Sending friend request to:", userId);
   };
 
-  const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
+  const isManualRefreshDisabled =
+    isLoadingMore || searchValue.length < ADD_FRIENDS_MIN_SEARCH_LENGTH;
+
+  const handleManualRefresh = isManualRefreshDisabled
+    ? undefined
+    : forceLoadMore;
 
   return (
     <LayoutProvider
@@ -73,19 +78,19 @@ export const AddFriend: FC = () => {
           beginIcon={faSearch}
         />
         <LoadingWrapper isLoading={isSearching}>
-          {users.length > 0 ? (
-            <>
-              <Typography
-                text={`${translations["searchedUsers"]}:`}
-                variant="header-small"
-              />
-              <Scroll
-                gapSize="small"
-                keyboardPersist="never"
-                handleScrollEnd={loadMoreUsers}
-                isAtEnd={!hasMore}
-                onManualRefresh={handleManualRefresh}
-              >
+          <Scroll
+            gapSize="small"
+            keyboardPersist="never"
+            handleScrollEnd={loadMoreUsers}
+            hasMore={hasMore}
+            onManualRefresh={handleManualRefresh}
+          >
+            {users.length > 0 ? (
+              <>
+                <Typography
+                  text={`${translations["searchedUsers"]}:`}
+                  variant="header-small"
+                />
                 {users.map((item, i) => {
                   return (
                     <ListItem
@@ -118,16 +123,16 @@ export const AddFriend: FC = () => {
                     />
                   )}
                 </View>
-              </Scroll>
-            </>
-          ) : (
-            searchValue.length >= ADD_FRIENDS_MIN_SEARCH_LENGTH &&
-            !isSearching && (
-              <View style={styles.noUsers}>
-                <Typography text={translations["noUsersFoundMatching"]} />
-              </View>
-            )
-          )}
+              </>
+            ) : (
+              searchValue.length >= ADD_FRIENDS_MIN_SEARCH_LENGTH &&
+              !isSearching && (
+                <View style={styles.noUsers}>
+                  <Typography text={translations["noUsersFoundMatching"]} />
+                </View>
+              )
+            )}
+          </Scroll>
         </LoadingWrapper>
       </View>
     </LayoutProvider>
