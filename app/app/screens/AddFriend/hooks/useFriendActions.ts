@@ -4,7 +4,7 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { sendFriendRequest } from "@/app/services/friend";
-import { UserResult } from "@/app/types";
+import { ResponseMessage, UserResult } from "@/app/types";
 import { Dispatch, SetStateAction } from "react";
 
 export const useFriendActions = (
@@ -22,6 +22,14 @@ export const useFriendActions = (
 
       if (response.ok) {
         setUsers((prev) => prev.filter((e) => e._id !== userId));
+      } else if (response.status === 409) {
+        const data: ResponseMessage = await response.json();
+        if (
+          data.code === "sendFriendRequest/friendshipAlreadyExists" ||
+          data.code === "sendFriendRequest/friendRequestPending"
+        ) {
+          setUsers((prev) => prev.filter((e) => e._id !== userId));
+        }
       } else {
         // TO DO - handle other responses
       }
