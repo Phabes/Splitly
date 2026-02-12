@@ -9,7 +9,7 @@ export const searchUsers = async (
 ): Promise<any> => {
   try {
     const { query, limit = 10, userIDs = [] } = req.body;
-    const currentUserId = req.userId;
+    const currentUserId = req.userID;
 
     const limitNum = Number(limit);
     const searchQuery = String(query || "");
@@ -51,7 +51,7 @@ export const searchUsers = async (
 
     return res.status(200).json({
       code: "searchUsers/addFriendListSearchSuccess",
-      message: "Users found",
+      message: "Users found.",
       users,
       hasMore: userIDs.length + users.length < totalCount,
     });
@@ -69,7 +69,7 @@ export const sendFriendRequest = async (
 ): Promise<any> => {
   try {
     const { userToAdd } = req.body;
-    const currentUserId = req.userId;
+    const currentUserId = req.userID;
 
     const existingFriendship = await Friend.findOne({
       $or: [
@@ -120,6 +120,48 @@ export const sendFriendRequest = async (
     return res.status(500).json({
       code: "sendFriendRequest/requestError",
       message: "Server error during sending request.",
+    });
+  }
+};
+
+export const searchFriendRequests = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { limit = 10, userIDs = [] } = req.body;
+    const currentUserId = req.userID;
+
+    const limitNum = Number(limit);
+
+    const baseFilter = {
+      recipient: currentUserId,
+      status: "pending",
+    };
+
+    const fetchFilter = {
+      ...baseFilter,
+      requester: { $nin: userIDs },
+    };
+
+    const requests = await Friend.find(fetchFilter)
+      .select("id")
+      .populate("requester", "username email")
+      .limit(limitNum);
+    // .sort({ createdAt: -1 });
+
+    const totalCount = await Friend.countDocuments(baseFilter);
+
+    return res.status(200).json({
+      code: "searchFriendRequests/searchSuccess",
+      message: "Friend requests found.",
+      requests,
+      hasMore: userIDs.length + requests.length < totalCount,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      code: "searchFriendRequests/searchError",
+      message: "Server error during fetching friend requests.",
     });
   }
 };

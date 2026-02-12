@@ -14,21 +14,21 @@ export const useFriendActions = (
   const { showLoading, hideLoading } = useLoadingContext();
   const translations = useTranslations();
 
-  const handleAddFriend = async (userId: string) => {
+  const handleAddFriend = async (userID: string) => {
     showLoading(translations["sendingFriendRequest"]);
 
     try {
-      const response = await request(sendFriendRequest, userId);
+      const response = await request(sendFriendRequest, userID);
 
       if (response.ok) {
-        setUsers((prev) => prev.filter((e) => e._id !== userId));
+        setUsers((prev) => prev.filter((e) => e._id !== userID));
       } else if (response.status === 409) {
         const data: ResponseMessage = await response.json();
         if (
           data.code === "sendFriendRequest/friendshipAlreadyExists" ||
           data.code === "sendFriendRequest/friendRequestPending"
         ) {
-          setUsers((prev) => prev.filter((e) => e._id !== userId));
+          setUsers((prev) => prev.filter((e) => e._id !== userID));
         }
       } else {
         // TO DO - handle other responses
@@ -40,8 +40,8 @@ export const useFriendActions = (
     }
   };
 
-  const handleShowFriend = (userId: string) => {
-    console.log("Show friend profile:", userId);
+  const handleShowFriend = (userID: string) => {
+    console.log("Show friend profile:", userID);
   };
 
   return {

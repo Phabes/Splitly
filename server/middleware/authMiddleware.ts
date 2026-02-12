@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/verifyToken.js";
 
 export type AuthRequest = Request & {
-  userId?: string;
+  userID?: string;
 };
 
 const JWT_SECRET = process.env.JWT_SECRET || "SECRET_KEY";
@@ -27,7 +27,7 @@ export const protect = async (
 
       const decoded = verifyToken(token, JWT_SECRET);
 
-      req.userId = decoded.userId;
+      req.userID = decoded.userID;
 
       return next();
     } catch (error: any) {
