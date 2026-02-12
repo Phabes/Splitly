@@ -22,7 +22,7 @@ type ScrollProps = {
   keyboardPersist?: "never" | "handled";
   handleScrollEnd?: () => void;
   onManualRefresh?: () => void;
-  isAtEnd?: boolean;
+  hasMore?: boolean;
 };
 
 export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
@@ -31,7 +31,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   keyboardPersist = "handled",
   handleScrollEnd,
   onManualRefresh,
-  isAtEnd = false,
+  hasMore = false,
 }) => {
   const size = gapSize === "large" ? 5 : 2;
 
@@ -40,12 +40,10 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
 
   const [layoutHeight, setLayoutHeight] = useState(0);
   const [contentHeight, setContentHeight] = useState(0);
+
   const touchStartY = useRef(0);
 
-  const isShortList = contentHeight <= layoutHeight;
-  const moveY = isShortList ? -pullAmount : 0;
-
-  const styles = useStyles(size, moveY);
+  const styles = useStyles(size, pullAmount);
 
   const handleScrollBeginDrag = () => {
     setIsTouched(true);
@@ -56,17 +54,16 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
 
     const scrollBottom = layoutMeasurement.height + contentOffset.y;
 
-    const actualContentHeight =
-      contentSize.height - (isAtEnd && onManualRefresh ? REFRESH_THRESHOLD : 0);
-    const overScroll = scrollBottom - actualContentHeight;
+    const actualContentHeight = contentSize.height;
+    const overScroll = scrollBottom - actualContentHeight + REFRESH_THRESHOLD;
 
-    if (isAtEnd && onManualRefresh) {
+    if (!hasMore && onManualRefresh) {
       if (overScroll > 0) {
         setPullAmount(Math.min(overScroll, REFRESH_THRESHOLD));
       } else {
         setPullAmount(0);
       }
-    } else if (!isAtEnd && handleScrollEnd) {
+    } else if (hasMore && handleScrollEnd) {
       const isCloseToBottom =
         scrollBottom >= actualContentHeight - layoutMeasurement.height;
       if (isCloseToBottom) {
@@ -75,16 +72,21 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
     }
   };
 
-  const handleScrollEndDrag = () => {
+  const touchEnd = () => {
+    setIsTouched(false);
+
     if (
-      isAtEnd &&
       onManualRefresh &&
       pullAmount >= REFRESH_THRESHOLD - TOUCH_ADDITIONAL_REFRESH_THRESHOLD
     ) {
       onManualRefresh();
     }
-    setIsTouched(false);
+
     setPullAmount(0);
+  };
+
+  const handleScrollEndDrag = () => {
+    touchEnd();
   };
 
   const handleTouchStart = (e: GestureResponderEvent) => {
@@ -94,7 +96,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   };
 
   const handleTouchMove = (e: GestureResponderEvent) => {
-    if (isAtEnd && onManualRefresh) {
+    if (onManualRefresh) {
       const currentY = e.nativeEvent.pageY;
       const deltaY = touchStartY.current - currentY;
       const deltaYWithThreshold = deltaY - TOUCH_ADDITIONAL_REFRESH_THRESHOLD;
@@ -108,99 +110,93 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   };
 
   const handleTouchEnd = () => {
-    setIsTouched(false);
-
-    if (isAtEnd && onManualRefresh) {
-      if (
-        pullAmount >=
-        REFRESH_THRESHOLD - TOUCH_ADDITIONAL_REFRESH_THRESHOLD
-      ) {
-        onManualRefresh();
-      }
-      setPullAmount(0);
-    }
+    touchEnd();
   };
 
   const onLayout = (e: LayoutChangeEvent) => {
-    const height = Math.floor(e.nativeEvent.layout.height);
+    const height = e.nativeEvent.layout.height;
     setLayoutHeight(height);
   };
 
   const onContentSizeChange = (w: number, h: number) => {
-    const loaderHeight = pullAmount > 0 ? REFRESH_THRESHOLD : 0;
-    const height = Math.floor(h - loaderHeight);
-    setContentHeight(height);
+    setContentHeight(h);
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollView}
-      onScroll={handleScroll}
-      onScrollBeginDrag={handleScrollBeginDrag}
-      onScrollEndDrag={handleScrollEndDrag}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onLayout={onLayout}
-      onContentSizeChange={onContentSizeChange}
-      keyboardDismissMode="on-drag"
-      scrollEventThrottle={16}
-      keyboardShouldPersistTaps={keyboardPersist}
-      showsVerticalScrollIndicator={false}
-      alwaysBounceVertical={true}
-    >
-      <View style={styles.container}>
-        <View style={styles.content}>{children}</View>
-
-        {isTouched &&
-          isAtEnd &&
-          onManualRefresh &&
-          (!isShortList || (isShortList && pullAmount > 0)) && (
-            <View style={styles.pullUpContainer}>
-              <View
-                style={{
-                  transform: [
-                    {
-                      rotateZ: `${(pullAmount / REFRESH_THRESHOLD) * 360}deg`,
-                    },
-                    {
-                      scale: 0.5 + (pullAmount / REFRESH_THRESHOLD) * 0.5,
-                    },
-                  ],
-                  opacity: 0.5 + (pullAmount / REFRESH_THRESHOLD) * 0.5,
-                }}
-              >
-                <Icon
-                  icon={faRotateRight}
-                  size="large"
-                />
-              </View>
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        onScroll={handleScroll}
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onLayout={onLayout}
+        onContentSizeChange={onContentSizeChange}
+        keyboardDismissMode="on-drag"
+        scrollEventThrottle={16}
+        keyboardShouldPersistTaps={keyboardPersist}
+        showsVerticalScrollIndicator={false}
+        alwaysBounceVertical={true}
+      >
+        <View
+          style={styles.content}
+          onStartShouldSetResponder={() => true}
+        >
+          {children}
+        </View>
+        {isTouched && onManualRefresh && contentHeight > layoutHeight && (
+          <View style={{ height: REFRESH_THRESHOLD }}></View>
+        )}
+        {isTouched && onManualRefresh && (
+          <View style={styles.pullUpContainer}>
+            <View
+              style={{
+                transform: [
+                  {
+                    rotateZ: `${(pullAmount / REFRESH_THRESHOLD) * 360}deg`,
+                  },
+                  {
+                    scale: 0.5 + (pullAmount / REFRESH_THRESHOLD) * 0.5,
+                  },
+                ],
+                opacity: 0.5 + (pullAmount / REFRESH_THRESHOLD) * 0.5,
+              }}
+            >
+              <Icon
+                icon={faRotateRight}
+                size="large"
+              />
             </View>
-          )}
-      </View>
-    </ScrollView>
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
-const useStyles = (gapSize: number, moveY: number) => {
+const useStyles = (gapSize: number, pullAmount: number) => {
   const theme = useThemeContext();
 
   return StyleSheet.create({
-    scrollView: {
-      // flexGrow: 1,
-    },
     container: {
       flex: 1,
-      transform: [{ translateY: moveY }],
+    },
+    scrollView: {
+      flexGrow: 1,
     },
     content: {
-      flex: 1,
       gap: theme.spacing(gapSize),
     },
     pullUpContainer: {
       height: REFRESH_THRESHOLD,
       justifyContent: "center",
       alignItems: "center",
+      position: "absolute",
+      width: "100%",
+      bottom: -REFRESH_THRESHOLD,
+      transform: [{ translateY: -pullAmount }],
     },
   });
 };

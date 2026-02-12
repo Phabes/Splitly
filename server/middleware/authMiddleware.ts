@@ -21,29 +21,33 @@ export const protect = async (
     try {
       token = req.headers.authorization.split(" ")[1];
 
+      if (token === undefined) {
+        throw new Error("noTokenProvided");
+      }
+
       const decoded = verifyToken(token, JWT_SECRET);
 
       req.userId = decoded.userId;
 
       return next();
     } catch (error: any) {
-      if (error.name === "TokenExpiredError") {
-        return res
-          .status(401)
-          .json({ code: "tokenExpired", message: "Token expired." });
+      if (token === undefined) {
+        return res.status(401).json({
+          code: "authentication/noTokenProvided",
+          message: "Not authorized. No token provided.",
+        });
       }
-
-      return res.status(401).json({
-        code: "tokenFailed",
-        message: "Not authorized. Token failed.",
-      });
+      if (error.name === "TokenExpiredError") {
+        return res.status(401).json({
+          code: "authentication/tokenExpired",
+          message: "Token expired.",
+        });
+      }
     }
-  }
 
-  if (!token) {
     return res.status(401).json({
-      code: "noTokenProvided",
-      message: "Not authorized. No token provided.",
+      code: "authentication/tokenFailed",
+      message: "Not authorized. Token failed.",
     });
   }
 };

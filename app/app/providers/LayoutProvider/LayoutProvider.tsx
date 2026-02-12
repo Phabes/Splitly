@@ -39,7 +39,6 @@ const useStyles = () => {
       flex: 1,
       backgroundColor: theme.colors["background-app"],
     },
-    scrollView: { flexGrow: 1 },
     content: {
       flex: 1,
       gap: theme.spacing(5),

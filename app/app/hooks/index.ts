@@ -1,6 +1,7 @@
 export { useAppNavigation } from "./useAppNavigation";
-export { useAuthNavigation } from "./useAuthNavigation";
 export { useAuthContext } from "./useAuthContext";
+export { useAuthenticatedApi } from "./useAuthenticatedApi";
+export { useAuthNavigation } from "./useAuthNavigation";
 export { useFormData } from "./useFormData";
 export { useLanguageContext } from "./useLanguageContext";
 export { useLoadingContext } from "./useLoadingContext";

@@ -8,7 +8,6 @@ export const searchUsers = async (
   res: Response,
 ): Promise<any> => {
   try {
-    // const { query, page = 1, limit = 10 } = req.query;
     const { query, limit = 10, userIDs = [] } = req.body;
     const currentUserId = req.userId;
 
@@ -37,15 +36,12 @@ export const searchUsers = async (
       ],
     };
 
-    // const skip = userIDs.length > 0 ? 0 : (Number(page) - 1) * limitNum;
-
     const users = await User.find({
       _id: { $nin: fetchExclusions },
       ...searchMatch,
     })
       .select("id username email")
       .limit(limitNum)
-      // .skip(skip)
       .sort({ username: 1 });
 
     const totalCount = await User.countDocuments({
@@ -54,16 +50,76 @@ export const searchUsers = async (
     });
 
     return res.status(200).json({
-      code: "addFriendListSearchSuccess",
+      code: "searchUsers/addFriendListSearchSuccess",
       message: "Users found",
       users,
       hasMore: userIDs.length + users.length < totalCount,
     });
   } catch (err) {
-    console.error("Search Users Error:", err);
     return res.status(500).json({
-      code: "addFriendListSearchError",
+      code: "searchUsers/addFriendListSearchError",
       message: "Server error during search.",
+    });
+  }
+};
+
+export const sendFriendRequest = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { userToAdd } = req.body;
+    const currentUserId = req.userId;
+
+    const existingFriendship = await Friend.findOne({
+      $or: [
+        { requester: currentUserId, recipient: userToAdd },
+        { requester: userToAdd, recipient: currentUserId },
+      ],
+    });
+
+    if (existingFriendship) {
+      if (existingFriendship.status === "accepted") {
+        return res.status(409).json({
+          code: "sendFriendRequest/friendshipAlreadyExists",
+          message: "You are already friends with this user.",
+        });
+      }
+
+      if (existingFriendship.status === "pending") {
+        return res.status(409).json({
+          code: "sendFriendRequest/friendRequestPending",
+          message: "A friend request is already pending.",
+        });
+      }
+
+      existingFriendship.status = "pending";
+      existingFriendship.requester = currentUserId as any;
+      existingFriendship.recipient = userToAdd;
+      await existingFriendship.save();
+
+      return res.status(200).json({
+        code: "sendFriendRequest/requestRenewalSuccess",
+        message: "Friend request sent.",
+      });
+    }
+
+    const newFriendship = new Friend({
+      requester: currentUserId,
+      recipient: userToAdd,
+      status: "pending",
+    });
+
+    await newFriendship.save();
+
+    return res.status(200).json({
+      code: "sendFriendRequest/requestSuccess",
+      message: "Friend request sent.",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      code: "sendFriendRequest/requestError",
+      message: "Server error during sending request.",
     });
   }
 };
