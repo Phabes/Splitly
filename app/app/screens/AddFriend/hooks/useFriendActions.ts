@@ -40,13 +40,13 @@ export const useFriendActions = (
     }
   };
 
-  const handleShowFriend = (userID: string) => {
-    console.log("Show friend profile:", userID);
+  const handleShowUserProfile = (userID: string) => {
+    console.log("Show user profile:", userID);
   };
 
   return {
     handleAddFriend,
-    handleShowFriend,
+    handleShowUserProfile,
   };
 };
 

@@ -37,7 +37,7 @@ export const AddFriend: FC = () => {
     loadMoreUsers,
     forceLoadMore,
     handleAddFriend,
-    handleShowFriend,
+    handleShowUserProfile,
   } = useUsers();
 
   const styles = useStyles();
@@ -92,7 +92,7 @@ export const AddFriend: FC = () => {
                 <ListItem
                   key={`AddFriend/${i}`}
                   text={item.username}
-                  onPress={() => handleShowFriend(item._id)}
+                  onPress={() => handleShowUserProfile(item._id)}
                 >
                   <TouchableIcon
                     icon={faAdd}

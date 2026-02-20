@@ -5,6 +5,7 @@ import {
   LoadingWrapper,
   NavBar,
   Scroll,
+  TouchableIcon,
   Typography,
 } from "@/app/components";
 import {
@@ -17,6 +18,7 @@ import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useFriendRequests } from "./hooks";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export const FriendRequests: FC = () => {
   const { signOut } = useAuthContext();
@@ -30,6 +32,9 @@ export const FriendRequests: FC = () => {
     isLoadingMore,
     loadMoreFriendRequests,
     forceLoadMore,
+    handleAcceptFriendRequest,
+    handleDeclineFriendRequest,
+    handleShowUserProfile,
   } = useFriendRequests();
 
   const styles = useStyles();
@@ -72,8 +77,18 @@ export const FriendRequests: FC = () => {
               <ListItem
                 key={`FriendRequest/${i}`}
                 text={item.requester.username}
-                onPress={() => {}}
-              ></ListItem>
+                onPress={() => handleShowUserProfile(item.requester._id)}
+              >
+                <TouchableIcon
+                  icon={faCheck}
+                  onPress={() => handleAcceptFriendRequest(item._id)}
+                />
+                <TouchableIcon
+                  icon={faXmark}
+                  onPress={() => handleDeclineFriendRequest(item._id)}
+                  color="text-error"
+                />
+              </ListItem>
             );
           })}
 

@@ -3,13 +3,19 @@ import { FC } from "react";
 import { TouchableOpacity } from "react-native";
 import { Icon } from "../Icon";
 import { useThemeContext } from "@/app/hooks";
+import { ColorKeys } from "@/app/constants/theme";
 
 type TouchableIconProps = {
   icon: IconProp;
   onPress: () => void;
+  color?: ColorKeys;
 };
 
-export const TouchableIcon: FC<TouchableIconProps> = ({ icon, onPress }) => {
+export const TouchableIcon: FC<TouchableIconProps> = ({
+  icon,
+  onPress,
+  color = "text-success",
+}) => {
   const theme = useThemeContext();
 
   return (
@@ -20,6 +26,7 @@ export const TouchableIcon: FC<TouchableIconProps> = ({ icon, onPress }) => {
     >
       <Icon
         icon={icon}
+        color={color}
         size="large"
       />
     </TouchableOpacity>
