@@ -75,6 +75,7 @@ export const AddFriend: FC = () => {
           <Scroll
             gapSize="small"
             keyboardPersist="never"
+            centerContent={users.length === 0}
             hasMore={hasMore}
             handleScrollEnd={loadMoreUsers}
             onManualRefresh={handleManualRefresh}

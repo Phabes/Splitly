@@ -55,6 +55,7 @@ export const FriendRequests: FC = () => {
         <Scroll
           gapSize="small"
           keyboardPersist="never"
+          centerContent={friendRequests.length === 0}
           hasMore={hasMore}
           handleScrollEnd={loadMoreFriendRequests}
           onManualRefresh={handleManualRefresh}

@@ -20,6 +20,7 @@ import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 type ScrollProps = {
   gapSize?: "small" | "large";
   keyboardPersist?: "never" | "handled";
+  centerContent?: boolean;
   hasMore?: boolean;
   handleScrollEnd?: () => void;
   onManualRefresh?: () => void;
@@ -29,6 +30,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   children,
   gapSize = "large",
   keyboardPersist = "handled",
+  centerContent = false,
   hasMore = false,
   handleScrollEnd,
   onManualRefresh,
@@ -125,7 +127,10 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   return (
     <View style={styles.container}>
       <ScrollView
-        contentContainerStyle={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollView,
+          centerContent && { justifyContent: "center" },
+        ]}
         onScroll={handleScroll}
         onScrollBeginDrag={handleScrollBeginDrag}
         onScrollEndDrag={handleScrollEndDrag}
