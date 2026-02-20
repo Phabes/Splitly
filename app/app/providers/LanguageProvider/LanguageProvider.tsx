@@ -25,8 +25,8 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
       let storageLanguage: string | null = null;
       try {
         storageLanguage = await AsyncStorage.getItem("appLanguage");
-      } catch (e) {
-        console.error("Failed to restore language from storage:", e);
+      } catch (error) {
+        console.error("Failed to restore language from storage:", error);
       } finally {
         const finalLanguage =
           storageLanguage &&
@@ -46,7 +46,7 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
       language,
       setLanguageCode,
     }),
-    [language, isLoading]
+    [language, isLoading],
   );
 
   return (

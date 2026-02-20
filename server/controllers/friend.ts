@@ -55,7 +55,7 @@ export const searchUsers = async (
       users,
       hasMore: userIDs.length + users.length < totalCount,
     });
-  } catch (err) {
+  } catch (error) {
     return res.status(500).json({
       code: "searchUsers/addFriendListSearchError",
       message: "Server error during search.",
@@ -116,7 +116,7 @@ export const sendFriendRequest = async (
       code: "sendFriendRequest/requestSuccess",
       message: "Friend request sent.",
     });
-  } catch (err) {
+  } catch (error) {
     return res.status(500).json({
       code: "sendFriendRequest/requestError",
       message: "Server error during sending request.",
@@ -129,7 +129,7 @@ export const searchFriendRequests = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const { limit = 10, userIDs = [] } = req.body;
+    const { limit = 10, friendRequestIDs = [] } = req.body;
     const currentUserId = req.userID;
 
     const limitNum = Number(limit);
@@ -141,7 +141,7 @@ export const searchFriendRequests = async (
 
     const fetchFilter = {
       ...baseFilter,
-      requester: { $nin: userIDs },
+      _id: { $nin: friendRequestIDs },
     };
 
     const requests = await Friend.find(fetchFilter)
@@ -156,9 +156,9 @@ export const searchFriendRequests = async (
       code: "searchFriendRequests/searchSuccess",
       message: "Friend requests found.",
       requests,
-      hasMore: userIDs.length + requests.length < totalCount,
+      hasMore: friendRequestIDs.length + requests.length < totalCount,
     });
-  } catch (err) {
+  } catch (error) {
     return res.status(500).json({
       code: "searchFriendRequests/searchError",
       message: "Server error during fetching friend requests.",

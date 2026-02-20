@@ -4,7 +4,7 @@ import {
 } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { getAddFriendList } from "@/app/services/friend";
-import { AddFriendList, UserResult } from "@/app/types";
+import { AddFriendResponse, ResponseMessage, UserResult } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
 
 export const useUserSearch = () => {
@@ -21,7 +21,7 @@ export const useUserSearch = () => {
     const response = await request(getAddFriendList, searchValue, userIDs);
 
     if (response.ok) {
-      const result: AddFriendList = await response.json();
+      const result: AddFriendResponse = await response.json();
 
       if (result.users.length > 0) {
         setUsers((prev) => [...prev, ...result.users]);
@@ -29,28 +29,23 @@ export const useUserSearch = () => {
       } else {
         setHasMore(false);
       }
+    } else {
+      const data: ResponseMessage = await response.json();
+      console.error("Server error:", data.message);
     }
   };
 
-  const forceLoadMore = useCallback(async () => {
-    if (
-      isLoadingMore ||
-      isSearching ||
-      searchValue.trim().length < ADD_FRIENDS_MIN_SEARCH_LENGTH
-    ) {
-      return;
-    }
+  const handleSearchChange = (text: string) => {
+    setSearchValue(text);
 
-    setIsLoadingMore(true);
-
-    try {
-      await retrieveData();
-    } catch (error) {
-      console.error("Manual force load failed:", error);
-    } finally {
-      setIsLoadingMore(false);
+    if (text.trim().length >= ADD_FRIENDS_MIN_SEARCH_LENGTH) {
+      setIsSearching(true);
+      setHasMore(true);
+    } else {
+      setIsSearching(false);
+      setUsers([]);
     }
-  }, [isLoadingMore, isSearching, searchValue]);
+  };
 
   useEffect(() => {
     if (searchValue.trim().length < ADD_FRIENDS_MIN_SEARCH_LENGTH) {
@@ -62,7 +57,8 @@ export const useUserSearch = () => {
         const response = await request(getAddFriendList, searchValue, []);
 
         if (response.ok) {
-          const result: AddFriendList = await response.json();
+          const result: AddFriendResponse = await response.json();
+
           setUsers(result.users);
           setHasMore(result.hasMore);
         } else {
@@ -94,17 +90,25 @@ export const useUserSearch = () => {
     }
   };
 
-  const handleSearchChange = (text: string) => {
-    setSearchValue(text);
-
-    if (text.trim().length >= ADD_FRIENDS_MIN_SEARCH_LENGTH) {
-      setIsSearching(true);
-      setHasMore(true);
-    } else {
-      setIsSearching(false);
-      setUsers([]);
+  const forceLoadMore = useCallback(async () => {
+    if (
+      isLoadingMore ||
+      isSearching ||
+      searchValue.trim().length < ADD_FRIENDS_MIN_SEARCH_LENGTH
+    ) {
+      return;
     }
-  };
+
+    setIsLoadingMore(true);
+
+    try {
+      await retrieveData();
+    } catch (error) {
+      console.error("Manual force load failed:", error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [isLoadingMore, isSearching, searchValue]);
 
   return {
     searchValue,

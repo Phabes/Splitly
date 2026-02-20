@@ -1,38 +1,96 @@
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { getFriendRequests } from "@/app/services/friend";
-import { UserResult } from "@/app/types";
-import { useEffect, useState } from "react";
+import {
+  FriendRequestResult,
+  FriendRequestsResponse,
+  ResponseMessage,
+} from "@/app/types";
+import { useCallback, useEffect, useState } from "react";
 
 export const useFriendRequests = () => {
-  const [users, setUsers] = useState<UserResult[]>([]);
+  const [friendRequests, setFriendRequests] = useState<FriendRequestResult[]>(
+    [],
+  );
   const [isSearching, setIsSearching] = useState(true);
 
   const request = useAuthenticatedApi();
   const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
 
-  useEffect(() => {
-    const fetchRequests = async () => {
+  const fetchRequests = useCallback(
+    async (friendRequestIDs: string[], isInitial: boolean = false) => {
+      if (isInitial) {
+        setIsSearching(true);
+      } else {
+        setIsLoadingMore(true);
+      }
+
       try {
-        const response = await request(getFriendRequests, []);
+        const response = await request(getFriendRequests, friendRequestIDs);
 
         if (response.ok) {
-          const result = await response.json();
-          console.log("Friend Requests:", result);
-          console.log(result.requests[0].requester);
+          const result: FriendRequestsResponse = await response.json();
+
+          if (result.requests.length > 0) {
+            setFriendRequests((prev) =>
+              isInitial ? result.requests : [...prev, ...result.requests],
+            );
+            setHasMore(result.hasMore);
+          } else {
+            setHasMore(false);
+          }
         } else {
-          console.warn("Failed to fetch friend requests:", response.status);
+          const data: ResponseMessage = await response.json();
+          console.error("Server error:", data.message);
         }
       } catch (error) {
-        console.error("Initial search failed:", error);
+        console.error("Friend requests search failed:", error);
       } finally {
-        setIsSearching(false);
+        if (isInitial) {
+          setIsSearching(false);
+        } else {
+          setIsLoadingMore(false);
+        }
       }
-    };
+    },
+    [request, setHasMore, setIsLoadingMore],
+  );
 
-    fetchRequests();
-  }, [request]);
+  useEffect(() => {
+    fetchRequests([], true);
+  }, [fetchRequests]);
 
-  return { users, isSearching };
+  const loadMoreFriendRequests = async () => {
+    if (isLoadingMore || isSearching || !hasMore) {
+      return;
+    }
+
+    const friendRequestIDs = friendRequests.map(
+      (friendRequest) => friendRequest._id,
+    );
+
+    await fetchRequests(friendRequestIDs, false);
+  };
+
+  const forceLoadMore = useCallback(async () => {
+    if (isLoadingMore || isSearching) {
+      return;
+    }
+
+    const friendRequestIDs = friendRequests.map(
+      (friendRequest) => friendRequest._id,
+    );
+
+    await fetchRequests(friendRequestIDs, false);
+  }, [isLoadingMore, isSearching, friendRequests, fetchRequests]);
+
+  return {
+    friendRequests,
+    hasMore,
+    isSearching,
+    isLoadingMore,
+    loadMoreFriendRequests,
+    forceLoadMore,
+  };
 };
 
 export default useFriendRequests;

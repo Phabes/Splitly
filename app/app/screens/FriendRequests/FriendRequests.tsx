@@ -1,4 +1,12 @@
-import { Button, NavBar } from "@/app/components";
+import {
+  Button,
+  ListItem,
+  Loading,
+  LoadingWrapper,
+  NavBar,
+  Scroll,
+  Typography,
+} from "@/app/components";
 import {
   useAppNavigation,
   useAuthContext,
@@ -15,9 +23,18 @@ export const FriendRequests: FC = () => {
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
-  const {} = useFriendRequests();
+  const {
+    friendRequests,
+    hasMore,
+    isSearching,
+    isLoadingMore,
+    loadMoreFriendRequests,
+    forceLoadMore,
+  } = useFriendRequests();
 
   const styles = useStyles();
+
+  const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   return (
     <LayoutProvider
@@ -34,7 +51,55 @@ export const FriendRequests: FC = () => {
         />
       }
     >
-      <View style={styles.container}></View>
+      <LoadingWrapper isLoading={isSearching}>
+        <Scroll
+          gapSize="small"
+          keyboardPersist="never"
+          hasMore={hasMore}
+          handleScrollEnd={loadMoreFriendRequests}
+          onManualRefresh={handleManualRefresh}
+        >
+          {friendRequests.length > 0 && (
+            <Typography
+              text={`${translations["friendRequests"]}:`}
+              variant="header-small"
+            />
+          )}
+
+          {friendRequests.map((item, i) => {
+            return (
+              <ListItem
+                key={`FriendRequest/${i}`}
+                text={item.requester.username}
+                onPress={() => {}}
+              ></ListItem>
+            );
+          })}
+
+          <View style={styles.footerContainer}>
+            {isLoadingMore && (
+              <>
+                <Loading />
+                <Typography
+                  text={translations["loadingMoreFriendRequests"]}
+                  variant="body-small"
+                />
+              </>
+            )}
+
+            {!isLoadingMore && !hasMore && friendRequests.length > 0 && (
+              <Typography
+                text={translations["noMoreFriendRequests"]}
+                variant="body-small"
+              />
+            )}
+
+            {!isLoadingMore && !hasMore && friendRequests.length === 0 && (
+              <Typography text={translations["noFriendRequestsFound"]} />
+            )}
+          </View>
+        </Scroll>
+      </LoadingWrapper>
     </LayoutProvider>
   );
 };
@@ -44,6 +109,9 @@ const useStyles = () => {
 
   return StyleSheet.create({
     container: { flex: 1, gap: theme.spacing(2) },
+    footerContainer: {
+      alignItems: "center",
+    },
   });
 };
 

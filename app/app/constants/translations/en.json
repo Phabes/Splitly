@@ -26,5 +26,8 @@
   "noMoreUsersFound": "No more users found.",
   "noUsersFoundMatching": "No users found matching your search.",
   "friendRequests": "Requests",
-  "sendingFriendRequest": "Sending request"
+  "sendingFriendRequest": "Sending request",
+  "loadingMoreFriendRequests": "Loading more requests...",
+  "noMoreFriendRequests": "No more friend requests.",
+  "noFriendRequestsFound": "No friend requests found."
 }

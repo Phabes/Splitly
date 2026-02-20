@@ -1,6 +1,9 @@
 import { ADD_FRIENDS_PAGE_SIZE } from "@/app/constants/pagination";
 
-export const getFriendRequests = (token: string, userIDs: string[]) => {
+export const getFriendRequests = (
+  token: string,
+  friendRequestIDs: string[],
+) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
@@ -15,7 +18,7 @@ export const getFriendRequests = (token: string, userIDs: string[]) => {
     },
     body: JSON.stringify({
       limit: ADD_FRIENDS_PAGE_SIZE,
-      userIDs,
+      friendRequestIDs,
     }),
   });
 };

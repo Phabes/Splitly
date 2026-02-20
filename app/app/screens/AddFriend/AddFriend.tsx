@@ -75,57 +75,57 @@ export const AddFriend: FC = () => {
           <Scroll
             gapSize="small"
             keyboardPersist="never"
-            handleScrollEnd={loadMoreUsers}
             hasMore={hasMore}
+            handleScrollEnd={loadMoreUsers}
             onManualRefresh={handleManualRefresh}
           >
-            {users.length > 0 ? (
-              <>
-                <Typography
-                  text={`${translations["searchedUsers"]}:`}
-                  variant="header-small"
-                />
-                {users.map((item, i) => {
-                  return (
-                    <ListItem
-                      key={`AddFriend/${i}`}
-                      text={item.username}
-                      onPress={() => handleShowFriend(item._id)}
-                    >
-                      <TouchableIcon
-                        icon={faAdd}
-                        onPress={() => handleAddFriend(item._id)}
-                      />
-                    </ListItem>
-                  );
-                })}
-                <View style={styles.footerContainer}>
-                  {isLoadingMore && (
-                    <>
-                      <Loading />
-                      <Typography
-                        text={translations["loadingMoreUsers"]}
-                        variant="body-small"
-                      />
-                    </>
-                  )}
-
-                  {!isLoadingMore && !hasMore && (
-                    <Typography
-                      text={translations["noMoreUsersFound"]}
-                      variant="body-small"
-                    />
-                  )}
-                </View>
-              </>
-            ) : (
-              searchValue.length >= ADD_FRIENDS_MIN_SEARCH_LENGTH &&
-              !isSearching && (
-                <View style={styles.noUsers}>
-                  <Typography text={translations["noUsersFoundMatching"]} />
-                </View>
-              )
+            {users.length > 0 && (
+              <Typography
+                text={`${translations["searchedUsers"]}:`}
+                variant="header-small"
+              />
             )}
+
+            {users.map((item, i) => {
+              return (
+                <ListItem
+                  key={`AddFriend/${i}`}
+                  text={item.username}
+                  onPress={() => handleShowFriend(item._id)}
+                >
+                  <TouchableIcon
+                    icon={faAdd}
+                    onPress={() => handleAddFriend(item._id)}
+                  />
+                </ListItem>
+              );
+            })}
+
+            <View style={styles.footerContainer}>
+              {isLoadingMore && (
+                <>
+                  <Loading />
+                  <Typography
+                    text={translations["loadingMoreUsers"]}
+                    variant="body-small"
+                  />
+                </>
+              )}
+
+              {!isLoadingMore && !hasMore && users.length > 0 && (
+                <Typography
+                  text={translations["noMoreUsersFound"]}
+                  variant="body-small"
+                />
+              )}
+
+              {!isLoadingMore &&
+                !hasMore &&
+                users.length === 0 &&
+                searchValue.length >= ADD_FRIENDS_MIN_SEARCH_LENGTH && (
+                  <Typography text={translations["noUsersFoundMatching"]} />
+                )}
+            </View>
           </Scroll>
         </LoadingWrapper>
       </View>
@@ -138,7 +138,6 @@ const useStyles = () => {
 
   return StyleSheet.create({
     container: { flex: 1, gap: theme.spacing(2) },
-    noUsers: { alignItems: "center" },
     footerContainer: {
       alignItems: "center",
     },

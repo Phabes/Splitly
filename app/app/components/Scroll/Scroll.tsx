@@ -20,18 +20,18 @@ import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 type ScrollProps = {
   gapSize?: "small" | "large";
   keyboardPersist?: "never" | "handled";
+  hasMore?: boolean;
   handleScrollEnd?: () => void;
   onManualRefresh?: () => void;
-  hasMore?: boolean;
 };
 
 export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   children,
   gapSize = "large",
   keyboardPersist = "handled",
+  hasMore = false,
   handleScrollEnd,
   onManualRefresh,
-  hasMore = false,
 }) => {
   const size = gapSize === "large" ? 5 : 2;
 

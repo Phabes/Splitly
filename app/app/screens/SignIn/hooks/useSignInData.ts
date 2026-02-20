@@ -46,6 +46,7 @@ export const useSignInData = () => {
       setIsLoading(false);
       return;
     }
+
     try {
       const response = await signInCall(
         usernameField.value,
