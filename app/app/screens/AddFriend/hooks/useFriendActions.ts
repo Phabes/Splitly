@@ -3,7 +3,7 @@ import {
   useLoadingContext,
   useTranslations,
 } from "@/app/hooks";
-import { sendFriendRequest } from "@/app/services/friend";
+import { sendFriendRequest } from "@/app/services";
 import { ResponseMessage, UserResult } from "@/app/types";
 import { Dispatch, SetStateAction } from "react";
 

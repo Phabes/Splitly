@@ -36,7 +36,9 @@ export type TranslationKeys =
   | "sendingFriendRequest"
   | "loadingMoreFriendRequests"
   | "noMoreFriendRequests"
-  | "noFriendRequestsFound";
+  | "noFriendRequestsFound"
+  | "acceptingFriendRequest"
+  | "rejectingFriendRequest";
 
 export const translations: Record<
   LanguageKeys,

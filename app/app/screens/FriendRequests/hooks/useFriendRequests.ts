@@ -2,8 +2,8 @@ import useFriendRequestActions from "./useFriendRequestActions";
 import useFriendRequestsData from "./useFriendRequestsData";
 
 export const useFriendRequests = () => {
-  const friendRequestsData = useFriendRequestsData();
-  const friendRequestActions = useFriendRequestActions();
+  const { setFriendRequests, ...friendRequestsData } = useFriendRequestsData();
+  const friendRequestActions = useFriendRequestActions(setFriendRequests);
 
   return {
     ...friendRequestsData,

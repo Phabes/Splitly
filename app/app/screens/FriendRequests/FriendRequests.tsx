@@ -33,7 +33,7 @@ export const FriendRequests: FC = () => {
     loadMoreFriendRequests,
     forceLoadMore,
     handleAcceptFriendRequest,
-    handleDeclineFriendRequest,
+    handleRejectFriendRequest,
     handleShowUserProfile,
   } = useFriendRequests();
 
@@ -85,7 +85,7 @@ export const FriendRequests: FC = () => {
                 />
                 <TouchableIcon
                   icon={faXmark}
-                  onPress={() => handleDeclineFriendRequest(item._id)}
+                  onPress={() => handleRejectFriendRequest(item._id)}
                   color="text-error"
                 />
               </ListItem>

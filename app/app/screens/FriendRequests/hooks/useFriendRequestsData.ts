@@ -1,5 +1,5 @@
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { getFriendRequests } from "@/app/services/friend";
+import { getFriendRequests } from "@/app/services";
 import {
   FriendRequestResult,
   FriendRequestsResponse,
@@ -85,6 +85,7 @@ export const useFriendRequestsData = () => {
 
   return {
     friendRequests,
+    setFriendRequests,
     hasMore,
     isSearching,
     isLoadingMore,

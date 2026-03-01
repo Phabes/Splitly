@@ -3,7 +3,7 @@ import {
   ADD_FRIENDS_SEARCH_DELAY,
 } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { getAddFriendList } from "@/app/services/friend";
+import { getAddFriendList } from "@/app/services";
 import { AddFriendResponse, ResponseMessage, UserResult } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
 
