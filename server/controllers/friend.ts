@@ -178,21 +178,21 @@ export const decideFriendRequest = async (
 
     if (!friendRequest) {
       return res.status(404).json({
-        code: "decideFriendRequest/notFound",
+        code: "friendRequest/notFound",
         message: "Friend request not found.",
       });
     }
 
     if (friendRequest.recipient!.toString() !== currentUserID) {
       return res.status(403).json({
-        code: "decideFriendRequest/forbidden",
+        code: "friendRequest/noAuthorizedRecipient",
         message: "You are not authorized to respond to this request.",
       });
     }
 
     if (friendRequest.status !== "pending") {
       return res.status(400).json({
-        code: "decideFriendRequest/alreadyDecided",
+        code: "friendRequest/alreadyDecided",
         message: `This friend request has already been ${friendRequest.status}.`,
       });
     }
@@ -202,13 +202,13 @@ export const decideFriendRequest = async (
     await friendRequest.save();
 
     return res.status(200).json({
-      code: "decideFriendRequest/success",
+      code: "friendRequest/success",
       message: `Friend request has been successfully ${decision}.`,
     });
   } catch (error) {
     console.error("Decide Friend Request Error:", error);
     return res.status(500).json({
-      code: "decideFriendRequest/serverError",
+      code: "friendRequest/serverError",
       message: "Server error while processing friend request decision.",
     });
   }
