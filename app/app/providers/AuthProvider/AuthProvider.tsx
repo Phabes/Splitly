@@ -43,6 +43,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
       return data.userToken;
     } catch (error) {
+      console.error("Refresh token error:", error);
       await clearSession();
       return null;
     }
@@ -71,6 +72,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         }
       } catch (error) {
         console.error("Auth bootstrap failed:", error);
+        await clearSession();
       } finally {
         setIsLoading(false);
       }

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 type JwtPayload = {
-  userId: string;
+  userID: string;
 };
 
 export const verifyToken = (token: string, secretKey: string) => {

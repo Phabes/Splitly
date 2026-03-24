@@ -24,8 +24,18 @@ export interface UserResult {
   email: string;
 }
 
-export type AddFriendList = ResponseMessage & {
+export type AddFriendResponse = ResponseMessage & {
   users: UserResult[];
+  hasMore: boolean;
+};
+
+export interface FriendRequestResult {
+  _id: string;
+  requester: UserResult;
+}
+
+export type FriendRequestsResponse = ResponseMessage & {
+  requests: FriendRequestResult[];
   hasMore: boolean;
 };
 

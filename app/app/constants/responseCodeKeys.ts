@@ -23,7 +23,14 @@ export type ResponseCodeKeys =
   | "sendFriendRequest/friendRequestPending"
   | "sendFriendRequest/requestRenewalSuccess"
   | "sendFriendRequest/requestSuccess"
-  | "sendFriendRequest/requestError";
+  | "sendFriendRequest/requestError"
+  | "searchFriendRequests/searchSuccess"
+  | "searchFriendRequests/searchError"
+  | "friendRequest/notFound"
+  | "friendRequest/noAuthorizedRecipient"
+  | "friendRequest/alreadyDecided"
+  | "friendRequest/success"
+  | "friendRequest/serverError";
 
 export default function Index() {
   return null;

@@ -54,7 +54,7 @@ export const Friends: FC = () => {
           />
           <Button
             text={translations["friendRequests"]}
-            onPress={() => {}}
+            onPress={() => navigation.navigate("FriendRequests")}
             fullWidth={true}
           />
         </View>

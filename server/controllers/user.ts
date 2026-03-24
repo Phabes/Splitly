@@ -9,7 +9,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "REFRESH_KEY";
 
 export const verifyUser = async (req: AuthRequest, res: Response) => {
   try {
-    const user = await User.findById(req.userId).select("-password");
+    const user = await User.findById(req.userID).select("-password");
 
     if (!user) {
       return res
@@ -33,18 +33,16 @@ export const refreshToken = async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken)
-    return res
-      .status(401)
-      .json({
-        code: "refreshToken/noRefreshToken",
-        message: "Refresh token required",
-      });
+    return res.status(401).json({
+      code: "refreshToken/noRefreshToken",
+      message: "Refresh token required",
+    });
 
   try {
     const decoded = verifyToken(refreshToken, JWT_REFRESH_SECRET);
 
     const { userToken, refreshToken: newRefreshToken } = generateTokens(
-      decoded.userId,
+      decoded.userID,
     );
 
     return res.status(200).json({

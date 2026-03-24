@@ -1,5 +1,4 @@
-export * from "./friend";
-export * from "./user";
+export { FriendRequests } from "./FriendRequests";
 
 export default function Index() {
   return null;

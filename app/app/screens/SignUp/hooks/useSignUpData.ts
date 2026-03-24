@@ -73,6 +73,7 @@ export const useSignUpData = () => {
       setIsLoading(false);
       return;
     }
+
     try {
       const response = await signUpCall(
         emailField.value,
