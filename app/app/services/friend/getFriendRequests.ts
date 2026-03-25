@@ -8,7 +8,7 @@ export const getFriendRequests = (
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  const url = `${baseUrl}/friend/requests`;
+  const url = `${baseUrl}/friends/requests/search`;
 
   return fetch(url, {
     method: "POST",

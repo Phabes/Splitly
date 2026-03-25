@@ -9,7 +9,7 @@ export const getAddFriendList = (
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  const url = `${baseUrl}/friend/possible`;
+  const url = `${baseUrl}/friends/suggestions/search`;
 
   return fetch(url, {
     method: "POST",

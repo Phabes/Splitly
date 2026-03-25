@@ -7,7 +7,7 @@ export const signUpCall = (
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  const url = `${baseUrl}/user/signUp`;
+  const url = `${baseUrl}/users/signUp`;
 
   return fetch(url, {
     method: "POST",

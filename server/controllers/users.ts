@@ -12,29 +12,30 @@ export const verifyUser = async (req: AuthRequest, res: Response) => {
     const user = await User.findById(req.userID).select("-password");
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ code: "verifyUser/userNotFound", message: "User not found." });
+      return res.status(404).json({
+        code: "verification/userNotFound",
+        message: "User not found.",
+      });
     }
 
     return res.status(200).json({
-      code: "verifyUser/verifySuccess",
+      code: "verification/success",
       message: "Validation success.",
     });
   } catch (error) {
     return res.status(500).json({
-      code: "verifyUser/verifyError",
+      code: "verification/error",
       message: "Internal server error.",
     });
   }
 };
 
-export const refreshToken = async (req: Request, res: Response) => {
+export const refreshTokens = async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken)
     return res.status(401).json({
-      code: "refreshToken/noRefreshToken",
+      code: "tokensRenewal/noRefreshToken",
       message: "Refresh token required",
     });
 
@@ -46,14 +47,14 @@ export const refreshToken = async (req: Request, res: Response) => {
     );
 
     return res.status(200).json({
-      code: "refreshToken/refreshTokenSuccess",
+      code: "tokensRenewal/success",
       message: "Tokens successfully refreshed.",
       userToken,
       refreshToken: newRefreshToken,
     });
   } catch (error) {
     return res.status(403).json({
-      code: "refreshToken/refreshTokenError",
+      code: "tokensRenewal/error",
       message: "Session expired. Please sign in again.",
     });
   }
@@ -79,7 +80,7 @@ export const signUp = async (req: Request, res: Response) => {
     const { userToken, refreshToken } = generateTokens(newUser._id.toString());
 
     return res.status(201).json({
-      code: "signUp/signUpSuccess",
+      code: "signUp/success",
       message: "User created.",
       userToken,
       refreshToken,
@@ -87,7 +88,7 @@ export const signUp = async (req: Request, res: Response) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ code: "signUp/signUpError", message: "Internal server error." });
+      .json({ code: "signUp/error", message: "Internal server error." });
   }
 };
 
@@ -111,7 +112,7 @@ export const signIn = async (req: Request, res: Response) => {
     const { userToken, refreshToken } = generateTokens(user!._id.toString());
 
     return res.status(201).json({
-      code: "signIn/signInSuccess",
+      code: "signIn/success",
       message: "User logged in.",
       userToken,
       refreshToken,
@@ -119,6 +120,6 @@ export const signIn = async (req: Request, res: Response) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ code: "signIn/signInError", message: "Internal server error." });
+      .json({ code: "signIn/error", message: "Internal server error." });
   }
 };
