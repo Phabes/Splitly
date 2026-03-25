@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { signInValidator, signUpValidator } from "../validators/user.js";
+import { signInValidator, signUpValidator } from "../validators/users.js";
 import { generateTokens } from "../utils/generateTokens.js";
 import { verifyToken } from "../utils/verifyToken.js";
 import { AuthRequest } from "middleware/authMiddleware.js";
