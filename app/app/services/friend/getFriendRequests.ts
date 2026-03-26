@@ -1,4 +1,4 @@
-import { ADD_FRIENDS_PAGE_SIZE } from "@/app/constants/pagination";
+import { PAGE_SIZE } from "@/app/constants/pagination";
 
 export const getFriendRequests = (
   token: string,
@@ -17,7 +17,7 @@ export const getFriendRequests = (
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      limit: ADD_FRIENDS_PAGE_SIZE,
+      limit: PAGE_SIZE,
       friendRequestIDs,
     }),
   });

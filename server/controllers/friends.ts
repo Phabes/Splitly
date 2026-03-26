@@ -207,7 +207,6 @@ export const decideFriendRequest = async (
       message: `Friend request has been successfully ${decision}.`,
     });
   } catch (error) {
-    console.error("Decide Friend Request Error:", error);
     return res.status(500).json({
       code: "patchFriendRequest/error",
       message: "Server error while processing friend request decision.",

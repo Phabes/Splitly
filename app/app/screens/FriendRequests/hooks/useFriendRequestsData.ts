@@ -40,10 +40,11 @@ export const useFriendRequestsData = () => {
           }
         } else {
           const data: ResponseMessage = await response.json();
-          console.error("Server error:", data.message);
+          throw new Error(data.message);
         }
       } catch (error) {
-        console.error("Friend requests search failed:", error);
+        // Friend requests search failed
+        console.error(error);
       } finally {
         if (isInitial) {
           setIsSearching(false);

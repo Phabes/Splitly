@@ -31,7 +31,7 @@ export const useUserSearch = () => {
       }
     } else {
       const data: ResponseMessage = await response.json();
-      console.error("Server error:", data.message);
+      throw new Error(data.message);
     }
   };
 
@@ -63,9 +63,12 @@ export const useUserSearch = () => {
           setHasMore(result.hasMore);
         } else {
           // TO DO - handle other responses
+          const data: ResponseMessage = await response.json();
+          throw new Error(data.message);
         }
       } catch (error) {
-        console.error("Initial search failed:", error);
+        // Initial search failed
+        console.error(error);
       } finally {
         setIsSearching(false);
       }
@@ -84,7 +87,8 @@ export const useUserSearch = () => {
     try {
       await retrieveData();
     } catch (error) {
-      console.error("Load more failed:", error);
+      // Load more failed
+      console.error(error);
     } finally {
       setIsLoadingMore(false);
     }
@@ -104,7 +108,8 @@ export const useUserSearch = () => {
     try {
       await retrieveData();
     } catch (error) {
-      console.error("Manual force load failed:", error);
+      // Manual force load failed
+      console.error(error);
     } finally {
       setIsLoadingMore(false);
     }

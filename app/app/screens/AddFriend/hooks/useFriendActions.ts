@@ -32,9 +32,12 @@ export const useFriendActions = (
         }
       } else {
         // TO DO - handle other responses
+        const data: ResponseMessage = await response.json();
+        throw new Error(data.message);
       }
     } catch (error) {
-      console.log("Sending friend request failed:", error);
+      // Sending friend request failed
+      console.error(error);
     } finally {
       hideLoading();
     }

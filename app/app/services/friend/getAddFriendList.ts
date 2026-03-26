@@ -1,4 +1,4 @@
-import { ADD_FRIENDS_PAGE_SIZE } from "@/app/constants/pagination";
+import { PAGE_SIZE } from "@/app/constants/pagination";
 
 export const getAddFriendList = (
   token: string,
@@ -19,7 +19,7 @@ export const getAddFriendList = (
     },
     body: JSON.stringify({
       query,
-      limit: ADD_FRIENDS_PAGE_SIZE,
+      limit: PAGE_SIZE,
       userIDs,
     }),
   });
