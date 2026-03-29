@@ -1,4 +1,4 @@
-import { ADD_FRIENDS_PAGE_SIZE } from "@/app/constants/pagination";
+import { PAGE_SIZE } from "@/app/constants/pagination";
 
 export const getFriendRequests = (
   token: string,
@@ -8,7 +8,7 @@ export const getFriendRequests = (
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  const url = `${baseUrl}/friend/requests`;
+  const url = `${baseUrl}/friends/requests/search`;
 
   return fetch(url, {
     method: "POST",
@@ -17,7 +17,7 @@ export const getFriendRequests = (
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      limit: ADD_FRIENDS_PAGE_SIZE,
+      limit: PAGE_SIZE,
       friendRequestIDs,
     }),
   });

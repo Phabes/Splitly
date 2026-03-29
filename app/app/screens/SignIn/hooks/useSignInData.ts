@@ -75,10 +75,11 @@ export const useSignInData = () => {
         }
       } else {
         const data: ResponseMessage = await response.json();
-        console.error("Server error:", data.message);
+        throw new Error(data.message);
       }
     } catch (error) {
-      console.error("Sign in error:", error);
+      // Sign in error
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

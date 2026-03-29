@@ -25,16 +25,18 @@ export const useFriendActions = (
       } else if (response.status === 409) {
         const data: ResponseMessage = await response.json();
         if (
-          data.code === "sendFriendRequest/friendshipAlreadyExists" ||
-          data.code === "sendFriendRequest/friendRequestPending"
+          data.code === "postFriendRequest/friendshipAlreadyExists" ||
+          data.code === "postFriendRequest/friendRequestPending"
         ) {
           setUsers((prev) => prev.filter((e) => e._id !== userID));
         }
       } else {
-        // TO DO - handle other responses
+        const data: ResponseMessage = await response.json();
+        throw new Error(data.message);
       }
     } catch (error) {
-      console.log("Sending friend request failed:", error);
+      // Sending friend request failed
+      console.error(error);
     } finally {
       hideLoading();
     }

@@ -18,18 +18,21 @@ export const useAuthenticatedApi = () => {
       let response = await apiFunc(userToken!, ...args);
 
       if (response.status === 401) {
+        let data: ResponseMessage | null = null;
+
         try {
-          const data: ResponseMessage = await response.clone().json();
+          data = await response.clone().json();
+        } catch (error) {
+          // Error during reading json
+          console.error(error);
+        }
 
-          if (data.code === "authentication/tokenExpired") {
-            const newToken = await performTokenRefresh(refreshToken!);
+        if (data && data.code === "authentication/tokenExpired") {
+          const newToken = await performTokenRefresh(refreshToken!);
 
-            if (newToken) {
-              response = await apiFunc(newToken, ...args);
-            }
+          if (newToken) {
+            response = await apiFunc(newToken, ...args);
           }
-        } catch (err) {
-          console.error("Error during auth retry logic:", err);
         }
       }
 

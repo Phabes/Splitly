@@ -2,8 +2,8 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import routerUser from "routes/user";
-import routerFriend from "routes/friend";
+import routerUser from "routes/users";
+import routerFriend from "routes/friends";
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/App";
 const PORT = process.env.PORT || 5000;
@@ -13,8 +13,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/user", routerUser);
-app.use("/friend", routerFriend);
+app.use("/users", routerUser);
+app.use("/friends", routerFriend);
 
 mongoose
   .connect(MONGO_URI)

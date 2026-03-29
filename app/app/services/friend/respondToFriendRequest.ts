@@ -7,16 +7,15 @@ export const respondToFriendRequest = (
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  const url = `${baseUrl}/friend/request/decision`;
+  const url = `${baseUrl}/friends/requests/${friendRequestID}`;
 
   return fetch(url, {
-    method: "POST",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      friendRequestID,
       decision,
     }),
   });

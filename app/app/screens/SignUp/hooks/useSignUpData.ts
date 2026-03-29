@@ -103,10 +103,11 @@ export const useSignUpData = () => {
         }
       } else {
         const data: ResponseMessage = await response.json();
-        console.error("Server error:", data.message);
+        throw new Error(data.message);
       }
     } catch (error) {
-      console.error("Sign up error:", error);
+      // Sign up error
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

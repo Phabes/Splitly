@@ -3,7 +3,7 @@ export const refreshCall = (refreshToken: string) => {
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  const url = `${baseUrl}/user/refresh`;
+  const url = `${baseUrl}/users/tokens/renewal`;
 
   return fetch(url, {
     method: "POST",

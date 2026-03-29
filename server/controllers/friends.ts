@@ -3,7 +3,7 @@ import { AuthRequest } from "middleware/authMiddleware";
 import Friend from "models/friend";
 import User from "models/user";
 
-export const searchUsers = async (
+export const searchFriendSuggestions = async (
   req: AuthRequest,
   res: Response,
 ): Promise<any> => {
@@ -50,14 +50,14 @@ export const searchUsers = async (
     });
 
     return res.status(200).json({
-      code: "searchUsers/addFriendListSearchSuccess",
+      code: "getFriendSuggestions/success",
       message: "Users found.",
       users,
       hasMore: userIDs.length + users.length < totalCount,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "searchUsers/addFriendListSearchError",
+      code: "getFriendSuggestions/error",
       message: "Server error during search.",
     });
   }
@@ -81,14 +81,14 @@ export const sendFriendRequest = async (
     if (existingFriendship) {
       if (existingFriendship.status === "accepted") {
         return res.status(409).json({
-          code: "sendFriendRequest/friendshipAlreadyExists",
+          code: "postFriendRequest/friendshipAlreadyExists",
           message: "You are already friends with this user.",
         });
       }
 
       if (existingFriendship.status === "pending") {
         return res.status(409).json({
-          code: "sendFriendRequest/friendRequestPending",
+          code: "postFriendRequest/friendRequestPending",
           message: "A friend request is already pending.",
         });
       }
@@ -99,7 +99,7 @@ export const sendFriendRequest = async (
       await existingFriendship.save();
 
       return res.status(200).json({
-        code: "sendFriendRequest/requestRenewalSuccess",
+        code: "postFriendRequest/requestRenewalSuccess",
         message: "Friend request sent.",
       });
     }
@@ -113,12 +113,12 @@ export const sendFriendRequest = async (
     await newFriendship.save();
 
     return res.status(200).json({
-      code: "sendFriendRequest/requestSuccess",
+      code: "postFriendRequest/requestSuccess",
       message: "Friend request sent.",
     });
   } catch (error) {
     return res.status(500).json({
-      code: "sendFriendRequest/requestError",
+      code: "postFriendRequest/requestError",
       message: "Server error during sending request.",
     });
   }
@@ -153,14 +153,14 @@ export const searchFriendRequests = async (
     const totalCount = await Friend.countDocuments(baseFilter);
 
     return res.status(200).json({
-      code: "searchFriendRequests/searchSuccess",
+      code: "getFriendRequests/success",
       message: "Friend requests found.",
       requests,
       hasMore: friendRequestIDs.length + requests.length < totalCount,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "searchFriendRequests/searchError",
+      code: "getFriendRequests/error",
       message: "Server error during fetching friend requests.",
     });
   }
@@ -171,28 +171,29 @@ export const decideFriendRequest = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const { friendRequestID, decision } = req.body;
+    const friendRequestID = req.params.id;
+    const { decision } = req.body;
     const currentUserID = req.userID;
 
     const friendRequest = await Friend.findById(friendRequestID);
 
     if (!friendRequest) {
       return res.status(404).json({
-        code: "friendRequest/notFound",
+        code: "patchFriendRequest/notFound",
         message: "Friend request not found.",
       });
     }
 
     if (friendRequest.recipient!.toString() !== currentUserID) {
       return res.status(403).json({
-        code: "friendRequest/noAuthorizedRecipient",
+        code: "patchFriendRequest/noAuthorizedRecipient",
         message: "You are not authorized to respond to this request.",
       });
     }
 
     if (friendRequest.status !== "pending") {
       return res.status(400).json({
-        code: "friendRequest/alreadyDecided",
+        code: "patchFriendRequest/alreadyResponded",
         message: `This friend request has already been ${friendRequest.status}.`,
       });
     }
@@ -202,13 +203,12 @@ export const decideFriendRequest = async (
     await friendRequest.save();
 
     return res.status(200).json({
-      code: "friendRequest/success",
+      code: "patchFriendRequest/success",
       message: `Friend request has been successfully ${decision}.`,
     });
   } catch (error) {
-    console.error("Decide Friend Request Error:", error);
     return res.status(500).json({
-      code: "friendRequest/serverError",
+      code: "patchFriendRequest/error",
       message: "Server error while processing friend request decision.",
     });
   }

@@ -4,7 +4,7 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { respondToFriendRequest } from "@/app/services";
-import { FriendRequestResult } from "@/app/types";
+import { FriendRequestResult, ResponseMessage } from "@/app/types";
 import { Dispatch, SetStateAction } from "react";
 
 export const useFriendRequestActions = (
@@ -33,10 +33,12 @@ export const useFriendRequestActions = (
           prev.filter((e) => e._id !== friendRequestID),
         );
       } else {
-        // TO DO - handle other responses
+        const data: ResponseMessage = await response.json();
+        throw new Error(data.message);
       }
     } catch (error) {
-      console.log("Accepting friend request failed:", error);
+      // Accepting friend request failed
+      console.error(error);
     } finally {
       hideLoading();
     }
@@ -61,10 +63,12 @@ export const useFriendRequestActions = (
           prev.filter((e) => e._id !== friendRequestID),
         );
       } else {
-        // TO DO - handle other responses
+        const data: ResponseMessage = await response.json();
+        throw new Error(data.message);
       }
     } catch (error) {
-      console.log("Rejecting friend request failed:", error);
+      // Rejecting friend request failed
+      console.error(error);
     } finally {
       hideLoading();
     }

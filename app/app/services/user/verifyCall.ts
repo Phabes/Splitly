@@ -3,7 +3,7 @@ export const verifyCall = (token: string) => {
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  const url = `${baseUrl}/user/verify`;
+  const url = `${baseUrl}/users/verification`;
 
   return fetch(url, {
     method: "GET",
