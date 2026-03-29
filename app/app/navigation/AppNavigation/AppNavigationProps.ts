@@ -1,9 +1,13 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-export type AppStackParamList = {
-  MainTabs: undefined;
-  Friends: { shouldRefresh: boolean };
+export type TabParamList = {
+  Friends: { shouldRefresh?: boolean };
   Groups: undefined;
+};
+
+export type AppStackParamList = {
+  MainTabs: NavigatorScreenParams<TabParamList>;
   AddFriend: undefined;
   FriendRequests: undefined;
 };

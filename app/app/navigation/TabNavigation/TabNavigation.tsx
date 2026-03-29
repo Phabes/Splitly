@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AppStackParamList } from "../AppNavigation/AppNavigationProps";
+import { TabParamList } from "../AppNavigation/AppNavigationProps";
 import { TabBar } from "@/app/components";
 import { Friends, Groups } from "@/app/screens";
 
-const Tab = createBottomTabNavigator<AppStackParamList>();
+const Tab = createBottomTabNavigator<TabParamList>();
 
 export const TabNavigation = () => {
   return (

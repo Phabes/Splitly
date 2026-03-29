@@ -17,8 +17,8 @@ import {
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
-import { FC, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { FC, useEffect } from "react";
+import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 import { useFriendActions, useFriendsData } from "./hooks";
 
 export const Friends: FC = () => {
@@ -41,6 +41,19 @@ export const Friends: FC = () => {
   const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   const styles = useStyles();
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "refreshFriendsList",
+      () => {
+        forceLoadMore();
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, [forceLoadMore]);
 
   return (
     <LayoutProvider
