@@ -31,7 +31,6 @@ export const useFriendActions = (
           setUsers((prev) => prev.filter((e) => e._id !== userID));
         }
       } else {
-        // TO DO - handle other responses
         const data: ResponseMessage = await response.json();
         throw new Error(data.message);
       }

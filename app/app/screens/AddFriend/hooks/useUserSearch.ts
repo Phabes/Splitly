@@ -62,7 +62,6 @@ export const useUserSearch = () => {
           setUsers(result.users);
           setHasMore(result.hasMore);
         } else {
-          // TO DO - handle other responses
           const data: ResponseMessage = await response.json();
           throw new Error(data.message);
         }

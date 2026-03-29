@@ -33,7 +33,6 @@ export const useFriendRequestActions = (
           prev.filter((e) => e._id !== friendRequestID),
         );
       } else {
-        // TO DO - handle other responses
         const data: ResponseMessage = await response.json();
         throw new Error(data.message);
       }
@@ -64,7 +63,6 @@ export const useFriendRequestActions = (
           prev.filter((e) => e._id !== friendRequestID),
         );
       } else {
-        // TO DO - handle other responses
         const data: ResponseMessage = await response.json();
         throw new Error(data.message);
       }
