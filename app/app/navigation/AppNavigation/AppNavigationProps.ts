@@ -2,7 +2,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type AppStackParamList = {
   MainTabs: undefined;
-  Friends: undefined;
+  Friends: { shouldRefresh: boolean };
   Groups: undefined;
   AddFriend: undefined;
   FriendRequests: undefined;

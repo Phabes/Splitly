@@ -31,5 +31,8 @@
   "noMoreFriendRequests": "Nie znaleziono więcej zaproszeń.",
   "noFriendRequestsFound": "Nie znaleziono zaproszeń.",
   "acceptingFriendRequest": "Akceptowanie zaproszenia...",
-  "rejectingFriendRequest": "Odrzucanie zaproszenia..."
+  "rejectingFriendRequest": "Odrzucanie zaproszenia...",
+  "loadingMoreFriends": "Ładowanie znajomych...",
+  "noMoreFriends": "Nie masz więcej znajomych.",
+  "noFriendsFound": "Nie znaleziono znajomych."
 }

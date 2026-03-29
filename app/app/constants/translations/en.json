@@ -31,5 +31,8 @@
   "noMoreFriendRequests": "No more friend requests.",
   "noFriendRequestsFound": "No friend requests found.",
   "acceptingFriendRequest": "Accepting friend request...",
-  "rejectingFriendRequest": "Rejecting friend request..."
+  "rejectingFriendRequest": "Rejecting friend request...",
+  "loadingMoreFriends": "Loading more friends...",
+  "noMoreFriends": "No more friends.",
+  "noFriendsFound": "No friends found."
 }

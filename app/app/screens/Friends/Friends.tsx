@@ -1,9 +1,13 @@
 import {
   Button,
   Input,
+  ListItem,
+  Loading,
   LoadingWrapper,
   NavBar,
   Scroll,
+  TouchableIcon,
+  Typography,
 } from "@/app/components";
 import {
   useAppNavigation,
@@ -12,16 +16,29 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FC, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useFriendActions, useFriendsData } from "./hooks";
 
 export const Friends: FC = () => {
   const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
-  const [searchValue, setSearchValue] = useState("");
+  const {
+    searchValue,
+    handleSearchChange,
+    friends,
+    hasMore,
+    isSearching,
+    isLoadingMore,
+    loadMoreFriends,
+    forceLoadMore,
+  } = useFriendsData();
+  const { handleShowUserProfile } = useFriendActions();
+
+  const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   const styles = useStyles();
 
@@ -39,26 +56,70 @@ export const Friends: FC = () => {
         />
       }
     >
-      <LoadingWrapper isLoading={false}>
-        <Input
-          text={searchValue}
-          onChange={setSearchValue}
-          placeholder={translations["searchFriends"]}
-          beginIcon={faSearch}
+      <Input
+        text={searchValue}
+        onChange={handleSearchChange}
+        placeholder={translations["searchFriends"]}
+        beginIcon={faSearch}
+      />
+      <View style={styles.mainButtons}>
+        <Button
+          text={translations["addFriend"]}
+          onPress={() => navigation.navigate("AddFriend")}
+          fullWidth={true}
         />
-        <View style={styles.mainButtons}>
-          <Button
-            text={translations["addFriend"]}
-            onPress={() => navigation.navigate("AddFriend")}
-            fullWidth={true}
-          />
-          <Button
-            text={translations["friendRequests"]}
-            onPress={() => navigation.navigate("FriendRequests")}
-            fullWidth={true}
-          />
-        </View>
-        <Scroll></Scroll>
+        <Button
+          text={translations["friendRequests"]}
+          onPress={() => navigation.navigate("FriendRequests")}
+          fullWidth={true}
+        />
+      </View>
+      <LoadingWrapper isLoading={isSearching}>
+        <Scroll
+          gapSize="small"
+          keyboardPersist="never"
+          centerContent={friends.length === 0}
+          hasMore={hasMore}
+          handleScrollEnd={loadMoreFriends}
+          onManualRefresh={handleManualRefresh}
+        >
+          {friends.map((item, i) => {
+            return (
+              <ListItem
+                key={`Friends/${i}`}
+                text={item.user.username}
+                onPress={() => handleShowUserProfile(item.user._id)}
+              >
+                <TouchableIcon
+                  icon={faUser}
+                  onPress={() => handleShowUserProfile(item.user._id)}
+                />
+              </ListItem>
+            );
+          })}
+          <View style={styles.footerContainer}>
+            {isLoadingMore && (
+              <>
+                <Loading />
+                <Typography
+                  text={translations["loadingMoreFriends"]}
+                  variant="body-small"
+                />
+              </>
+            )}
+
+            {!isLoadingMore && !hasMore && friends.length > 0 && (
+              <Typography
+                text={translations["noMoreFriends"]}
+                variant="body-small"
+              />
+            )}
+
+            {!isLoadingMore && !hasMore && friends.length === 0 && (
+              <Typography text={translations["noFriendsFound"]} />
+            )}
+          </View>
+        </Scroll>
       </LoadingWrapper>
     </LayoutProvider>
   );
@@ -69,6 +130,9 @@ const useStyles = () => {
 
   return StyleSheet.create({
     mainButtons: { flexDirection: "row", gap: theme.spacing(4) },
+    footerContainer: {
+      alignItems: "center",
+    },
   });
 };
 
