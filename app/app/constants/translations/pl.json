@@ -34,5 +34,12 @@
   "rejectingFriendRequest": "Odrzucanie zaproszenia...",
   "loadingMoreFriends": "Ładowanie znajomych...",
   "noMoreFriends": "Nie masz więcej znajomych.",
-  "noFriendsFound": "Nie znaleziono znajomych."
+  "noFriendsFound": "Nie znaleziono znajomych.",
+  "searchGroups": "Przeszukaj grupy...",
+  "addGroup": "Dodaj grupę",
+  "groupRequests": "Zaproszenia",
+  "searchedGroups": "Znalezione grupy",
+  "loadingMoreGroups": "Ładowanie grup...",
+  "noMoreGroupsFound": "Nie znaleziono więcej grup.",
+  "noGroupsFoundMatching": "Nie znaleziono pasujących grup."
 }

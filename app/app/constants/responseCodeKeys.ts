@@ -30,7 +30,10 @@ export type ResponseCodeKeys =
   | "patchFriendRequest/noAuthorizedRecipient"
   | "patchFriendRequest/alreadyResponded"
   | "patchFriendRequest/success"
-  | "patchFriendRequest/error";
+  | "patchFriendRequest/error"
+  // controllers/groups
+  | "getGroupList/success"
+  | "getGroupList/error";
 
 export default function Index() {
   return null;

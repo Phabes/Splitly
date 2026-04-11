@@ -14,7 +14,7 @@ const routerFriend = Router();
 routerFriend.post("/suggestions/search", protect, searchFriendSuggestions);
 // GET - friend requests
 routerFriend.post("/requests/search", protect, searchFriendRequests);
-// POST - friend requests
+// POST - send friend request
 routerFriend.post("/requests", protect, sendFriendRequest);
 // PATCH - accept/decline friend request
 routerFriend.patch("/requests/:id", protect, decideFriendRequest);
