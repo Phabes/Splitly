@@ -8,6 +8,7 @@ type ButtonProps = {
   onPress: () => any;
   variant?: "primary" | "secondary";
   disabled?: boolean;
+  fullWidth?: boolean;
 };
 
 export const Button: FC<ButtonProps> = ({
@@ -15,8 +16,9 @@ export const Button: FC<ButtonProps> = ({
   onPress,
   variant = "primary",
   disabled = false,
+  fullWidth = false,
 }) => {
-  const styles = useStyles(variant, disabled);
+  const styles = useStyles(variant, disabled, fullWidth);
 
   const textColor = disabled ? "text-disabled" : "text-primary";
 
@@ -25,7 +27,7 @@ export const Button: FC<ButtonProps> = ({
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.5}
-      style={[styles.container]}
+      style={styles.container}
     >
       <Typography
         text={text}
@@ -37,15 +39,16 @@ export const Button: FC<ButtonProps> = ({
 
 const useStyles = (
   variant: ButtonProps["variant"],
-  disabled: ButtonProps["disabled"]
+  disabled: ButtonProps["disabled"],
+  fullWidth: ButtonProps["fullWidth"],
 ) => {
   const theme = useThemeContext();
 
   const buttonColor = disabled
     ? "background-disabled"
     : variant === "primary"
-    ? "background-primary"
-    : "background-secondary";
+      ? "background-primary"
+      : "background-secondary";
 
   const addBackground = variant === "secondary" && !disabled;
 
@@ -54,6 +57,8 @@ const useStyles = (
   const borderStyle = addBackground
     ? { borderWidth, borderColor: theme.colors["background-primary"] }
     : {};
+
+  const widthStyle = fullWidth ? { flex: 1 } : {};
 
   return StyleSheet.create({
     container: {
@@ -64,6 +69,7 @@ const useStyles = (
       paddingVertical: theme.spacing(2) - borderWidth,
       borderRadius: theme.spacing(2),
       ...borderStyle,
+      ...widthStyle,
     },
   });
 };

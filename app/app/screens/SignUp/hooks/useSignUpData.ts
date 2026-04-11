@@ -3,7 +3,7 @@ import { signUpCall } from "@/app/services";
 import { ResponseMessage, SignInResponse } from "@/app/types";
 import {
   validateEmail,
-  validatePassword,
+  validateSignUpPassword,
   validateRepeatedPassword,
   validateUsername,
 } from "@/app/utils";
@@ -39,21 +39,21 @@ export const useSignUpData = () => {
   const validateSignUp = () => {
     const emailError = validateEmail(emailField.value);
     const usernameError = validateUsername(usernameField.value);
-    const passwordError = validatePassword(passwordField.value);
+    const passwordError = validateSignUpPassword(passwordField.value);
     const repeatedPasswordError = validateRepeatedPassword(
       passwordField.value,
-      repeatedPasswordField.value
+      repeatedPasswordField.value,
     );
 
     emailField.setError(emailError ? translations[emailError] : undefined);
     usernameField.setError(
-      usernameError ? translations[usernameError] : undefined
+      usernameError ? translations[usernameError] : undefined,
     );
     passwordField.setError(
-      passwordError ? translations[passwordError] : undefined
+      passwordError ? translations[passwordError] : undefined,
     );
     repeatedPasswordField.setError(
-      repeatedPasswordError ? translations[repeatedPasswordError] : undefined
+      repeatedPasswordError ? translations[repeatedPasswordError] : undefined,
     );
 
     const isError =
@@ -73,11 +73,12 @@ export const useSignUpData = () => {
       setIsLoading(false);
       return;
     }
+
     try {
       const response = await signUpCall(
         emailField.value,
         usernameField.value,
-        passwordField.value
+        passwordField.value,
       );
 
       if (response.ok) {
@@ -85,7 +86,7 @@ export const useSignUpData = () => {
         await signUp(data.userToken, data.refreshToken);
       } else if (response.status === 400) {
         const data: SignUpFailResponse = await response.json();
-        if (data.code === "fieldsValidationError") {
+        if (data.code === "signUp/fieldsValidationError") {
           data.errorFields.forEach((errorField) => {
             if (
               errorField.field === "email" &&
@@ -102,10 +103,11 @@ export const useSignUpData = () => {
         }
       } else {
         const data: ResponseMessage = await response.json();
-        console.error("Server error:", data.message);
+        throw new Error(data.message);
       }
     } catch (error) {
-      console.error("Sign up error:", error);
+      // Sign up error
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

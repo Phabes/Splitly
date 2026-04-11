@@ -1,0 +1,293 @@
+import { Response } from "express";
+import { AuthRequest } from "middleware/authMiddleware";
+import Friend from "models/friend";
+import User from "models/user";
+
+export const searchFriendSuggestions = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { query = "", limit = 10, userIDs = [] } = req.body;
+    const currentUserID = req.userID;
+
+    const limitNum = Number(limit);
+    const searchQuery = String(query);
+
+    const existingFriendships = await Friend.find({
+      $or: [{ requester: currentUserID }, { recipient: currentUserID }],
+      status: { $in: ["accepted", "pending"] },
+    });
+
+    const friendshipIds = existingFriendships.map((f) =>
+      f.requester!.toString() === currentUserID ? f.recipient : f.requester,
+    );
+
+    const baseExclusionsSet = new Set([...friendshipIds, currentUserID]);
+    const baseExclusions = Array.from(baseExclusionsSet);
+
+    const fetchExclusionsSet = new Set([...baseExclusions, ...userIDs]);
+    const fetchExclusions = Array.from(fetchExclusionsSet);
+
+    const searchMatch = {
+      $or: [
+        { username: { $regex: searchQuery, $options: "i" } },
+        { email: { $regex: searchQuery, $options: "i" } },
+      ],
+    };
+
+    const users = await User.find({
+      _id: { $nin: fetchExclusions },
+      ...searchMatch,
+    })
+      .select("id username email")
+      .limit(limitNum)
+      .sort({ username: 1 });
+
+    const totalCount = await User.countDocuments({
+      _id: { $nin: baseExclusions },
+      ...searchMatch,
+    });
+
+    return res.status(200).json({
+      code: "getFriendSuggestions/success",
+      message: "Users found.",
+      users,
+      hasMore: userIDs.length + users.length < totalCount,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "getFriendSuggestions/error",
+      message: "Server error during search.",
+    });
+  }
+};
+
+export const sendFriendRequest = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { userToAdd } = req.body;
+    const currentUserID = req.userID;
+
+    const existingFriendship = await Friend.findOne({
+      $or: [
+        { requester: currentUserID, recipient: userToAdd },
+        { requester: userToAdd, recipient: currentUserID },
+      ],
+    });
+
+    if (existingFriendship) {
+      if (existingFriendship.status === "accepted") {
+        return res.status(409).json({
+          code: "postFriendRequest/friendshipAlreadyExists",
+          message: "You are already friends with this user.",
+        });
+      }
+
+      if (existingFriendship.status === "pending") {
+        return res.status(409).json({
+          code: "postFriendRequest/friendRequestPending",
+          message: "A friend request is already pending.",
+        });
+      }
+
+      existingFriendship.status = "pending";
+      existingFriendship.requester = currentUserID as any;
+      existingFriendship.recipient = userToAdd;
+      await existingFriendship.save();
+
+      return res.status(200).json({
+        code: "postFriendRequest/requestRenewalSuccess",
+        message: "Friend request sent.",
+      });
+    }
+
+    const newFriendship = new Friend({
+      requester: currentUserID,
+      recipient: userToAdd,
+      status: "pending",
+    });
+
+    await newFriendship.save();
+
+    return res.status(200).json({
+      code: "postFriendRequest/requestSuccess",
+      message: "Friend request sent.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "postFriendRequest/requestError",
+      message: "Server error during sending request.",
+    });
+  }
+};
+
+export const searchFriendRequests = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { limit = 10, friendRequestIDs = [] } = req.body;
+    const currentUserId = req.userID;
+
+    const limitNum = Number(limit);
+
+    const baseFilter = {
+      recipient: currentUserId,
+      status: "pending",
+    };
+
+    const fetchFilter = {
+      ...baseFilter,
+      _id: { $nin: friendRequestIDs },
+    };
+
+    const requests = await Friend.find(fetchFilter)
+      .select("id")
+      .populate("requester", "username email")
+      .limit(limitNum);
+    // .sort({ createdAt: -1 });
+
+    const totalCount = await Friend.countDocuments(baseFilter);
+
+    return res.status(200).json({
+      code: "getFriendRequests/success",
+      message: "Friend requests found.",
+      requests,
+      hasMore: friendRequestIDs.length + requests.length < totalCount,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "getFriendRequests/error",
+      message: "Server error during fetching friend requests.",
+    });
+  }
+};
+
+export const decideFriendRequest = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const friendRequestID = req.params.id;
+    const { decision } = req.body;
+    const currentUserID = req.userID;
+
+    const friendRequest = await Friend.findById(friendRequestID);
+
+    if (!friendRequest) {
+      return res.status(404).json({
+        code: "patchFriendRequest/notFound",
+        message: "Friend request not found.",
+      });
+    }
+
+    if (friendRequest.recipient!.toString() !== currentUserID) {
+      return res.status(403).json({
+        code: "patchFriendRequest/noAuthorizedRecipient",
+        message: "You are not authorized to respond to this request.",
+      });
+    }
+
+    if (friendRequest.status !== "pending") {
+      return res.status(400).json({
+        code: "patchFriendRequest/alreadyResponded",
+        message: `This friend request has already been ${friendRequest.status}.`,
+      });
+    }
+
+    friendRequest.status = decision;
+
+    await friendRequest.save();
+
+    return res.status(200).json({
+      code: "patchFriendRequest/success",
+      message: `Friend request has been successfully ${decision}.`,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "patchFriendRequest/error",
+      message: "Server error while processing friend request decision.",
+    });
+  }
+};
+
+export const getFriendList = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { query = "", limit = 10, friendIDs = [] } = req.body;
+    const currentUserId = req.userID;
+
+    const limitNum = Number(limit);
+    const searchQuery = String(query);
+
+    let userMatchCondition = {};
+    if (searchQuery) {
+      const matchingUsers = await User.find({
+        _id: { $ne: currentUserId },
+        $or: [
+          { username: { $regex: searchQuery, $options: "i" } },
+          { email: { $regex: searchQuery, $options: "i" } },
+        ],
+      }).select("_id");
+
+      const matchedUserIds = matchingUsers.map((u) => u._id);
+
+      userMatchCondition = {
+        $or: [
+          { requester: { $in: matchedUserIds } },
+          { recipient: { $in: matchedUserIds } },
+        ],
+      };
+    }
+
+    const baseFilter: any = {
+      $and: [
+        { $or: [{ requester: currentUserId }, { recipient: currentUserId }] },
+        { status: "accepted" },
+      ],
+    };
+
+    if (searchQuery) {
+      baseFilter.$and.push(userMatchCondition);
+    }
+
+    const fetchFilter = {
+      ...baseFilter,
+      _id: { $nin: friendIDs },
+    };
+
+    const friends = await Friend.find(fetchFilter)
+      .populate("requester", "username email")
+      .populate("recipient", "username email")
+      .limit(limitNum);
+    // .sort({ updatedAt: -1 });
+
+    const totalCount = await Friend.countDocuments(baseFilter);
+
+    const formattedFriends = friends.map((record: any) => {
+      const isRequester =
+        record.requester._id.toString() === currentUserId?.toString();
+      return {
+        _id: record._id,
+        user: isRequester ? record.recipient : record.requester,
+      };
+    });
+
+    return res.status(200).json({
+      code: "getFriendList/success",
+      message: "Friends fetched successfully.",
+      friends: formattedFriends,
+      hasMore: friendIDs.length + friends.length < totalCount,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "getFriendsList/error",
+      message: "Server error during fetching friends.",
+    });
+  }
+};

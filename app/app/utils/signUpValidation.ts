@@ -34,7 +34,14 @@ export const validateUsername = (username: string): ValidationResult => {
   return undefined;
 };
 
-export const validatePassword = (password: string): ValidationResult => {
+export const validateSignInPassword = (password: string): ValidationResult => {
+  if (!password) {
+    return "fieldRequired";
+  }
+  return undefined;
+};
+
+export const validateSignUpPassword = (password: string): ValidationResult => {
   if (!password) {
     return "fieldRequired";
   }

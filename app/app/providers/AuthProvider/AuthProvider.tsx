@@ -26,12 +26,13 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     setRefreshToken(null);
   };
 
-  const performTokenRefresh = async (refreshToken: string) => {
+  const performTokenRefresh = async (currentRefreshToken: string) => {
     try {
-      const response = await refreshCall(refreshToken);
+      const response = await refreshCall(currentRefreshToken);
 
       if (!response.ok) {
-        throw new Error("Refresh failed");
+        const data: ResponseMessage = await response.json();
+        throw new Error(data.message);
       }
 
       const data: RefreshResponse = await response.json();
@@ -40,8 +41,13 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       await AsyncStorage.setItem("refreshToken", data.refreshToken);
       setUserToken(data.userToken);
       setRefreshToken(data.refreshToken);
+
+      return data.userToken;
     } catch (error) {
+      // Refresh token error
+      console.error(error);
       await clearSession();
+      return null;
     }
   };
 
@@ -53,6 +59,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
           AsyncStorage.getItem("userToken"),
           AsyncStorage.getItem("refreshToken"),
         ]);
+
         if (userToken && refreshToken) {
           const response = await verifyCall(userToken);
 
@@ -62,11 +69,14 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
           } else if (response.status === 401) {
             await performTokenRefresh(refreshToken);
           } else {
-            await clearSession();
+            const data: ResponseMessage = await response.json();
+            throw new Error(data.message);
           }
         }
       } catch (error) {
-        console.error("Auth bootstrap failed:", error);
+        // Auth bootstrap failed
+        console.error(error);
+        await clearSession();
       } finally {
         setIsLoading(false);
       }
@@ -95,8 +105,9 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         setUserToken(token);
         setRefreshToken(refresh);
       },
+      performTokenRefresh,
     }),
-    [userToken, isLoading]
+    [userToken, isLoading],
   );
 
   return (

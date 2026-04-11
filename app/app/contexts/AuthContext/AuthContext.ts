@@ -7,10 +7,11 @@ type AuthContextType = {
   signIn: (token: string, refresh: string) => Promise<void>;
   signOut: () => Promise<void>;
   signUp: (token: string, refresh: string) => Promise<void>;
+  performTokenRefresh: (currentRefreshToken: string) => Promise<string | null>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export default AuthContext;
