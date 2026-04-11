@@ -1,12 +1,12 @@
 import { Router } from "express";
 import {
-  sendFriendRequest,
-  searchFriendSuggestions,
-  searchFriendRequests,
   decideFriendRequest,
   getFriendList,
-} from "controllers/friends";
-import { protect } from "middleware/authMiddleware";
+  searchFriendRequests,
+  searchFriendSuggestions,
+  sendFriendRequest,
+} from "@/controllers/friends.ts";
+import { protect } from "@/middleware/authMiddleware.ts";
 
 const routerFriend = Router();
 

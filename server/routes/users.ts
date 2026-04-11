@@ -1,6 +1,11 @@
 import { Router } from "express";
-import { refreshTokens, signIn, signUp, verifyUser } from "controllers/users";
-import { protect } from "middleware/authMiddleware";
+import {
+  refreshTokens,
+  signIn,
+  signUp,
+  verifyUser,
+} from "@/controllers/users.ts";
+import { protect } from "@/middleware/authMiddleware.ts";
 
 const routerUser = Router();
 
