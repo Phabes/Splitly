@@ -1,7 +1,7 @@
 import { Response } from "express";
-import { AuthRequest } from "middleware/authMiddleware";
-import Friend from "models/friend";
-import User from "models/user";
+import { AuthRequest } from "@/middleware/authMiddleware.ts";
+import Friend from "@/models/friend.ts";
+import User from "@/models/user.ts";
 
 export const searchFriendSuggestions = async (
   req: AuthRequest,

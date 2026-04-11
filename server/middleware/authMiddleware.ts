@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyToken } from "../utils/verifyToken.js";
+import { verifyToken } from "@/utils/verifyToken.ts";
 
 export type AuthRequest = Request & {
   userID?: string;

@@ -1,6 +1,6 @@
 import { Response } from "express";
-import { AuthRequest } from "middleware/authMiddleware";
-import Group from "models/group";
+import { AuthRequest } from "@/middleware/authMiddleware.ts";
+import Group from "@/models/group.ts";
 
 export const getGroupList = async (
   req: AuthRequest,

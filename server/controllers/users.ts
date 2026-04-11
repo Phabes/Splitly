@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { signInValidator, signUpValidator } from "../validators/users.js";
-import { generateTokens } from "../utils/generateTokens.js";
-import { verifyToken } from "../utils/verifyToken.js";
-import { AuthRequest } from "middleware/authMiddleware.js";
-import User from "models/user.js";
+import { AuthRequest } from "@/middleware/authMiddleware.ts";
+import User from "@/models/user.ts";
+import { generateTokens } from "@/utils/generateTokens.ts";
+import { verifyToken } from "@/utils/verifyToken.ts";
+import { signInValidator, signUpValidator } from "@/validators/users.ts";
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "REFRESH_KEY";
 
