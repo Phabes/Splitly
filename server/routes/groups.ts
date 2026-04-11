@@ -1,6 +1,6 @@
+import { Router } from "express";
 import { getGroupList } from "@/controllers/groups.ts";
 import { protect } from "@/middleware/authMiddleware.ts";
-import { Router } from "express";
 
 const routerGroup = Router();
 
