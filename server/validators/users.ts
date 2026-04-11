@@ -1,5 +1,5 @@
-import User from "@/models/user.ts";
 import bcrypt from "bcrypt";
+import User from "@/models/user.ts";
 
 export const signUpValidator = async (email: string, username: string) => {
   const validationErrors = [];
