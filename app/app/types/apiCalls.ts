@@ -39,6 +39,16 @@ export type FriendRequestsResponse = ResponseMessage & {
   hasMore: boolean;
 };
 
+export type FriendsResult = {
+  _id: string;
+  user: UserResult;
+};
+
+export type FriendsResponse = ResponseMessage & {
+  friends: FriendsResult[];
+  hasMore: boolean;
+};
+
 export default function Index() {
   return null;
 }

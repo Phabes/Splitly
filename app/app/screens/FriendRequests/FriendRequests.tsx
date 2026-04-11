@@ -16,7 +16,7 @@ import {
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 import { useFriendRequests } from "./hooks";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 
@@ -46,7 +46,10 @@ export const FriendRequests: FC = () => {
       navbar={
         <NavBar
           text={translations["friendRequests"]}
-          onBackPress={navigation.goBack}
+          onBackPress={() => {
+            DeviceEventEmitter.emit("refreshFriendsList");
+            navigation.goBack();
+          }}
           button={
             <Button
               text={translations["signOut"]}

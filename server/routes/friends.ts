@@ -4,6 +4,7 @@ import {
   searchFriendSuggestions,
   searchFriendRequests,
   decideFriendRequest,
+  getFriendList,
 } from "controllers/friends";
 import { protect } from "middleware/authMiddleware";
 
@@ -17,5 +18,7 @@ routerFriend.post("/requests/search", protect, searchFriendRequests);
 routerFriend.post("/requests", protect, sendFriendRequest);
 // PATCH - accept/decline friend request
 routerFriend.patch("/requests/:id", protect, decideFriendRequest);
+// GET - friend list
+routerFriend.post("/list", protect, getFriendList);
 
 export default routerFriend;
