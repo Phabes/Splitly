@@ -34,5 +34,12 @@
   "rejectingFriendRequest": "Rejecting friend request...",
   "loadingMoreFriends": "Loading more friends...",
   "noMoreFriends": "No more friends.",
-  "noFriendsFound": "No friends found."
+  "noFriendsFound": "No friends found.",
+  "searchGroups": "Search groups...",
+  "addGroup": "Add group",
+  "groupRequests": "Requests",
+  "searchedGroups": "Searched groups",
+  "loadingMoreGroups": "Loading more groups...",
+  "noMoreGroupsFound": "No more groups found.",
+  "noGroupsFoundMatching": "No groups found."
 }

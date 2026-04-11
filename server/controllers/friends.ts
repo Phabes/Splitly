@@ -8,11 +8,11 @@ export const searchFriendSuggestions = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const { query, limit = 10, userIDs = [] } = req.body;
+    const { query = "", limit = 10, userIDs = [] } = req.body;
     const currentUserID = req.userID;
 
     const limitNum = Number(limit);
-    const searchQuery = String(query || "");
+    const searchQuery = String(query);
 
     const existingFriendships = await Friend.find({
       $or: [{ requester: currentUserID }, { recipient: currentUserID }],
@@ -219,11 +219,11 @@ export const getFriendList = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const { query, limit = 10, friendIDs = [] } = req.body;
+    const { query = "", limit = 10, friendIDs = [] } = req.body;
     const currentUserId = req.userID;
 
     const limitNum = Number(limit);
-    const searchQuery = String(query || "");
+    const searchQuery = String(query);
 
     let userMatchCondition = {};
     if (searchQuery) {

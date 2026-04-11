@@ -1,21 +1,21 @@
-import { FRIENDS_SEARCH_DELAY } from "@/app/constants/pagination";
+import { GROUPS_SEARCH_DELAY } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { getFriendList } from "@/app/services";
-import { FriendsResponse, FriendResult, ResponseMessage } from "@/app/types";
+import { getGroupList } from "@/app/services/groups";
+import { GroupResult, GroupsResponse, ResponseMessage } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
 
-export const useFriendsData = () => {
+export const useGroupsData = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [friends, setFriends] = useState<FriendResult[]>([]);
+  const [groups, setGroups] = useState<GroupResult[]>([]);
 
   const [isSearching, setIsSearching] = useState(true);
 
   const request = useAuthenticatedApi();
   const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
 
-  const fetchFriends = useCallback(
+  const fetchGroups = useCallback(
     async (
-      friendIDs: string[],
+      groupIDs: string[],
       isInitial: boolean = false,
       currentSearchValue: string = "",
     ) => {
@@ -27,22 +27,21 @@ export const useFriendsData = () => {
 
       try {
         const response = await request(
-          getFriendList,
-          friendIDs,
+          getGroupList,
+          groupIDs,
           currentSearchValue,
         );
-
         if (response.ok) {
-          const result: FriendsResponse = await response.json();
+          const result: GroupsResponse = await response.json();
 
-          if (result.friends.length > 0) {
-            setFriends((prev) =>
-              isInitial ? result.friends : [...prev, ...result.friends],
+          if (result.groups.length > 0) {
+            setGroups((prev) =>
+              isInitial ? result.groups : [...prev, ...result.groups],
             );
             setHasMore(result.hasMore);
           } else {
             if (isInitial) {
-              setFriends([]);
+              setGroups([]);
             }
             setHasMore(false);
           }
@@ -51,7 +50,7 @@ export const useFriendsData = () => {
           throw new Error(data.message);
         }
       } catch (error) {
-        // Friends fetch failed
+        // Groups fetch failed
         console.error(error);
       } finally {
         if (isInitial) {
@@ -68,23 +67,23 @@ export const useFriendsData = () => {
     setIsSearching(true);
 
     const delayDebounceFn = setTimeout(() => {
-      fetchFriends([], true, searchValue);
-    }, FRIENDS_SEARCH_DELAY || 500);
+      fetchGroups([], true, searchValue);
+    }, GROUPS_SEARCH_DELAY || 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchValue, fetchFriends]);
+  }, [searchValue, fetchGroups]);
 
   const handleSearchChange = (text: string) => {
     setSearchValue(text);
   };
 
-  const loadMoreFriends = async () => {
+  const loadMoreGroups = async () => {
     if (isLoadingMore || isSearching || !hasMore) {
       return;
     }
 
-    const friendRecordIDs = friends.map((f) => f._id);
-    await fetchFriends(friendRecordIDs, false, searchValue);
+    const groupRecordIDs = groups.map((f) => f._id);
+    await fetchGroups(groupRecordIDs, false, searchValue);
   };
 
   const forceLoadMore = useCallback(async () => {
@@ -92,20 +91,20 @@ export const useFriendsData = () => {
       return;
     }
 
-    const friendRecordIDs = friends.map((f) => f._id);
-    await fetchFriends(friendRecordIDs, false, searchValue);
-  }, [isLoadingMore, isSearching, friends, fetchFriends, searchValue]);
+    const friendRecordIDs = groups.map((f) => f._id);
+    await fetchGroups(friendRecordIDs, false, searchValue);
+  }, [isLoadingMore, isSearching, groups, fetchGroups, searchValue]);
 
   return {
     searchValue,
     handleSearchChange,
-    friends,
+    groups,
     hasMore,
     isSearching,
     isLoadingMore,
-    loadMoreFriends,
+    loadMoreGroups,
     forceLoadMore,
   };
 };
 
-export default useFriendsData;
+export default useGroupsData;

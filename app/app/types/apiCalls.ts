@@ -39,13 +39,24 @@ export type FriendRequestsResponse = ResponseMessage & {
   hasMore: boolean;
 };
 
-export type FriendsResult = {
+export type FriendResult = {
   _id: string;
   user: UserResult;
 };
 
 export type FriendsResponse = ResponseMessage & {
-  friends: FriendsResult[];
+  friends: FriendResult[];
+  hasMore: boolean;
+};
+
+export type GroupResult = {
+  _id: string;
+  name: string;
+  description: string;
+};
+
+export type GroupsResponse = ResponseMessage & {
+  groups: GroupResult[];
   hasMore: boolean;
 };
 
