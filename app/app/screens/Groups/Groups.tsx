@@ -61,6 +61,7 @@ export const Groups: FC = () => {
         onChange={handleSearchChange}
         placeholder={translations["searchGroups"]}
         beginIcon={faSearch}
+        allowClear={true}
       />
       <View style={styles.mainButtons}>
         <Button
