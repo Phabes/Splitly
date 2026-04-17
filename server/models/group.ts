@@ -15,6 +15,14 @@ const GroupSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  baseCurrency: {
+    type: String,
+    required: true,
+    uppercase: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 3,
+  },
   members: [
     {
       user: {

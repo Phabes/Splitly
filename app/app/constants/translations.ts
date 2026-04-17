@@ -43,7 +43,7 @@ export type TranslationKeys =
   | "noMoreFriends"
   | "noFriendsFound"
   | "searchGroups"
-  | "addGroup"
+  | "createGroup"
   | "searchedGroups"
   | "loadingMoreGroups"
   | "noMoreGroupsFound"

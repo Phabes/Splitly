@@ -10,6 +10,7 @@ export type AppStackParamList = {
   MainTabs: NavigatorScreenParams<TabParamList>;
   AddFriend: undefined;
   FriendRequests: undefined;
+  CreateGroup: undefined;
 };
 
 export type AppNavigationProps = NativeStackNavigationProp<AppStackParamList>;

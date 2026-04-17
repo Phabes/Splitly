@@ -10,7 +10,7 @@ export const TabNavigation = () => {
     <Tab.Navigator
       tabBar={(props) => <TabBar {...props} />}
       screenOptions={{ headerShown: false }}
-      initialRouteName="Friends"
+      initialRouteName="Groups"
     >
       <Tab.Screen
         name="Friends"
