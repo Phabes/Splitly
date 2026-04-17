@@ -8,6 +8,7 @@ export * from "./Loading";
 export * from "./LoadingWrapper";
 export * from "./NavBar";
 export * from "./Scroll";
+export * from "./Select";
 export * from "./TabBar";
 export * from "./TouchableIcon";
 export * from "./Typography";
