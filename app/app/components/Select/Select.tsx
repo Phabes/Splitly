@@ -104,6 +104,7 @@ export const Select: FC<SelectProps> = ({
                 onSearch(text);
               }}
               beginIcon={faSearch}
+              allowClear={true}
             />
           </View>
         );
