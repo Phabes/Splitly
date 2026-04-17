@@ -74,6 +74,7 @@ export const Friends: FC = () => {
         onChange={handleSearchChange}
         placeholder={translations["searchFriends"]}
         beginIcon={faSearch}
+        allowClear={true}
       />
       <View style={styles.mainButtons}>
         <Button

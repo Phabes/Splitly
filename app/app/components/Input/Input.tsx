@@ -6,6 +6,7 @@ import { StyleSheet, TextInput, View } from "react-native";
 import { TogglePassword } from "./components/TogglePassword";
 import { InputIcon } from "./components/InputIcon";
 import { TouchableOpacity } from "react-native";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 type InputProps = {
   text: string;
@@ -18,6 +19,7 @@ type InputProps = {
   disabled?: boolean;
   password?: boolean;
   beginIcon?: IconProp;
+  allowClear?: boolean;
 };
 
 export const Input: FC<InputProps> = ({
@@ -31,6 +33,7 @@ export const Input: FC<InputProps> = ({
   disabled = false,
   password = false,
   beginIcon,
+  allowClear = false,
 }) => {
   const theme = useThemeContext();
 
@@ -56,6 +59,10 @@ export const Input: FC<InputProps> = ({
     if (!disabled) {
       inputRef.current?.focus();
     }
+  };
+
+  const clearInput = () => {
+    onChangeInput("");
   };
 
   const styles = useStyles(type, disabled, text, centerText, theme);
@@ -91,6 +98,11 @@ export const Input: FC<InputProps> = ({
           status={passwordShown}
           toggleStatus={setPasswordShown}
         />
+      )}
+      {allowClear && text !== "" && (
+        <TouchableOpacity onPress={clearInput}>
+          <InputIcon icon={faXmark} />
+        </TouchableOpacity>
       )}
     </View>
   );
