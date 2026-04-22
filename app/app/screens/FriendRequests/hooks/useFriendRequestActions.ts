@@ -3,7 +3,7 @@ import {
   useLoadingContext,
   useTranslations,
 } from "@/app/hooks";
-import { respondToFriendRequest } from "@/app/services";
+import { respondToFriendRequestCall } from "@/app/services";
 import { FriendRequestResult, ResponseMessage } from "@/app/types";
 import { Dispatch, SetStateAction } from "react";
 
@@ -19,7 +19,7 @@ export const useFriendRequestActions = (
 
     try {
       const response = await request(
-        respondToFriendRequest,
+        respondToFriendRequestCall,
         friendRequestID,
         "accepted",
       );
@@ -49,7 +49,7 @@ export const useFriendRequestActions = (
 
     try {
       const response = await request(
-        respondToFriendRequest,
+        respondToFriendRequestCall,
         friendRequestID,
         "rejected",
       );

@@ -1,5 +1,5 @@
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { getFriendRequests } from "@/app/services";
+import { getFriendRequestsCall } from "@/app/services";
 import {
   FriendRequestResult,
   FriendRequestsResponse,
@@ -25,7 +25,7 @@ export const useFriendRequestsData = () => {
       }
 
       try {
-        const response = await request(getFriendRequests, friendRequestIDs);
+        const response = await request(getFriendRequestsCall, friendRequestIDs);
 
         if (response.ok) {
           const result: FriendRequestsResponse = await response.json();

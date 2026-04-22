@@ -1,4 +1,4 @@
-export const respondToFriendRequest = (
+export const respondToFriendRequestCall = (
   token: string,
   friendRequestID: string,
   decision: "accepted" | "rejected",
@@ -21,4 +21,4 @@ export const respondToFriendRequest = (
   });
 };
 
-export default respondToFriendRequest;
+export default respondToFriendRequestCall;

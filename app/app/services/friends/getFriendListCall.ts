@@ -1,26 +1,22 @@
 import { PAGE_SIZE } from "@/app/constants/pagination";
 
-export const getFriendRequests = (
+export const getFriendListCall = (
   token: string,
-  friendRequestIDs: string[],
+  friendIDs: string[] = [],
+  query: string = "",
 ) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  const url = `${baseUrl}/friends/requests/search`;
-
-  return fetch(url, {
+  return fetch(`${baseUrl}/friends/list`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      limit: PAGE_SIZE,
-      friendRequestIDs,
-    }),
+    body: JSON.stringify({ query, limit: PAGE_SIZE, friendIDs }),
   });
 };
 
-export default getFriendRequests;
+export default getFriendListCall;

@@ -1,6 +1,6 @@
 import { GROUPS_SEARCH_DELAY } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { getGroupList } from "@/app/services";
+import { getGroupListCall } from "@/app/services";
 import { GroupResult, GroupsResponse, ResponseMessage } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
 
@@ -27,7 +27,7 @@ export const useGroupsData = () => {
 
       try {
         const response = await request(
-          getGroupList,
+          getGroupListCall,
           groupIDs,
           currentSearchValue,
         );

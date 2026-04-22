@@ -1,6 +1,6 @@
 import { FRIENDS_SEARCH_DELAY } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { getFriendList } from "@/app/services";
+import { getFriendListCall } from "@/app/services";
 import { FriendsResponse, FriendResult, ResponseMessage } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
 
@@ -27,7 +27,7 @@ export const useFriendsData = () => {
 
       try {
         const response = await request(
-          getFriendList,
+          getFriendListCall,
           friendIDs,
           currentSearchValue,
         );
