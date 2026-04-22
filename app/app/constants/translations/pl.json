@@ -41,5 +41,11 @@
   "searchedGroups": "Znalezione grupy",
   "loadingMoreGroups": "Ładowanie grup...",
   "noMoreGroupsFound": "Nie znaleziono więcej grup.",
-  "noGroupsFoundMatching": "Nie znaleziono pasujących grup."
+  "noGroupsFoundMatching": "Nie znaleziono pasujących grup.",
+  "groupName": "Nazwa grupy",
+  "groupDescription": "Opis grupy",
+  "defaultGroupCurrency": "Domyślna waluta grupy",
+  "searchCurrency": "Wyszukaj waluty...",
+  "addMembers": "Dodaj członków",
+  "creatingGroup": "Tworzenie grupy..."
 }

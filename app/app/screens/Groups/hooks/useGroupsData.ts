@@ -1,6 +1,6 @@
 import { GROUPS_SEARCH_DELAY } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { getGroupList } from "@/app/services/groups";
+import { getGroupList } from "@/app/services";
 import { GroupResult, GroupsResponse, ResponseMessage } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
 

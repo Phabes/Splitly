@@ -1,18 +1,31 @@
-import { Button, NavBar } from "@/app/components";
+import {
+  Button,
+  FormData,
+  Input,
+  LoadingWrapper,
+  NavBar,
+  Scroll,
+  Select,
+} from "@/app/components";
 import {
   useAppNavigation,
   useAuthContext,
+  useCurrencies,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { useCreateGroup } from "./hooks";
 
 export const CreateGroup: FC = () => {
   const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
+  const { currencies, isLoading, error } = useCurrencies();
+  const { nameField, descriptionField, currencyField, handleCreateGroup } =
+    useCreateGroup();
 
   const styles = useStyles();
 
@@ -30,7 +43,63 @@ export const CreateGroup: FC = () => {
           }
         />
       }
-    ></LayoutProvider>
+    >
+      <LoadingWrapper isLoading={isLoading}>
+        <Scroll>
+          <View style={styles.inputs}>
+            <FormData
+              labelText={translations["groupName"]}
+              messageText={nameField.error}
+            >
+              <Input
+                text={nameField.value}
+                placeholder={translations["groupName"] + "..."}
+                onChange={nameField.setValue}
+                variant={nameField.error ? "error" : "default"}
+                allowClear={true}
+              />
+            </FormData>
+            <FormData
+              labelText={translations["groupDescription"]}
+              messageText={descriptionField.error}
+            >
+              <Input
+                text={descriptionField.value}
+                placeholder={translations["groupDescription"] + "..."}
+                onChange={descriptionField.setValue}
+                variant={descriptionField.error ? "error" : "default"}
+                allowClear={true}
+              />
+            </FormData>
+            <FormData
+              labelText={translations["defaultGroupCurrency"]}
+              messageText={currencyField.error}
+            >
+              <Select
+                selectData={currencies}
+                value={currencyField.value}
+                onSelect={currencyField.setValue}
+                placeholder={translations["defaultGroupCurrency"] + "..."}
+                activeSearch={true}
+                searchPlaceholder={translations["searchCurrency"]}
+                variant={currencyField.error ? "error" : "default"}
+              />
+            </FormData>
+          </View>
+          <View style={styles.buttons}>
+            <Button
+              text={translations["createGroup"]}
+              onPress={handleCreateGroup}
+            />
+            <Button
+              text={translations["addMembers"]}
+              variant="secondary"
+              onPress={() => {}}
+            />
+          </View>
+        </Scroll>
+      </LoadingWrapper>
+    </LayoutProvider>
   );
 };
 
@@ -38,10 +107,8 @@ const useStyles = () => {
   const theme = useThemeContext();
 
   return StyleSheet.create({
-    container: { flex: 1, gap: theme.spacing(2) },
-    footerContainer: {
-      alignItems: "center",
-    },
+    inputs: { gap: theme.spacing(3) },
+    buttons: { gap: theme.spacing(3) },
   });
 };
 

@@ -48,7 +48,13 @@ export type TranslationKeys =
   | "loadingMoreGroups"
   | "noMoreGroupsFound"
   | "noGroupsFoundMatching"
-  | "groupRequests";
+  | "groupRequests"
+  | "groupName"
+  | "groupDescription"
+  | "defaultGroupCurrency"
+  | "searchCurrency"
+  | "addMembers"
+  | "creatingGroup";
 
 export const translations: Record<
   LanguageKeys,

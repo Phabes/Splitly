@@ -1,6 +1,6 @@
 import { PAGE_SIZE } from "@/app/constants/pagination";
 
-export const getGroupList = (
+export const getGroupListCall = (
   token: string,
   groupIDs: string[] = [],
   query: string = "",
@@ -19,4 +19,4 @@ export const getGroupList = (
   });
 };
 
-export default getGroupList;
+export default getGroupListCall;

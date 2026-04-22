@@ -1,3 +1,4 @@
+export { fieldRequiredValidation } from "./fieldRequiredValidation";
 export {
   validateEmail,
   validateUsername,
