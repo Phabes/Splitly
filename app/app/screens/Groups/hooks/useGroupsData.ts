@@ -1,13 +1,14 @@
 import { GROUPS_SEARCH_DELAY } from "@/app/constants/pagination";
-import { useAuthenticatedApi, usePaging } from "@/app/hooks";
+import { useAppNavigation, useAuthenticatedApi, usePaging } from "@/app/hooks";
+import { TabParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
 import { getGroupListCall } from "@/app/services";
 import { GroupResult, GroupsResponse, ResponseMessage } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
+import { DeviceEventEmitter } from "react-native";
 
 export const useGroupsData = () => {
   const [searchValue, setSearchValue] = useState("");
   const [groups, setGroups] = useState<GroupResult[]>([]);
-
   const [isSearching, setIsSearching] = useState(true);
 
   const request = useAuthenticatedApi();
@@ -94,6 +95,19 @@ export const useGroupsData = () => {
     const friendRecordIDs = groups.map((f) => f._id);
     await fetchGroups(friendRecordIDs, false, searchValue);
   }, [isLoadingMore, isSearching, groups, fetchGroups, searchValue]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "refreshGroupList",
+      () => {
+        forceLoadMore();
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, [forceLoadMore]);
 
   return {
     searchValue,

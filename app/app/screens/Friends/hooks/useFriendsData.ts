@@ -3,11 +3,11 @@ import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { getFriendListCall } from "@/app/services";
 import { FriendsResponse, FriendResult, ResponseMessage } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
+import { DeviceEventEmitter } from "react-native";
 
 export const useFriendsData = () => {
   const [searchValue, setSearchValue] = useState("");
   const [friends, setFriends] = useState<FriendResult[]>([]);
-
   const [isSearching, setIsSearching] = useState(true);
 
   const request = useAuthenticatedApi();
@@ -95,6 +95,19 @@ export const useFriendsData = () => {
     const friendRecordIDs = friends.map((f) => f._id);
     await fetchFriends(friendRecordIDs, false, searchValue);
   }, [isLoadingMore, isSearching, friends, fetchFriends, searchValue]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "refreshFriendList",
+      () => {
+        forceLoadMore();
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, [forceLoadMore]);
 
   return {
     searchValue,

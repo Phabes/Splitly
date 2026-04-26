@@ -1,38 +1,29 @@
-import { useState, useEffect } from "react";
-import { SelectData } from "@/app/types";
+import { useState, useEffect, useMemo } from "react";
+import { ResponseMessage, SelectData } from "@/app/types";
+import useAuthenticatedApi from "./useAuthenticatedApi";
+import { getCurrencyListCall } from "../services/currencies";
 
-export const useCurrencies = () => {
+export const useCurrencies = (selectedValue?: string) => {
   const [currencies, setCurrencies] = useState<Array<SelectData>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const request = useAuthenticatedApi();
 
   useEffect(() => {
     const fetchCurrencies = async () => {
       try {
         setIsLoading(true);
-        setError(null);
-
-        const response = await fetch("https://api.frankfurter.app/currencies");
+        const response = await request(getCurrencyListCall);
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch currencies: ${response.status}`);
+          const data: ResponseMessage = await response.json();
+          throw new Error(data.message);
         }
 
-        const data: Record<string, string> = await response.json();
+        const data = await response.json();
 
-        const formattedCurrencies: Array<SelectData> = Object.entries(data)
-          .map(([code, name]) => ({
-            label: `${name} (${code})`,
-            value: code,
-          }))
-          .sort((a, b) => (a.value < b.value ? -1 : 1));
-
-        setCurrencies(formattedCurrencies);
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Unknown error occurred";
-        setError(errorMessage);
-        console.error("useCurrencies Error:", errorMessage);
+        setCurrencies(data.currencies);
+      } catch (error) {
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
@@ -41,7 +32,23 @@ export const useCurrencies = () => {
     fetchCurrencies();
   }, []);
 
-  return { currencies, isLoading, error };
+  const sortedCurrencies = useMemo(() => {
+    if (!currencies.length) return [];
+
+    return [...currencies].sort((a, b) => {
+      if (a.value === selectedValue) {
+        return -1;
+      }
+
+      if (b.value === selectedValue) {
+        return 1;
+      }
+
+      return a.label.localeCompare(b.label);
+    });
+  }, [currencies, selectedValue]);
+
+  return { currencies: sortedCurrencies, isLoading };
 };
 
 export default useCurrencies;

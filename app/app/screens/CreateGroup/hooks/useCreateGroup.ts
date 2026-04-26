@@ -1,15 +1,20 @@
 import {
+  useAppNavigation,
   useAuthenticatedApi,
   useFormData,
   useLoadingContext,
   useTranslations,
 } from "@/app/hooks";
+import { createGroupCall } from "@/app/services";
+import { ResponseMessage } from "@/app/types";
 
 import { fieldRequiredValidation } from "@/app/utils";
+import { DeviceEventEmitter } from "react-native";
 
 export const useCreateGroup = () => {
   const translations = useTranslations();
   const request = useAuthenticatedApi();
+  const navigation = useAppNavigation();
   const { showLoading, hideLoading } = useLoadingContext();
 
   const nameField = useFormData();
@@ -30,7 +35,7 @@ export const useCreateGroup = () => {
     );
 
     const isError =
-      nameField !== undefined ||
+      nameError !== undefined ||
       descriptionError !== undefined ||
       currencyError !== undefined;
 
@@ -41,26 +46,24 @@ export const useCreateGroup = () => {
     showLoading(translations["creatingGroup"]);
     const isError = validateAddGroup();
     if (isError) {
-      setTimeout(() => {
-        hideLoading();
-      }, 4000);
+      hideLoading();
       return;
     }
 
     try {
-      // const response = await request(
-      //   createGroupCall,
-      //   nameField.value,
-      //   descriptionField.value,
-      //   currencyField.value,
-      // );
-      // if (response.ok) {
-      //   const data: SignInResponse = await response.json();
-      //   await signIn(data.userToken, data.refreshToken);
-      // } else {
-      //   const data: ResponseMessage = await response.json();
-      //   throw new Error(data.message);
-      // }
+      const response = await request(
+        createGroupCall,
+        nameField.value,
+        descriptionField.value,
+        currencyField.value,
+      );
+      if (response.ok) {
+        DeviceEventEmitter.emit("refreshGroupList");
+        navigation.goBack();
+      } else {
+        const data: ResponseMessage = await response.json();
+        throw new Error(data.message);
+      }
     } catch (error) {
       // Sign in error
       console.error(error);

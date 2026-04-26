@@ -23,9 +23,9 @@ export const CreateGroup: FC = () => {
   const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
-  const { currencies, isLoading, error } = useCurrencies();
   const { nameField, descriptionField, currencyField, handleCreateGroup } =
     useCreateGroup();
+  const { currencies, isLoading } = useCurrencies(currencyField.value);
 
   const styles = useStyles();
 
