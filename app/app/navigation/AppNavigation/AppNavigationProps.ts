@@ -10,7 +10,8 @@ export type AppStackParamList = {
   MainTabs: NavigatorScreenParams<TabParamList>;
   AddFriend: undefined;
   FriendRequests: undefined;
-  CreateGroup: undefined;
+  CreateGroup: { selectedMembers?: string[] } | undefined;
+  AddMembers: { initialSelectedMembers?: string[] } | undefined;
 };
 
 export type AppNavigationProps = NativeStackNavigationProp<AppStackParamList>;

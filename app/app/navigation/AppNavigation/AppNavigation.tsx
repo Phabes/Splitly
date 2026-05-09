@@ -1,7 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AppStackParamList } from "./AppNavigationProps";
 import { TabNavigation } from "../TabNavigation";
-import { AddFriend, CreateGroup, FriendRequests } from "@/app/screens";
+import {
+  AddFriend,
+  AddMembers,
+  CreateGroup,
+  FriendRequests,
+} from "@/app/screens";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -26,6 +31,10 @@ export const AppNavigation = () => {
       <Stack.Screen
         name="CreateGroup"
         component={CreateGroup}
+      />
+      <Stack.Screen
+        name="AddMembers"
+        component={AddMembers}
       />
     </Stack.Navigator>
   );

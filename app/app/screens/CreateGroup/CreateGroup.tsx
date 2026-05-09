@@ -23,8 +23,13 @@ export const CreateGroup: FC = () => {
   const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
-  const { nameField, descriptionField, currencyField, handleCreateGroup } =
-    useCreateGroup();
+  const {
+    nameField,
+    descriptionField,
+    currencyField,
+    selectedMembers,
+    handleCreateGroup,
+  } = useCreateGroup();
   const { currencies, isLoading } = useCurrencies(currencyField.value);
 
   const styles = useStyles();
@@ -94,7 +99,11 @@ export const CreateGroup: FC = () => {
             <Button
               text={translations["addMembers"]}
               variant="secondary"
-              onPress={() => {}}
+              onPress={() => {
+                navigation.navigate("AddMembers", {
+                  initialSelectedMembers: selectedMembers,
+                });
+              }}
             />
           </View>
         </Scroll>
