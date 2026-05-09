@@ -47,7 +47,7 @@ export const FriendRequests: FC = () => {
         <NavBar
           text={translations["friendRequests"]}
           onBackPress={() => {
-            DeviceEventEmitter.emit("refreshFriendsList");
+            DeviceEventEmitter.emit("refreshFriendList");
             navigation.goBack();
           }}
           button={

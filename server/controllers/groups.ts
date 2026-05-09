@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
 import Group from "@/models/group.ts";
+import { validCurrency } from "@/utils/validCurrency.ts";
 
 export const getGroupList = async (
   req: AuthRequest,
@@ -47,6 +48,54 @@ export const getGroupList = async (
     return res.status(500).json({
       code: "getGroupList/error",
       message: "Server error during fetching groups.",
+    });
+  }
+};
+
+export const createGroup = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { name, description, currency } = req.body;
+    const currentUserID = req.userID;
+
+    if (
+      !currency ||
+      currency.trim().length !== 3 ||
+      !validCurrency(currency.toUpperCase())
+    ) {
+      return res.status(400).json({
+        code: "postGroup/invalid-currency",
+        message: "A valid 3-letter currency code is required.",
+      });
+    }
+
+    const newGroup = new Group({
+      name: name.trim(),
+      description: description ? description.trim() : "",
+      baseCurrency: currency.toUpperCase(),
+      creator: currentUserID,
+      members: [
+        {
+          user: currentUserID,
+          status: "accepted",
+          role: "admin",
+        },
+      ],
+    });
+
+    await newGroup.save();
+
+    return res.status(201).json({
+      code: "postGroup/success",
+      message: "Group created successfully.",
+      group: newGroup,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "postGroup/error",
+      message: "An unexpected error occurred while creating the group.",
     });
   }
 };

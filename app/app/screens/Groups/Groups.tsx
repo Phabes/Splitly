@@ -65,13 +65,13 @@ export const Groups: FC = () => {
       />
       <View style={styles.mainButtons}>
         <Button
-          text={translations["addGroup"]}
-          onPress={() => navigation.navigate("AddFriend")}
+          text={translations["createGroup"]}
+          onPress={() => navigation.navigate("CreateGroup")}
           fullWidth={true}
         />
         <Button
           text={translations["friendRequests"]}
-          onPress={() => navigation.navigate("FriendRequests")}
+          onPress={() => console.log("Group Requests")}
           fullWidth={true}
         />
       </View>

@@ -1,4 +1,4 @@
-export const sendFriendRequest = (token: string, userToAdd: string) => {
+export const sendFriendRequestCall = (token: string, userToAdd: string) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
@@ -17,4 +17,4 @@ export const sendFriendRequest = (token: string, userToAdd: string) => {
   });
 };
 
-export default sendFriendRequest;
+export default sendFriendRequestCall;

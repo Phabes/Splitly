@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import {
   faChevronDown,
   faChevronUp,
@@ -20,6 +20,7 @@ export type SelectProps = {
   disabled?: boolean;
   placeholder?: string;
   searchPlaceholder?: string;
+  variant?: "default" | "error";
   activeSearch?: boolean;
 };
 
@@ -30,13 +31,27 @@ export const Select: FC<SelectProps> = ({
   disabled = false,
   placeholder = "",
   searchPlaceholder = "",
+  variant = "default",
   activeSearch = false,
 }) => {
   const theme = useThemeContext();
-  const [isFocus, setIsFocus] = useState(false);
+  const [type, setType] = useState<SelectProps["variant"] | "active">(variant);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const styles = useStyles(theme, isFocus, disabled);
+  const styles = useStyles(theme, disabled, type);
+
+  const onFocusInput = useCallback(() => {
+    setType("active");
+  }, []);
+
+  const onBlurInput = useCallback(() => {
+    setType("default");
+    setSearchQuery("");
+  }, []);
+
+  useEffect(() => {
+    setType(variant);
+  }, [variant]);
 
   return (
     <Dropdown
@@ -45,17 +60,14 @@ export const Select: FC<SelectProps> = ({
       disable={disabled}
       labelField="label"
       valueField="value"
-      placeholder={!isFocus ? placeholder : ""}
+      placeholder={type === "active" ? "" : placeholder}
       placeholderStyle={styles.placeholder}
       value={value}
-      onFocus={() => setIsFocus(true)}
-      onBlur={() => {
-        setIsFocus(false);
-        setSearchQuery("");
-      }}
+      onFocus={onFocusInput}
+      onBlur={onBlurInput}
       onChange={(item: SelectData) => {
         onSelect(item.value);
-        setIsFocus(false);
+        onBlurInput();
       }}
       renderItem={(item: SelectData) => {
         const background =
@@ -81,15 +93,9 @@ export const Select: FC<SelectProps> = ({
       activeColor="transparent"
       renderRightIcon={() => (
         <Icon
-          icon={!isFocus ? faChevronDown : faChevronUp}
+          icon={type === "active" ? faChevronUp : faChevronDown}
           size="large"
-          color={
-            disabled
-              ? "text-disabled"
-              : !isFocus
-                ? "text-primary"
-                : "text-success"
-          }
+          color={disabled ? "text-disabled" : "text-primary"}
         />
       )}
       search={activeSearch}
@@ -115,14 +121,17 @@ export const Select: FC<SelectProps> = ({
 
 const useStyles = (
   theme: AppTheme,
-  isFocus: boolean,
   disabled: SelectProps["disabled"],
+  type: SelectProps["variant"] | "active",
 ) => {
-  const borderColor = disabled
-    ? "text-disabled"
-    : isFocus
-      ? "text-success"
-      : "text-secondary";
+  const borderColor =
+    type === "default"
+      ? "text-secondary"
+      : type === "active"
+        ? "text-success"
+        : type === "error"
+          ? "text-error"
+          : "text-secondary";
   const selectedText = disabled ? "text-disabled" : "text-primary";
   const placeholderText = disabled ? "text-disabled" : "text-secondary";
 

@@ -3,7 +3,7 @@ import {
   ADD_FRIENDS_SEARCH_DELAY,
 } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { getAddFriendList } from "@/app/services";
+import { getAddFriendListCall } from "@/app/services";
 import { AddFriendResponse, ResponseMessage, UserResult } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
 
@@ -18,7 +18,7 @@ export const useUserSearch = () => {
   const retrieveData = async () => {
     const userIDs = users.map((user) => user._id);
 
-    const response = await request(getAddFriendList, searchValue, userIDs);
+    const response = await request(getAddFriendListCall, searchValue, userIDs);
 
     if (response.ok) {
       const result: AddFriendResponse = await response.json();
@@ -54,7 +54,7 @@ export const useUserSearch = () => {
 
     const delayDebounceFn = setTimeout(async () => {
       try {
-        const response = await request(getAddFriendList, searchValue, []);
+        const response = await request(getAddFriendListCall, searchValue, []);
 
         if (response.ok) {
           const result: AddFriendResponse = await response.json();

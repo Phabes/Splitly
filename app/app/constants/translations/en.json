@@ -36,10 +36,16 @@
   "noMoreFriends": "No more friends.",
   "noFriendsFound": "No friends found.",
   "searchGroups": "Search groups...",
-  "addGroup": "Add group",
+  "createGroup": "Create group",
   "groupRequests": "Requests",
   "searchedGroups": "Searched groups",
   "loadingMoreGroups": "Loading more groups...",
   "noMoreGroupsFound": "No more groups found.",
-  "noGroupsFoundMatching": "No groups found."
+  "noGroupsFoundMatching": "No groups found.",
+  "groupName": "Group name",
+  "groupDescription": "Group description",
+  "defaultGroupCurrency": "Default group currency",
+  "searchCurrency": "Search currency...",
+  "addMembers": "Add members",
+  "creatingGroup": "Creating group..."
 }

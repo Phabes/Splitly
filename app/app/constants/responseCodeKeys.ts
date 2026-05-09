@@ -31,9 +31,18 @@ export type ResponseCodeKeys =
   | "patchFriendRequest/alreadyResponded"
   | "patchFriendRequest/success"
   | "patchFriendRequest/error"
+  // controllers/currencies
+  | "getCurrencies/success"
+  | "getCurrencies/error"
+  | "getCurrencyRate/invalid-params"
+  | "getCurrencyRate/success"
+  | "getCurrencyRate/error"
   // controllers/groups
   | "getGroupList/success"
-  | "getGroupList/error";
+  | "getGroupList/error"
+  | "postGroup/invalid-currency"
+  | "postGroup/success"
+  | "postGroup/error";
 
 export default function Index() {
   return null;

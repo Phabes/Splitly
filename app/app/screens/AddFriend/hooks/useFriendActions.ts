@@ -3,7 +3,7 @@ import {
   useLoadingContext,
   useTranslations,
 } from "@/app/hooks";
-import { sendFriendRequest } from "@/app/services";
+import { sendFriendRequestCall } from "@/app/services";
 import { ResponseMessage, UserResult } from "@/app/types";
 import { Dispatch, SetStateAction } from "react";
 
@@ -18,7 +18,7 @@ export const useFriendActions = (
     showLoading(translations["sendingFriendRequest"]);
 
     try {
-      const response = await request(sendFriendRequest, userID);
+      const response = await request(sendFriendRequestCall, userID);
 
       if (response.ok) {
         setUsers((prev) => prev.filter((e) => e._id !== userID));

@@ -286,7 +286,7 @@ export const getFriendList = async (
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getFriendsList/error",
+      code: "getFriendList/error",
       message: "Server error during fetching friends.",
     });
   }
