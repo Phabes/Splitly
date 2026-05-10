@@ -29,7 +29,7 @@ export const useAddMembersData = () => {
       return;
     }
 
-    const friendRecordIDs = friends.map((f) => f.user._id);
+    const friendRecordIDs = friends.map((f) => f._id);
     fetchFriends(false, friendRecordIDs, searchQuery);
   }, [isLoadingMore, isSearching, hasMore, friends, searchQuery, fetchFriends]);
 
@@ -38,7 +38,7 @@ export const useAddMembersData = () => {
       return;
     }
 
-    const friendRecordIDs = friends.map((f) => f.user._id);
+    const friendRecordIDs = friends.map((f) => f._id);
     fetchFriends(false, friendRecordIDs, searchQuery);
   }, [isLoadingMore, isSearching, friends, searchQuery, fetchFriends]);
 

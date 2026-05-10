@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 import {
   Button,
   Input,
@@ -27,7 +27,7 @@ export const AddMembers: FC = () => {
   const navigation = useAppNavigation();
   const route = useRoute<RouteProp<AppStackParamList, "AddMembers">>();
 
-  const [selectedIds, setSelectedIds] = useState<string[]>(
+  const [selectedIDs, setSelectedIDs] = useState<string[]>(
     route.params?.initialSelectedMembers || [],
   );
 
@@ -45,17 +45,17 @@ export const AddMembers: FC = () => {
   const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   const toggleMember = (id: string) => {
-    setSelectedIds((prev) =>
+    setSelectedIDs((prev) =>
       prev.includes(id)
-        ? prev.filter((prevId) => prevId !== id)
+        ? prev.filter((prevID) => prevID !== id)
         : [...prev, id],
     );
   };
 
   const handleConfirm = () => {
-    navigation.navigate("CreateGroup", {
-      selectedMembers: selectedIds,
-    });
+    DeviceEventEmitter.emit("onMembersSelected", selectedIDs);
+
+    navigation.goBack();
   };
 
   const styles = useStyles();
@@ -94,7 +94,7 @@ export const AddMembers: FC = () => {
             )}
 
             {friends.map((item, i) => {
-              const isSelected = selectedIds.includes(item.user._id);
+              const isSelected = selectedIDs.includes(item.user._id);
 
               return (
                 <ListItem
@@ -137,7 +137,7 @@ export const AddMembers: FC = () => {
 
         <View style={styles.buttons}>
           <Button
-            text={`${translations["addMembers"]} (${selectedIds.length})`}
+            text={`${translations["addMembers"]} (${selectedIDs.length})`}
             onPress={handleConfirm}
           />
         </View>
@@ -150,13 +150,11 @@ const useStyles = () => {
   const theme = useThemeContext();
 
   return StyleSheet.create({
-    container: { flex: 1, gap: theme.spacing(2) },
+    container: { flex: 1, gap: theme.spacing(3) },
     footerContainer: {
       alignItems: "center",
-      paddingVertical: theme.spacing(2),
     },
     buttons: {
-      paddingTop: theme.spacing(2),
       gap: theme.spacing(3),
     },
   });

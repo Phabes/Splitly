@@ -27,8 +27,8 @@ export const CreateGroup: FC = () => {
     nameField,
     descriptionField,
     currencyField,
-    selectedMembers,
     handleCreateGroup,
+    goToAddMembers,
   } = useCreateGroup();
   const { currencies, isLoading } = useCurrencies(currencyField.value);
 
@@ -99,11 +99,7 @@ export const CreateGroup: FC = () => {
             <Button
               text={translations["addMembers"]}
               variant="secondary"
-              onPress={() => {
-                navigation.navigate("AddMembers", {
-                  initialSelectedMembers: selectedMembers,
-                });
-              }}
+              onPress={goToAddMembers}
             />
           </View>
         </Scroll>

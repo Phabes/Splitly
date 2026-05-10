@@ -61,7 +61,7 @@ export const useFriendsList = () => {
   return {
     friends,
     isSearching,
-    setIsSearching, // Exported so parent hooks can trigger the loader manually
+    setIsSearching,
     isLoadingMore,
     hasMore,
     fetchFriends,

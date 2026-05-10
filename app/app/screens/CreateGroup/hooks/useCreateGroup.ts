@@ -5,12 +5,11 @@ import {
   useLoadingContext,
   useTranslations,
 } from "@/app/hooks";
-import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
 import { createGroupCall } from "@/app/services";
 import { ResponseMessage } from "@/app/types";
 
 import { fieldRequiredValidation } from "@/app/utils";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import { DeviceEventEmitter } from "react-native";
 
 export const useCreateGroup = () => {
@@ -23,8 +22,26 @@ export const useCreateGroup = () => {
   const descriptionField = useFormData();
   const currencyField = useFormData();
 
-  const route = useRoute<RouteProp<AppStackParamList, "CreateGroup">>();
-  const selectedMembers = route.params?.selectedMembers || [];
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "onMembersSelected",
+      (ids: string[]) => {
+        setSelectedMembers(ids);
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const goToAddMembers = () => {
+    navigation.navigate("AddMembers", {
+      initialSelectedMembers: selectedMembers,
+    });
+  };
 
   const validateAddGroup = () => {
     const nameError = fieldRequiredValidation(nameField.value);
@@ -61,6 +78,7 @@ export const useCreateGroup = () => {
         nameField.value,
         descriptionField.value,
         currencyField.value,
+        selectedMembers,
       );
       if (response.ok) {
         DeviceEventEmitter.emit("refreshGroupList");
@@ -81,8 +99,8 @@ export const useCreateGroup = () => {
     nameField,
     descriptionField,
     currencyField,
-    selectedMembers,
     handleCreateGroup,
+    goToAddMembers,
   };
 };
 
