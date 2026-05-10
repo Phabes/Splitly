@@ -1,74 +1,28 @@
 import { useState, useCallback, useEffect } from "react";
-import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { FriendResult, ResponseMessage } from "@/app/types";
-import { getFriendListCall } from "@/app/services";
+import { ADD_MEMBERS_SEARCH_DELAY } from "@/app/constants/pagination";
+import { useFriendsList } from "./useFriendsList";
 
 export const useAddMembersData = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [friends, setFriends] = useState<FriendResult[]>([]);
-  const [isSearching, setIsSearching] = useState(true);
 
-  const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
+  const {
+    friends,
+    isSearching,
+    setIsSearching,
+    isLoadingMore,
+    hasMore,
+    fetchFriends,
+  } = useFriendsList();
 
-  const request = useAuthenticatedApi();
-
-  const fetchFriends = useCallback(
-    async (
-      isInitial: boolean = false,
-      friendIDs: string[] = [],
-      searchValue: string = "",
-    ) => {
-      if (isInitial) {
-        setIsSearching(true);
-      } else {
-        setIsLoadingMore(true);
-      }
-
-      try {
-        const response = await request(
-          getFriendListCall,
-          friendIDs,
-          searchValue,
-        );
-
-        if (response.ok) {
-          const result = await response.json();
-
-          if (result.friends && result.friends.length > 0) {
-            setFriends((prev) =>
-              isInitial ? result.friends : [...prev, ...result.friends],
-            );
-            setHasMore(result.hasMore);
-          } else {
-            if (isInitial) setFriends([]);
-            setHasMore(false);
-          }
-        } else {
-          const data: ResponseMessage = await response.json();
-          throw new Error(data.message);
-        }
-      } catch (error) {
-        // Fetching friends error
-        console.error(error);
-      } finally {
-        if (isInitial) {
-          setIsSearching(false);
-        } else {
-          setIsLoadingMore(false);
-        }
-      }
-    },
-    [request],
-  );
   useEffect(() => {
     setIsSearching(true);
 
     const delayDebounceFn = setTimeout(() => {
       fetchFriends(true, [], searchQuery);
-    }, 500);
+    }, ADD_MEMBERS_SEARCH_DELAY);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, fetchFriends]);
+  }, [searchQuery, fetchFriends, setIsSearching]);
 
   const loadMoreUsers = useCallback(() => {
     if (isLoadingMore || isSearching || !hasMore) {
