@@ -19,11 +19,11 @@ export const searchFriendSuggestions = async (
       status: { $in: ["accepted", "pending"] },
     });
 
-    const friendshipIds = existingFriendships.map((f) =>
+    const friendshipIDs = existingFriendships.map((f) =>
       f.requester!.toString() === currentUserID ? f.recipient : f.requester,
     );
 
-    const baseExclusionsSet = new Set([...friendshipIds, currentUserID]);
+    const baseExclusionsSet = new Set([...friendshipIDs, currentUserID]);
     const baseExclusions = Array.from(baseExclusionsSet);
 
     const fetchExclusionsSet = new Set([...baseExclusions, ...userIDs]);
@@ -130,12 +130,12 @@ export const searchFriendRequests = async (
 ): Promise<any> => {
   try {
     const { limit = 10, friendRequestIDs = [] } = req.body;
-    const currentUserId = req.userID;
+    const currentUserID = req.userID;
 
     const limitNum = Number(limit);
 
     const baseFilter = {
-      recipient: currentUserId,
+      recipient: currentUserID,
       status: "pending",
     };
 
@@ -220,7 +220,7 @@ export const getFriendList = async (
 ): Promise<any> => {
   try {
     const { query = "", limit = 10, friendIDs = [] } = req.body;
-    const currentUserId = req.userID;
+    const currentUserID = req.userID;
 
     const limitNum = Number(limit);
     const searchQuery = String(query);
@@ -228,26 +228,26 @@ export const getFriendList = async (
     let userMatchCondition = {};
     if (searchQuery) {
       const matchingUsers = await User.find({
-        _id: { $ne: currentUserId },
+        _id: { $ne: currentUserID },
         $or: [
           { username: { $regex: searchQuery, $options: "i" } },
           { email: { $regex: searchQuery, $options: "i" } },
         ],
       }).select("_id");
 
-      const matchedUserIds = matchingUsers.map((u) => u._id);
+      const matchedUserIDs = matchingUsers.map((u) => u._id);
 
       userMatchCondition = {
         $or: [
-          { requester: { $in: matchedUserIds } },
-          { recipient: { $in: matchedUserIds } },
+          { requester: { $in: matchedUserIDs } },
+          { recipient: { $in: matchedUserIDs } },
         ],
       };
     }
 
     const baseFilter: any = {
       $and: [
-        { $or: [{ requester: currentUserId }, { recipient: currentUserId }] },
+        { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
         { status: "accepted" },
       ],
     };
@@ -271,7 +271,7 @@ export const getFriendList = async (
 
     const formattedFriends = friends.map((record: any) => {
       const isRequester =
-        record.requester._id.toString() === currentUserId?.toString();
+        record.requester._id.toString() === currentUserID?.toString();
       return {
         _id: record._id,
         user: isRequester ? record.recipient : record.requester,

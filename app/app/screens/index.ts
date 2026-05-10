@@ -1,4 +1,5 @@
 export { AddFriend } from "./AddFriend";
+export { AddMembers } from "./AddMembers";
 export { CreateGroup } from "./CreateGroup";
 export { FriendRequests } from "./FriendRequests";
 export { Friends } from "./Friends";

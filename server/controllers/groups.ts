@@ -9,14 +9,14 @@ export const getGroupList = async (
 ): Promise<any> => {
   try {
     const { query = "", limit = 10, groupIDs = [] } = req.body;
-    const currentUserId = req.userID;
+    const currentUserID = req.userID;
     const limitNum = Number(limit);
     const searchQuery = String(query);
 
     const baseFilter: any = {
       members: {
         $elemMatch: {
-          user: currentUserId,
+          user: currentUserID,
           status: "accepted",
         },
       },
@@ -57,7 +57,7 @@ export const createGroup = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const { name, description, currency } = req.body;
+    const { name, description, currency, members } = req.body;
     const currentUserID = req.userID;
 
     if (
@@ -70,19 +70,32 @@ export const createGroup = async (
         message: "A valid 3-letter currency code is required.",
       });
     }
+    const groupMembers = [
+      {
+        user: currentUserID,
+        status: "accepted",
+        role: "admin",
+      },
+    ];
+
+    if (Array.isArray(members) && members.length > 0) {
+      members.forEach((memberID: string) => {
+        if (memberID !== currentUserID?.toString()) {
+          groupMembers.push({
+            user: memberID,
+            status: "pending",
+            role: "member",
+          });
+        }
+      });
+    }
 
     const newGroup = new Group({
       name: name.trim(),
       description: description ? description.trim() : "",
       baseCurrency: currency.toUpperCase(),
       creator: currentUserID,
-      members: [
-        {
-          user: currentUserID,
-          status: "accepted",
-          role: "admin",
-        },
-      ],
+      members: groupMembers,
     });
 
     await newGroup.save();
@@ -90,7 +103,6 @@ export const createGroup = async (
     return res.status(201).json({
       code: "postGroup/success",
       message: "Group created successfully.",
-      group: newGroup,
     });
   } catch (error) {
     return res.status(500).json({

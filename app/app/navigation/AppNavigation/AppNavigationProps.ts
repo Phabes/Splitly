@@ -11,6 +11,7 @@ export type AppStackParamList = {
   AddFriend: undefined;
   FriendRequests: undefined;
   CreateGroup: undefined;
+  AddMembers: { initialSelectedMembers?: string[] } | undefined;
 };
 
 export type AppNavigationProps = NativeStackNavigationProp<AppStackParamList>;

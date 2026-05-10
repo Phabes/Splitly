@@ -9,6 +9,7 @@ import { createGroupCall } from "@/app/services";
 import { ResponseMessage } from "@/app/types";
 
 import { fieldRequiredValidation } from "@/app/utils";
+import { useEffect, useState } from "react";
 import { DeviceEventEmitter } from "react-native";
 
 export const useCreateGroup = () => {
@@ -20,6 +21,27 @@ export const useCreateGroup = () => {
   const nameField = useFormData();
   const descriptionField = useFormData();
   const currencyField = useFormData();
+
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "onMembersSelected",
+      (ids: string[]) => {
+        setSelectedMembers(ids);
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const goToAddMembers = () => {
+    navigation.navigate("AddMembers", {
+      initialSelectedMembers: selectedMembers,
+    });
+  };
 
   const validateAddGroup = () => {
     const nameError = fieldRequiredValidation(nameField.value);
@@ -56,6 +78,7 @@ export const useCreateGroup = () => {
         nameField.value,
         descriptionField.value,
         currencyField.value,
+        selectedMembers,
       );
       if (response.ok) {
         DeviceEventEmitter.emit("refreshGroupList");
@@ -65,7 +88,7 @@ export const useCreateGroup = () => {
         throw new Error(data.message);
       }
     } catch (error) {
-      // Sign in error
+      // Creating group error
       console.error(error);
     } finally {
       hideLoading();
@@ -77,6 +100,7 @@ export const useCreateGroup = () => {
     descriptionField,
     currencyField,
     handleCreateGroup,
+    goToAddMembers,
   };
 };
 

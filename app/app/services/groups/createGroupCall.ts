@@ -3,6 +3,7 @@ export const createGroupCall = (
   name: string,
   description: string,
   currency: string,
+  members: string[],
 ) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
@@ -16,7 +17,7 @@ export const createGroupCall = (
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ name, description, currency }),
+    body: JSON.stringify({ name, description, currency, members }),
   });
 };
 
