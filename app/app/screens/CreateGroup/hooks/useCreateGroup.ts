@@ -99,6 +99,7 @@ export const useCreateGroup = () => {
     nameField,
     descriptionField,
     currencyField,
+    selectedMembers,
     handleCreateGroup,
     goToAddMembers,
   };

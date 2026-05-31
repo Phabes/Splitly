@@ -8,12 +8,7 @@ import {
   TouchableIcon,
   Typography,
 } from "@/app/components";
-import {
-  useAppNavigation,
-  useAuthContext,
-  useThemeContext,
-  useTranslations,
-} from "@/app/hooks";
+import { useAppNavigation, useAuthContext, useTranslations } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
@@ -124,10 +119,7 @@ export const FriendRequests: FC = () => {
 };
 
 const useStyles = () => {
-  const theme = useThemeContext();
-
   return StyleSheet.create({
-    container: { flex: 1, gap: theme.spacing(2) },
     footerContainer: {
       alignItems: "center",
     },

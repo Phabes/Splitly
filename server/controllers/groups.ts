@@ -111,3 +111,92 @@ export const createGroup = async (
     });
   }
 };
+
+export const searchGroupRequests = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { limit = 10, groupRequestIDs = [] } = req.body;
+    const currentUserID = req.userID;
+    const limitNum = Number(limit);
+
+    const baseFilter = {
+      members: {
+        $elemMatch: { user: currentUserID, status: "pending" },
+      },
+    };
+
+    const fetchFilter = {
+      ...baseFilter,
+      _id: { $nin: groupRequestIDs },
+    };
+
+    const requests = await Group.find(fetchFilter)
+      .select("id name description")
+      .populate("creator", "username email")
+      .limit(limitNum);
+    // .sort({ createdAt: -1 });
+
+    const totalCount = await Group.countDocuments(baseFilter);
+
+    return res.status(200).json({
+      code: "getGroupRequests/success",
+      message: "Group requests found.",
+      requests,
+      hasMore: groupRequestIDs.length + requests.length < totalCount,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "getGroupRequests/error",
+      message: "Server error during fetching group requests.",
+    });
+  }
+};
+
+export const decideGroupRequest = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const groupRequestID = req.params.id;
+    const { decision } = req.body;
+    const currentUserID = req.userID;
+
+    const group = await Group.findOne({
+      _id: groupRequestID,
+      members: {
+        $elemMatch: { user: currentUserID, status: "pending" },
+      },
+    });
+
+    if (!group) {
+      return res.status(404).json({
+        code: "patchGroupRequest/not-found",
+        message: "Group request not found or has already been processed.",
+      });
+    }
+
+    if (decision === "accepted") {
+      await Group.updateOne(
+        { _id: groupRequestID, "members.user": currentUserID },
+        { $set: { "members.$.status": "accepted" } },
+      );
+    } else {
+      await Group.updateOne(
+        { _id: groupRequestID },
+        { $pull: { members: { user: currentUserID } } },
+      );
+    }
+
+    return res.status(200).json({
+      code: "patchGroupRequest/success",
+      message: `Group request has been successfully processed.`,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "patchGroupRequest/error",
+      message: "Server error while processing group request decision.",
+    });
+  }
+};

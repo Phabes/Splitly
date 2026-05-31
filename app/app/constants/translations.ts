@@ -6,15 +6,14 @@ export const SUPPORTED_LANGUAGES = ["en", "pl"] as const;
 export type LanguageKeys = (typeof SUPPORTED_LANGUAGES)[number];
 
 export type TranslationKeys =
+  // general
   | "loading"
-  | "email"
-  | "username"
-  | "password"
-  | "repeatPassword"
+  | "sentBy"
+  | "fieldRequired"
+  // authentication
   | "signUp"
   | "signIn"
   | "signOut"
-  | "fieldRequired"
   | "notValidEmail"
   | "tooShortPassword"
   | "weakPassword"
@@ -24,14 +23,21 @@ export type TranslationKeys =
   | "usernameTaken"
   | "userNotFound"
   | "invalidPassword"
-  | "friends"
-  | "groups"
-  | "searchFriends"
-  | "addFriend"
+  // users
+  | "email"
+  | "username"
+  | "password"
+  | "repeatPassword"
   | "searchedUsers"
   | "loadingMoreUsers"
   | "noMoreUsersFound"
   | "noUsersFoundMatching"
+  // currencies
+  | "searchCurrency"
+  // friends
+  | "friends"
+  | "searchFriends"
+  | "addFriend"
   | "friendRequests"
   | "sendingFriendRequest"
   | "loadingMoreFriendRequests"
@@ -42,6 +48,8 @@ export type TranslationKeys =
   | "loadingMoreFriends"
   | "noMoreFriends"
   | "noFriendsFound"
+  // groups
+  | "groups"
   | "searchGroups"
   | "createGroup"
   | "searchedGroups"
@@ -52,9 +60,13 @@ export type TranslationKeys =
   | "groupName"
   | "groupDescription"
   | "defaultGroupCurrency"
-  | "searchCurrency"
   | "addMembers"
-  | "creatingGroup";
+  | "creatingGroup"
+  | "loadingMoreGroupRequests"
+  | "noMoreGroupRequests"
+  | "noGroupRequestsFound"
+  | "acceptingGroupRequest"
+  | "rejectingGroupRequest";
 
 export const translations: Record<
   LanguageKeys,

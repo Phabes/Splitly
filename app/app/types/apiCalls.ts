@@ -29,16 +29,6 @@ export type AddFriendResponse = ResponseMessage & {
   hasMore: boolean;
 };
 
-export interface FriendRequestResult {
-  _id: string;
-  requester: UserResult;
-}
-
-export type FriendRequestsResponse = ResponseMessage & {
-  requests: FriendRequestResult[];
-  hasMore: boolean;
-};
-
 export type FriendResult = {
   _id: string;
   user: UserResult;
@@ -46,6 +36,16 @@ export type FriendResult = {
 
 export type FriendsResponse = ResponseMessage & {
   friends: FriendResult[];
+  hasMore: boolean;
+};
+
+export interface FriendRequestResult {
+  _id: string;
+  requester: UserResult;
+}
+
+export type FriendRequestsResponse = ResponseMessage & {
+  requests: FriendRequestResult[];
   hasMore: boolean;
 };
 
@@ -57,6 +57,15 @@ export type GroupResult = {
 
 export type GroupsResponse = ResponseMessage & {
   groups: GroupResult[];
+  hasMore: boolean;
+};
+
+export type GroupRequestResult = GroupResult & {
+  creator: UserResult;
+};
+
+export type GroupRequestsResponse = ResponseMessage & {
+  requests: GroupRequestResult[];
   hasMore: boolean;
 };
 
