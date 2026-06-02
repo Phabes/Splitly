@@ -63,6 +63,7 @@ export const Friends: FC = () => {
         beginIcon={faSearch}
         allowClear={true}
       />
+
       <View style={styles.mainButtons}>
         <Button
           text={translations["addFriend"]}
@@ -75,6 +76,7 @@ export const Friends: FC = () => {
           fullWidth={true}
         />
       </View>
+
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
           gapSize="small"
@@ -98,6 +100,7 @@ export const Friends: FC = () => {
               </ListItem>
             );
           })}
+
           <View style={styles.footerContainer}>
             {isLoadingMore && (
               <>

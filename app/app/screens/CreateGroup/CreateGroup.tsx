@@ -27,6 +27,7 @@ export const CreateGroup: FC = () => {
     nameField,
     descriptionField,
     currencyField,
+    selectedMembers,
     handleCreateGroup,
     goToAddMembers,
   } = useCreateGroup();
@@ -97,7 +98,7 @@ export const CreateGroup: FC = () => {
               onPress={handleCreateGroup}
             />
             <Button
-              text={translations["addMembers"]}
+              text={`${translations["addMembers"]} (${selectedMembers.length})`}
               variant="secondary"
               onPress={goToAddMembers}
             />

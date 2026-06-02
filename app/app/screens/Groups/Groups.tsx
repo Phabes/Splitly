@@ -19,7 +19,7 @@ import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useGroupActions, useGroupsData } from "./hooks";
-import { faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 export const Groups: FC = () => {
   const { signOut } = useAuthContext();
@@ -63,6 +63,7 @@ export const Groups: FC = () => {
         beginIcon={faSearch}
         allowClear={true}
       />
+
       <View style={styles.mainButtons}>
         <Button
           text={translations["createGroup"]}
@@ -71,10 +72,11 @@ export const Groups: FC = () => {
         />
         <Button
           text={translations["friendRequests"]}
-          onPress={() => console.log("Group Requests")}
+          onPress={() => navigation.navigate("GroupRequests")}
           fullWidth={true}
         />
       </View>
+
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
           gapSize="small"
@@ -92,12 +94,13 @@ export const Groups: FC = () => {
                 onPress={() => handleShowGroupProfile(item.name)}
               >
                 <TouchableIcon
-                  icon={faUser}
+                  icon={faUsers}
                   onPress={() => handleShowGroupProfile(item.name)}
                 />
               </ListItem>
             );
           })}
+
           <View style={styles.footerContainer}>
             {isLoadingMore && (
               <>

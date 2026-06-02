@@ -42,7 +42,12 @@ export type ResponseCodeKeys =
   | "getGroupList/error"
   | "postGroup/invalid-currency"
   | "postGroup/success"
-  | "postGroup/error";
+  | "postGroup/error"
+  | "getGroupRequests/success"
+  | "getGroupRequests/error"
+  | "patchGroupRequest/not-found"
+  | "patchGroupRequest/success"
+  | "patchGroupRequest/error";
 
 export default function Index() {
   return null;
