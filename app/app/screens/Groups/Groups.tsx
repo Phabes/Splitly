@@ -19,7 +19,7 @@ import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useGroupActions, useGroupsData } from "./hooks";
-import { faSearch, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { getIcon } from "@/app/utils";
 
 export const Groups: FC = () => {
   const { signOut } = useAuthContext();
@@ -60,7 +60,7 @@ export const Groups: FC = () => {
         text={searchValue}
         onChange={handleSearchChange}
         placeholder={translations["searchGroups"]}
-        beginIcon={faSearch}
+        beginIcon={getIcon("Search")}
         allowClear={true}
       />
 
@@ -91,11 +91,13 @@ export const Groups: FC = () => {
               <ListItem
                 key={`Groups/${i}`}
                 text={`${item.name} - ${item.description}`}
-                onPress={() => handleShowGroupProfile(item.name)}
+                onPress={() => navigation.navigate("GroupDetails")}
+                // onPress={() => handleShowGroupProfile(item.name)}
               >
                 <TouchableIcon
-                  icon={faUsers}
-                  onPress={() => handleShowGroupProfile(item.name)}
+                  icon={getIcon("Users")}
+                  onPress={() => navigation.navigate("GroupDetails")}
+                  // onPress={() => handleShowGroupProfile(item.name)}
                 />
               </ListItem>
             );

@@ -66,7 +66,12 @@ export type TranslationKeys =
   | "noMoreGroupRequests"
   | "noGroupRequestsFound"
   | "acceptingGroupRequest"
-  | "rejectingGroupRequest";
+  | "rejectingGroupRequest"
+  | "groupDetails"
+  | "totalGroupSpend"
+  | "expenses"
+  | "balances"
+  | "members";
 
 export const translations: Record<
   LanguageKeys,

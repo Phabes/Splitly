@@ -58,5 +58,10 @@
   "noMoreGroupRequests": "Nie znaleziono więcej zaproszeń.",
   "noGroupRequestsFound": "Nie znaleziono zaproszeń.",
   "acceptingGroupRequest": "Akceptowanie zaproszenia...",
-  "rejectingGroupRequest": "Odrzucanie zaproszenia..."
+  "rejectingGroupRequest": "Odrzucanie zaproszenia...",
+  "groupDetails": "Detale grupy",
+  "totalGroupSpend": "Sumaryczne wydatki grupy",
+  "expenses": "Wydatki",
+  "balances": "Saldo",
+  "members": "Członkowie"
 }

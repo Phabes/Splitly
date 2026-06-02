@@ -10,6 +10,7 @@ export * from "./NavBar";
 export * from "./Scroll";
 export * from "./Select";
 export * from "./TabBar";
+export * from "./TabSelector";
 export * from "./TouchableIcon";
 export * from "./Typography";
 

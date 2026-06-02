@@ -6,8 +6,9 @@ import {
   AddMembers,
   CreateGroup,
   FriendRequests,
+  GroupDetails,
+  GroupRequests,
 } from "@/app/screens";
-import { GroupRequests } from "@/app/screens/GroupRequests";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -40,6 +41,10 @@ export const AppNavigation = () => {
       <Stack.Screen
         name="GroupRequests"
         component={GroupRequests}
+      />
+      <Stack.Screen
+        name="GroupDetails"
+        component={GroupDetails}
       />
     </Stack.Navigator>
   );

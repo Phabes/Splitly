@@ -16,10 +16,10 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
-import { faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useFriendActions, useFriendsData } from "./hooks";
+import { getIcon } from "@/app/utils";
 
 export const Friends: FC = () => {
   const { signOut } = useAuthContext();
@@ -60,7 +60,7 @@ export const Friends: FC = () => {
         text={searchValue}
         onChange={handleSearchChange}
         placeholder={translations["searchFriends"]}
-        beginIcon={faSearch}
+        beginIcon={getIcon("Search")}
         allowClear={true}
       />
 
@@ -94,7 +94,7 @@ export const Friends: FC = () => {
                 onPress={() => handleShowUserProfile(item.user._id)}
               >
                 <TouchableIcon
-                  icon={faUser}
+                  icon={getIcon("User")}
                   onPress={() => handleShowUserProfile(item.user._id)}
                 />
               </ListItem>

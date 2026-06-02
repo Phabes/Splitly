@@ -58,5 +58,10 @@
   "noMoreGroupRequests": "No more group requests.",
   "noGroupRequestsFound": "No group requests found.",
   "acceptingGroupRequest": "Accepting group request...",
-  "rejectingGroupRequest": "Rejecting group request..."
+  "rejectingGroupRequest": "Rejecting group request...",
+  "groupDetails": "Group details",
+  "totalGroupSpend": "Total group spend",
+  "expenses": "Expenses",
+  "balances": "Balances",
+  "members": "Members"
 }

@@ -6,7 +6,7 @@ import { StyleSheet, TextInput, View } from "react-native";
 import { TogglePassword } from "./components/TogglePassword";
 import { InputIcon } from "./components/InputIcon";
 import { TouchableOpacity } from "react-native";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { getIcon } from "@/app/utils";
 
 type InputProps = {
   text: string;
@@ -101,7 +101,7 @@ export const Input: FC<InputProps> = ({
       )}
       {allowClear && text !== "" && (
         <TouchableOpacity onPress={clearInput}>
-          <InputIcon icon={faXmark} />
+          <InputIcon icon={getIcon("X")} />
         </TouchableOpacity>
       )}
     </View>

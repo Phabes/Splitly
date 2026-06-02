@@ -1,4 +1,5 @@
 export { fieldRequiredValidation } from "./fieldRequiredValidation";
+export { getIcon } from "./getIcon";
 export {
   validateEmail,
   validateUsername,

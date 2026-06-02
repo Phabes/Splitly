@@ -13,6 +13,7 @@ export type AppStackParamList = {
   CreateGroup: undefined;
   AddMembers: { initialSelectedMembers?: string[] } | undefined;
   GroupRequests: undefined;
+  GroupDetails: undefined;
 };
 
 export type AppNavigationProps = NativeStackNavigationProp<AppStackParamList>;

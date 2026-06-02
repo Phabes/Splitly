@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { useThemeContext } from "@/app/hooks";
-import { faLayerGroup, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "../Icon";
+import { getIcon } from "@/app/utils";
 
 export const TabBar: FC<BottomTabBarProps> = ({
   state,
@@ -29,9 +29,6 @@ export const TabBar: FC<BottomTabBarProps> = ({
           }
         };
 
-        const iconDefinition =
-          route.name === "Friends" ? faUserFriends : faLayerGroup;
-
         const iconSize = isFocused ? "large" : "small";
         const iconColor = isFocused ? "text-primary" : "text-secondary";
 
@@ -43,7 +40,7 @@ export const TabBar: FC<BottomTabBarProps> = ({
             style={styles.tab}
           >
             <Icon
-              icon={iconDefinition}
+              icon={getIcon(route.name)}
               size={iconSize}
               color={iconColor}
             />
