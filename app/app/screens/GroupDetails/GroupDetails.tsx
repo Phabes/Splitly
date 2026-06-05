@@ -10,6 +10,7 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
+  useAuthContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -18,6 +19,7 @@ import { LayoutProvider } from "@/app/providers";
 import { getIcon } from "@/app/utils";
 
 export const GroupDetails: FC = () => {
+  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
   const styles = useStyles();
@@ -169,27 +171,31 @@ export const GroupDetails: FC = () => {
           text={translations["groupDetails"]}
           onBackPress={navigation.goBack}
           button={
-            <TouchableOpacity
-              onPress={() => {
-                /* Navigate to Settings */
-              }}
-            >
-              <Icon
-                icon={getIcon("Cog")}
-                color="text-primary"
-              />
-            </TouchableOpacity>
+            <Button
+              text={translations["signOut"]}
+              onPress={signOut}
+            />
           }
         />
       }
     >
       <View style={styles.container}>
         <View style={styles.heroSection}>
-          <View>
+          <View style={styles.titleWrapper}>
             <Typography
               text={mockGroupName}
               variant="header-large"
             />
+            <TouchableOpacity
+              onPress={() => {}}
+              style={[styles.editIcon, { position: "absolute", right: 0 }]}
+            >
+              <Icon
+                icon={getIcon("Cog")}
+                size="small"
+                color="text-secondary"
+              />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.totalSpend}>
@@ -252,6 +258,17 @@ const useStyles = () => {
       alignItems: "center",
       paddingVertical: theme.spacing(2),
       gap: theme.spacing(2),
+    },
+    titleWrapper: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: theme.spacing(2),
+      width: "100%",
+    },
+    editIcon: {
+      marginLeft: theme.spacing(1.5),
+      padding: theme.spacing(0.5),
     },
     totalSpend: {
       alignItems: "center",
