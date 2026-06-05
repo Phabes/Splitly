@@ -17,10 +17,10 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
-import { faSearch, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
 import { useAddMembersData } from "./hooks";
+import { getIcon } from "@/app/utils";
 
 export const AddMembers: FC = () => {
   const translations = useTranslations();
@@ -74,7 +74,7 @@ export const AddMembers: FC = () => {
           text={searchQuery}
           placeholder={translations["searchFriends"] || "Search friends..."}
           onChange={setSearchQuery}
-          beginIcon={faSearch}
+          beginIcon={getIcon("Search")}
           allowClear={true}
         />
         <LoadingWrapper isLoading={isSearching}>
@@ -103,7 +103,7 @@ export const AddMembers: FC = () => {
                   onPress={() => toggleMember(item.user._id)}
                 >
                   <TouchableIcon
-                    icon={isSelected ? faMinus : faPlus}
+                    icon={getIcon(isSelected ? "Minus" : "Plus")}
                     onPress={() => toggleMember(item.user._id)}
                   />
                 </ListItem>

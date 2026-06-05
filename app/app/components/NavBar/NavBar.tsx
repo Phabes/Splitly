@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Typography } from "../Typography";
 import { useThemeContext } from "@/app/hooks";
 import { Icon } from "../Icon";
-import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { getIcon } from "@/app/utils";
 
 export type NavBarProps = {
   text: string;
@@ -30,7 +30,7 @@ export const NavBar: FC<NavBarProps> = ({
       >
         {onBackPress && (
           <Icon
-            icon={faAngleLeft}
+            icon={getIcon("AngleLeft")}
             size="large"
           />
         )}

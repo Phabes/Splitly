@@ -18,7 +18,7 @@ import {
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { useGroupRequests } from "./hooks";
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { getIcon } from "@/app/utils";
 
 export const GroupRequests: FC = () => {
   const { signOut } = useAuthContext();
@@ -81,11 +81,11 @@ export const GroupRequests: FC = () => {
               onPress={() => {}}
             >
               <TouchableIcon
-                icon={faCheck}
+                icon={getIcon("Check")}
                 onPress={() => handleAcceptGroupRequest(item._id)}
               />
               <TouchableIcon
-                icon={faXmark}
+                icon={getIcon("X")}
                 onPress={() => handleRejectGroupRequest(item._id)}
                 color="text-error"
               />

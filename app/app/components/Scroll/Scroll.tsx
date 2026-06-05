@@ -15,7 +15,7 @@ import {
   TOUCH_ADDITIONAL_REFRESH_THRESHOLD,
 } from "@/app/constants/pagination";
 import { Icon } from "../Icon";
-import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
+import { getIcon } from "@/app/utils";
 
 type ScrollProps = {
   gapSize?: "small" | "large";
@@ -170,7 +170,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
               }}
             >
               <Icon
-                icon={faRotateRight}
+                icon={getIcon("RotateRight")}
                 size="large"
               />
             </View>

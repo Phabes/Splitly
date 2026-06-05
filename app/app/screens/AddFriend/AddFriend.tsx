@@ -16,11 +16,11 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
-import { faAdd, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useUsers } from "./hooks";
 import { ADD_FRIENDS_MIN_SEARCH_LENGTH } from "@/app/constants/pagination";
+import { getIcon } from "@/app/utils";
 
 export const AddFriend: FC = () => {
   const { signOut } = useAuthContext();
@@ -69,7 +69,7 @@ export const AddFriend: FC = () => {
           text={searchValue}
           onChange={handleSearchChange}
           placeholder={translations["searchFriends"]}
-          beginIcon={faSearch}
+          beginIcon={getIcon("Search")}
         />
         <LoadingWrapper isLoading={isSearching}>
           <Scroll
@@ -95,7 +95,7 @@ export const AddFriend: FC = () => {
                   onPress={() => handleShowUserProfile(item._id)}
                 >
                   <TouchableIcon
-                    icon={faAdd}
+                    icon={getIcon("Plus")}
                     onPress={() => handleAddFriend(item._id)}
                   />
                 </ListItem>

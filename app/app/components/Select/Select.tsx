@@ -1,9 +1,4 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
-import {
-  faChevronDown,
-  faChevronUp,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons";
 import { StyleSheet, View } from "react-native";
 import { Typography } from "../Typography/Typography";
 import { Dropdown } from "react-native-element-dropdown";
@@ -12,6 +7,7 @@ import { Icon } from "../Icon";
 import { AppTheme } from "@/app/constants/theme";
 import { SelectData } from "@/app/types";
 import { Input } from "../Input";
+import { getIcon } from "@/app/utils";
 
 export type SelectProps = {
   selectData: Array<SelectData>;
@@ -93,7 +89,7 @@ export const Select: FC<SelectProps> = ({
       activeColor="transparent"
       renderRightIcon={() => (
         <Icon
-          icon={type === "active" ? faChevronUp : faChevronDown}
+          icon={getIcon(type === "active" ? "ChevronUp" : "ChevronDown")}
           size="large"
           color={disabled ? "text-disabled" : "text-primary"}
         />
@@ -109,7 +105,7 @@ export const Select: FC<SelectProps> = ({
                 setSearchQuery(text);
                 onSearch(text);
               }}
-              beginIcon={faSearch}
+              beginIcon={getIcon("Search")}
               allowClear={true}
             />
           </View>
