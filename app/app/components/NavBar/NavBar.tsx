@@ -1,16 +1,19 @@
 import { TypographyKeys } from "@/app/constants/theme";
-import { FC, JSX } from "react";
+import { FC, JSX, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Typography } from "../Typography";
-import { useThemeContext } from "@/app/hooks";
+import { useAuthContext, useThemeContext } from "@/app/hooks";
 import { Icon } from "../Icon";
 import { getIcon } from "@/app/utils";
+import { GlobalMenu, MenuAction } from "./components";
 
 export type NavBarProps = {
   text: string;
   variant?: TypographyKeys;
   onBackPress?: () => void;
   button?: JSX.Element;
+  showMenu?: boolean; // Toggle global menu
+  menuActions?: MenuAction[]; // Custom actions for this specific screen
 };
 
 export const NavBar: FC<NavBarProps> = ({
@@ -18,7 +21,26 @@ export const NavBar: FC<NavBarProps> = ({
   variant = "header-medium",
   onBackPress,
   button,
+  showMenu = false,
+  menuActions = [],
 }) => {
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const { signOut } = useAuthContext();
+
+  const renderRightElement = () => {
+    if (showMenu) {
+      return (
+        <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
+          <Icon
+            icon={getIcon("Bars")}
+            color="text-primary"
+          />
+        </TouchableOpacity>
+      );
+    }
+    return <></>;
+  };
+
   const styles = useStyles();
 
   return (
@@ -39,7 +61,15 @@ export const NavBar: FC<NavBarProps> = ({
           text={text}
         />
       </TouchableOpacity>
-      {button}
+      {renderRightElement()}
+      {showMenu && (
+        <GlobalMenu
+          isVisible={isMenuVisible}
+          onClose={() => setIsMenuVisible(false)}
+          onSignOut={signOut}
+          customActions={menuActions}
+        />
+      )}
     </View>
   );
 };

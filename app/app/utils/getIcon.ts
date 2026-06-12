@@ -1,4 +1,5 @@
 import {
+  faBars,
   faUserFriends,
   faLayerGroup,
   IconDefinition,
@@ -19,6 +20,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 type IconKeys =
+  | "Bars"
   | "Friends"
   | "Groups"
   | "User"
@@ -37,6 +39,7 @@ type IconKeys =
   | "ChevronUp";
 
 const Icons: Record<IconKeys, IconDefinition> = {
+  Bars: faBars,
   Friends: faUserFriends,
   Groups: faLayerGroup,
   User: faUser,
