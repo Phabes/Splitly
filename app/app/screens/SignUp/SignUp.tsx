@@ -16,6 +16,7 @@ import { LayoutProvider } from "@/app/providers";
 export const SignUp: FC = () => {
   const translations = useTranslations();
   const navigation = useAuthNavigation();
+
   const {
     isLoading,
     loadingText,
@@ -25,10 +26,18 @@ export const SignUp: FC = () => {
     repeatedPasswordField,
     handleSignUp,
   } = useSignUpData();
+
   const styles = useStyles();
 
   return (
-    <LayoutProvider navbar={<NavBar text={translations["signUp"]} />}>
+    <LayoutProvider
+      navbar={
+        <NavBar
+          text={translations["signUp"]}
+          showMenu={false}
+        />
+      }
+    >
       <LoadingWrapper
         isLoading={isLoading}
         text={loadingText}

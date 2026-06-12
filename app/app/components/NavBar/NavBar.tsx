@@ -1,5 +1,5 @@
 import { TypographyKeys } from "@/app/constants/theme";
-import { FC, JSX, useState } from "react";
+import { FC, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Typography } from "../Typography";
 import { useAuthContext, useThemeContext } from "@/app/hooks";
@@ -11,35 +11,19 @@ export type NavBarProps = {
   text: string;
   variant?: TypographyKeys;
   onBackPress?: () => void;
-  button?: JSX.Element;
-  showMenu?: boolean; // Toggle global menu
-  menuActions?: MenuAction[]; // Custom actions for this specific screen
+  showMenu?: boolean;
+  menuActions?: MenuAction[];
 };
 
 export const NavBar: FC<NavBarProps> = ({
   text,
   variant = "header-medium",
   onBackPress,
-  button,
-  showMenu = false,
+  showMenu = true,
   menuActions = [],
 }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const { signOut } = useAuthContext();
-
-  const renderRightElement = () => {
-    if (showMenu) {
-      return (
-        <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
-          <Icon
-            icon={getIcon("Bars")}
-            color="text-primary"
-          />
-        </TouchableOpacity>
-      );
-    }
-    return <></>;
-  };
 
   const styles = useStyles();
 
@@ -61,14 +45,23 @@ export const NavBar: FC<NavBarProps> = ({
           text={text}
         />
       </TouchableOpacity>
-      {renderRightElement()}
+
       {showMenu && (
-        <GlobalMenu
-          isVisible={isMenuVisible}
-          onClose={() => setIsMenuVisible(false)}
-          onSignOut={signOut}
-          customActions={menuActions}
-        />
+        <>
+          <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
+            <Icon
+              icon={getIcon("Bars")}
+              color="text-primary"
+            />
+          </TouchableOpacity>
+
+          <GlobalMenu
+            isVisible={isMenuVisible}
+            onClose={() => setIsMenuVisible(false)}
+            onSignOut={signOut}
+            customActions={menuActions}
+          />
+        </>
       )}
     </View>
   );
@@ -80,10 +73,10 @@ const useStyles = () => {
   return StyleSheet.create({
     container: {
       height: theme.spacing(15),
+      paddingHorizontal: theme.spacing(7),
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingHorizontal: theme.spacing(7),
       backgroundColor: theme.colors["background-secondary"],
     },
     leftSide: {

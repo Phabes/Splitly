@@ -11,7 +11,6 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -22,7 +21,6 @@ import { useFriendActions, useFriendsData } from "./hooks";
 import { getIcon } from "@/app/utils";
 
 export const Friends: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
@@ -43,19 +41,7 @@ export const Friends: FC = () => {
   const styles = useStyles();
 
   return (
-    <LayoutProvider
-      navbar={
-        <NavBar
-          text={translations["friends"]}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
-        />
-      }
-    >
+    <LayoutProvider navbar={<NavBar text={translations["friends"]} />}>
       <Input
         text={searchValue}
         onChange={handleSearchChange}

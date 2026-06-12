@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -8,9 +8,11 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import { Typography, Button, Scroll } from "@/app/components";
 import { useThemeContext, useTranslations } from "@/app/hooks";
 import { Icon } from "@/app/components/Icon";
+import { Typography } from "@/app/components/Typography";
+import { Button } from "@/app/components/Button";
+import { Scroll } from "@/app/components/Scroll";
 import {
   faCog,
   faTimes,
@@ -18,6 +20,10 @@ import {
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { TranslationKeys } from "@/app/constants/translations";
+import {
+  GLOBAL_MENU_WIDTH_RATIO,
+  GLOBAL_MENU_WIDTH_ANIMATION_DURATION,
+} from "@/app/constants/globalMenu";
 
 export interface MenuAction {
   labelKey: TranslationKeys;
@@ -35,7 +41,7 @@ interface GlobalMenuProps {
 }
 
 const { width } = Dimensions.get("window");
-const MENU_WIDTH = width * 0.75;
+const MENU_WIDTH = width * GLOBAL_MENU_WIDTH_RATIO;
 
 export const GlobalMenu: FC<GlobalMenuProps> = ({
   isVisible,
@@ -45,23 +51,30 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
   onSignOut,
   customActions = [],
 }) => {
-  const theme = useThemeContext();
   const translations = useTranslations();
+
+  const [renderModal, setRenderModal] = useState(isVisible);
   const slideAnim = useRef(new Animated.Value(MENU_WIDTH)).current;
 
   useEffect(() => {
     if (isVisible) {
+      setRenderModal(true);
+
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 250,
+        duration: GLOBAL_MENU_WIDTH_ANIMATION_DURATION,
         useNativeDriver: true,
       }).start();
     } else {
       Animated.timing(slideAnim, {
         toValue: MENU_WIDTH,
-        duration: 250,
+        duration: GLOBAL_MENU_WIDTH_ANIMATION_DURATION,
         useNativeDriver: true,
-      }).start();
+      }).start(({ finished }) => {
+        if (finished) {
+          setRenderModal(false);
+        }
+      });
     }
   }, [isVisible, slideAnim]);
 
@@ -69,7 +82,7 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
 
   return (
     <Modal
-      visible={isVisible}
+      visible={renderModal}
       transparent
       animationType="none"
       onRequestClose={onClose}
@@ -85,7 +98,6 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
             { transform: [{ translateX: slideAnim }] },
           ]}
         >
-          {/* Header & Profile Sections remain the same */}
           <View style={styles.header}>
             <TouchableOpacity
               onPress={onClose}
@@ -115,7 +127,6 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
             />
           </View>
 
-          {/* Navigation Links */}
           <View style={styles.navSection}>
             <Scroll>
               <TouchableOpacity
@@ -133,179 +144,13 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
                   variant="body-large"
                 />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  onClose();
-                }}
-              >
-                <Icon
-                  icon={faCog}
-                  color="text-primary"
-                />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
-              </TouchableOpacity>
 
-              {/* Render Custom Actions Passed from the Screen */}
               {customActions.map((action, index) => (
                 <TouchableOpacity
                   key={index}
                   style={styles.navItem}
                   onPress={() => {
-                    onClose(); // Close menu when action is clicked
+                    onClose();
                     action.onPress();
                   }}
                 >
@@ -322,15 +167,10 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
             </Scroll>
           </View>
 
-          {/* Footer Area - Sign Out */}
           <View style={styles.footerSection}>
             <Button
               text={translations["signOut"]}
-              variant="secondary"
-              onPress={() => {
-                onClose();
-                onSignOut();
-              }}
+              onPress={onSignOut}
             />
           </View>
         </Animated.View>
@@ -354,38 +194,42 @@ const useStyles = () => {
     },
     menuContainer: {
       width: MENU_WIDTH,
-      backgroundColor: theme.colors["background-primary"],
+      backgroundColor: theme.colors["background-secondary"],
     },
     header: {
-      alignItems: "flex-end",
-      padding: theme.spacing(3),
+      height: theme.spacing(15),
+      paddingHorizontal: theme.spacing(7),
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      backgroundColor: theme.colors["background-primary"],
     },
     closeButton: {
       padding: theme.spacing(1),
     },
     profileSection: {
       alignItems: "center",
+      paddingHorizontal: theme.spacing(3),
       paddingVertical: theme.spacing(2),
       borderBottomWidth: 1,
-      borderBottomColor: theme.colors["background-secondary"],
+      borderBottomColor: theme.colors["background-primary"],
     },
     navSection: {
       flex: 1,
       padding: theme.spacing(3),
-      // gap: theme.spacing(1),
     },
     navItem: {
       flexDirection: "row",
       alignItems: "center",
-      // backgroundColor: "red",
-      backgroundColor: theme.colors["background-secondary"],
+      backgroundColor: theme.colors["background-primary"],
+      borderRadius: theme.spacing(2),
       padding: theme.spacing(2),
       gap: theme.spacing(2),
     },
     footerSection: {
       padding: theme.spacing(3),
       borderTopWidth: 1,
-      borderTopColor: theme.colors["background-secondary"],
+      borderTopColor: theme.colors["background-primary"],
     },
   });
 };

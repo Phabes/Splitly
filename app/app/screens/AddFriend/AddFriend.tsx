@@ -1,5 +1,4 @@
 import {
-  Button,
   Input,
   ListItem,
   Loading,
@@ -11,7 +10,6 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -23,7 +21,6 @@ import { ADD_FRIENDS_MIN_SEARCH_LENGTH } from "@/app/constants/pagination";
 import { getIcon } from "@/app/utils";
 
 export const AddFriend: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
@@ -55,12 +52,6 @@ export const AddFriend: FC = () => {
         <NavBar
           text={translations["addFriend"]}
           onBackPress={navigation.goBack}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
         />
       }
     >

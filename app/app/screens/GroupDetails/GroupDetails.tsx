@@ -10,7 +10,6 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -19,7 +18,6 @@ import { LayoutProvider } from "@/app/providers";
 import { getIcon } from "@/app/utils";
 
 export const GroupDetails: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
   const styles = useStyles();
@@ -170,7 +168,6 @@ export const GroupDetails: FC = () => {
         <NavBar
           text={translations["groupDetails"]}
           onBackPress={navigation.goBack}
-          showMenu
         />
       }
     >

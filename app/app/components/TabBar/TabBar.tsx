@@ -4,6 +4,7 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "../Icon";
 import { getIcon } from "@/app/utils";
+import { IconKeys } from "@/app/constants/iconKeys";
 
 export const TabBar: FC<BottomTabBarProps> = ({
   state,
@@ -32,6 +33,9 @@ export const TabBar: FC<BottomTabBarProps> = ({
         const iconSize = isFocused ? "large" : "small";
         const iconColor = isFocused ? "text-primary" : "text-secondary";
 
+        const { options } = descriptors[route.key];
+        const iconKey = options.tabBarAccessibilityLabel as IconKeys;
+
         return (
           <TouchableOpacity
             key={route.key}
@@ -40,7 +44,7 @@ export const TabBar: FC<BottomTabBarProps> = ({
             style={styles.tab}
           >
             <Icon
-              icon={getIcon(route.name)}
+              icon={getIcon(iconKey)}
               size={iconSize}
               color={iconColor}
             />

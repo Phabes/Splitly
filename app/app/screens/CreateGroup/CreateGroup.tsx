@@ -9,7 +9,6 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
   useCurrencies,
   useThemeContext,
   useTranslations,
@@ -20,9 +19,9 @@ import { StyleSheet, View } from "react-native";
 import { useCreateGroup } from "./hooks";
 
 export const CreateGroup: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
+
   const {
     nameField,
     descriptionField,
@@ -41,12 +40,6 @@ export const CreateGroup: FC = () => {
         <NavBar
           text={translations["createGroup"]}
           onBackPress={navigation.goBack}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
         />
       }
     >
