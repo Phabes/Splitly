@@ -15,6 +15,13 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
+UserSchema.set("toJSON", {
+  transform: (doc, ret) => {
+    const { password, __v, ...safeRet } = ret;
+    return safeRet;
+  },
+});
+
 const User = mongoose.model("User", UserSchema, "Users");
 
 export default User;

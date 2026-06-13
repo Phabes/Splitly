@@ -67,7 +67,6 @@ export const Groups: FC = () => {
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
           gapSize="small"
-          keyboardPersist="never"
           centerContent={groups.length === 0}
           hasMore={hasMore}
           handleScrollEnd={loadMoreGroups}

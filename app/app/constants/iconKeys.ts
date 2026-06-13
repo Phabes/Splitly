@@ -4,6 +4,7 @@ export type IconKeys =
   | "Groups"
   | "User"
   | "Users"
+  | "UserCircle"
   | "Search"
   | "Plus"
   | "Minus"

@@ -2,7 +2,7 @@ import { TypographyKeys } from "@/app/constants/theme";
 import { FC, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Typography } from "../Typography";
-import { useAuthContext, useThemeContext } from "@/app/hooks";
+import { useThemeContext } from "@/app/hooks";
 import { Icon } from "../Icon";
 import { getIcon } from "@/app/utils";
 import { GlobalMenu, MenuAction } from "./components";
@@ -23,7 +23,6 @@ export const NavBar: FC<NavBarProps> = ({
   menuActions = [],
 }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const { signOut } = useAuthContext();
 
   const styles = useStyles();
 
@@ -58,7 +57,6 @@ export const NavBar: FC<NavBarProps> = ({
           <GlobalMenu
             isVisible={isMenuVisible}
             onClose={() => setIsMenuVisible(false)}
-            onSignOut={signOut}
             customActions={menuActions}
           />
         </>

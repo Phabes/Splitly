@@ -4,12 +4,13 @@ import User from "@/models/user.ts";
 import { generateTokens } from "@/utils/generateTokens.ts";
 import { verifyToken } from "@/utils/verifyToken.ts";
 import { signInValidator, signUpValidator } from "@/validators/users.ts";
+import { getSafeUser } from "@/utils/getSafeUser.ts";
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "REFRESH_KEY";
 
 export const verifyUser = async (req: AuthRequest, res: Response) => {
   try {
-    const user = await User.findById(req.userID).select("-password");
+    const user = await User.findById(req.userID);
 
     if (!user) {
       return res.status(404).json({
@@ -18,9 +19,12 @@ export const verifyUser = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    const safeUser = getSafeUser(user);
+
     return res.status(200).json({
       code: "verification/success",
       message: "Validation success.",
+      user: safeUser,
     });
   } catch (error) {
     return res.status(500).json({
@@ -46,11 +50,23 @@ export const refreshTokens = async (req: Request, res: Response) => {
       decoded.userID,
     );
 
+    const user = await User.findById(decoded.userID);
+
+    if (!user) {
+      return res.status(404).json({
+        code: "tokensRenewal/userNotFound",
+        message: "User not found.",
+      });
+    }
+
+    const safeUser = getSafeUser(user);
+
     return res.status(200).json({
       code: "tokensRenewal/success",
       message: "Tokens successfully refreshed.",
       userToken,
       refreshToken: newRefreshToken,
+      user: safeUser,
     });
   } catch (error) {
     return res.status(403).json({
@@ -79,11 +95,14 @@ export const signUp = async (req: Request, res: Response) => {
 
     const { userToken, refreshToken } = generateTokens(newUser._id.toString());
 
+    const safeUser = getSafeUser(newUser);
+
     return res.status(201).json({
       code: "signUp/success",
       message: "User created.",
       userToken,
       refreshToken,
+      user: safeUser,
     });
   } catch (error) {
     return res
@@ -116,6 +135,7 @@ export const signIn = async (req: Request, res: Response) => {
       message: "User logged in.",
       userToken,
       refreshToken,
+      user,
     });
   } catch (error) {
     return res

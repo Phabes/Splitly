@@ -71,7 +71,8 @@ export type TranslationKeys =
   | "totalGroupSpend"
   | "expenses"
   | "balances"
-  | "members";
+  | "members"
+  | "settings";
 
 export const translations: Record<
   LanguageKeys,

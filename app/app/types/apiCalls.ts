@@ -5,9 +5,26 @@ export type ResponseMessage = {
   message: string;
 };
 
+export interface UserResult {
+  _id: string;
+  username: string;
+  email: string;
+}
+
+export type VerifyUserResponse = ResponseMessage & {
+  user: UserResult;
+};
+
+export type RefreshUserResponse = ResponseMessage & {
+  userToken: string;
+  refreshToken: string;
+  user: UserResult;
+};
+
 export type SignInResponse = ResponseMessage & {
   userToken: string;
   refreshToken: string;
+  user: UserResult;
 };
 
 export type SignInFailResponse = ResponseMessage & {
@@ -17,12 +34,6 @@ export type SignInFailResponse = ResponseMessage & {
     message: string;
   }>;
 };
-
-export interface UserResult {
-  _id: string;
-  username: string;
-  email: string;
-}
 
 export type AddFriendResponse = ResponseMessage & {
   users: UserResult[];

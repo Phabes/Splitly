@@ -2,28 +2,30 @@ import { LoadingWrapper } from "@/app/components";
 import { AuthContext } from "@/app/contexts";
 import { useTranslations } from "@/app/hooks";
 import { refreshCall, verifyCall } from "@/app/services";
-import { ResponseMessage } from "@/app/types";
+import {
+  RefreshUserResponse,
+  ResponseMessage,
+  UserResult,
+  VerifyUserResponse,
+} from "@/app/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FC, PropsWithChildren, useEffect, useMemo, useState } from "react";
 
 type AuthProviderProps = PropsWithChildren;
-
-type RefreshResponse = ResponseMessage & {
-  userToken: string;
-  refreshToken: string;
-};
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const translations = useTranslations();
 
   const [userToken, setUserToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [userData, setUserData] = useState<UserResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const clearSession = async () => {
     await AsyncStorage.multiRemove(["userToken", "refreshToken"]);
     setUserToken(null);
     setRefreshToken(null);
+    setUserData(null);
   };
 
   const performTokenRefresh = async (currentRefreshToken: string) => {
@@ -35,12 +37,13 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         throw new Error(data.message);
       }
 
-      const data: RefreshResponse = await response.json();
+      const data: RefreshUserResponse = await response.json();
 
       await AsyncStorage.setItem("userToken", data.userToken);
       await AsyncStorage.setItem("refreshToken", data.refreshToken);
       setUserToken(data.userToken);
       setRefreshToken(data.refreshToken);
+      setUserData(data.user);
 
       return data.userToken;
     } catch (error) {
@@ -64,8 +67,11 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
           const response = await verifyCall(userToken);
 
           if (response.ok) {
+            const data: VerifyUserResponse = await response.json();
+
             setUserToken(userToken);
             setRefreshToken(refreshToken);
+            setUserData(data.user);
           } else if (response.status === 401) {
             await performTokenRefresh(refreshToken);
           } else {
@@ -89,21 +95,24 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     () => ({
       userToken,
       refreshToken,
+      userData,
       isLoading,
-      signIn: async (token: string, refresh: string) => {
+      signIn: async (token: string, refresh: string, user: UserResult) => {
         await AsyncStorage.setItem("userToken", token);
         await AsyncStorage.setItem("refreshToken", refresh);
         setUserToken(token);
         setRefreshToken(refresh);
+        setUserData(user);
       },
       signOut: async () => {
         await clearSession();
       },
-      signUp: async (token: string, refresh: string) => {
+      signUp: async (token: string, refresh: string, user: UserResult) => {
         await AsyncStorage.setItem("userToken", token);
         await AsyncStorage.setItem("refreshToken", refresh);
         setUserToken(token);
         setRefreshToken(refresh);
+        setUserData(user);
       },
       performTokenRefresh,
     }),

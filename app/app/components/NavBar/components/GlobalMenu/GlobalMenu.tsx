@@ -8,35 +8,29 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import { useThemeContext, useTranslations } from "@/app/hooks";
+import { useAuthContext, useThemeContext, useTranslations } from "@/app/hooks";
 import { Icon } from "@/app/components/Icon";
 import { Typography } from "@/app/components/Typography";
 import { Button } from "@/app/components/Button";
 import { Scroll } from "@/app/components/Scroll";
-import {
-  faCog,
-  faTimes,
-  faUserCircle,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
 import { TranslationKeys } from "@/app/constants/translations";
+import { IconKeys } from "@/app/constants/iconKeys";
 import {
   GLOBAL_MENU_WIDTH_RATIO,
-  GLOBAL_MENU_WIDTH_ANIMATION_DURATION,
+  GLOBAL_MENU_WIDTH_ENTRY_ANIMATION_DURATION,
+  GLOBAL_MENU_WIDTH_CLOSE_ANIMATION_DURATION,
 } from "@/app/constants/globalMenu";
+import { getIcon } from "@/app/utils";
 
 export interface MenuAction {
   labelKey: TranslationKeys;
-  icon: IconDefinition;
+  icon: IconKeys;
   onPress: () => void;
 }
 
 interface GlobalMenuProps {
   isVisible: boolean;
   onClose: () => void;
-  username?: string;
-  email?: string;
-  onSignOut: () => void;
   customActions?: MenuAction[];
 }
 
@@ -46,11 +40,9 @@ const MENU_WIDTH = width * GLOBAL_MENU_WIDTH_RATIO;
 export const GlobalMenu: FC<GlobalMenuProps> = ({
   isVisible,
   onClose,
-  username = "User",
-  email = "user@example.com",
-  onSignOut,
   customActions = [],
 }) => {
+  const { userData, signOut } = useAuthContext();
   const translations = useTranslations();
 
   const [renderModal, setRenderModal] = useState(isVisible);
@@ -62,13 +54,13 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
 
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: GLOBAL_MENU_WIDTH_ANIMATION_DURATION,
+        duration: GLOBAL_MENU_WIDTH_ENTRY_ANIMATION_DURATION,
         useNativeDriver: true,
       }).start();
     } else {
       Animated.timing(slideAnim, {
         toValue: MENU_WIDTH,
-        duration: GLOBAL_MENU_WIDTH_ANIMATION_DURATION,
+        duration: GLOBAL_MENU_WIDTH_CLOSE_ANIMATION_DURATION,
         useNativeDriver: true,
       }).start(({ finished }) => {
         if (finished) {
@@ -99,36 +91,39 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
           ]}
         >
           <View style={styles.header}>
+            <View style={styles.profileIcon}>
+              <Icon
+                icon={getIcon("UserCircle")}
+                color="text-secondary"
+                size="large"
+              />
+            </View>
             <TouchableOpacity
               onPress={onClose}
               style={styles.closeButton}
             >
               <Icon
-                icon={faTimes}
-                size="large"
+                icon={getIcon("X")}
                 color="text-secondary"
+                size="large"
               />
             </TouchableOpacity>
           </View>
 
           <View style={styles.profileSection}>
-            <Icon
-              icon={faUserCircle}
-              color="text-secondary"
-            />
             <Typography
-              text={username}
+              text={userData!.username}
               variant="header-medium"
             />
             <Typography
-              text={email}
+              text={userData!.email}
               variant="body-small"
               color="text-secondary"
             />
           </View>
 
           <View style={styles.navSection}>
-            <Scroll>
+            <Scroll gapSize="small">
               <TouchableOpacity
                 style={styles.navItem}
                 onPress={() => {
@@ -136,18 +131,15 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
                 }}
               >
                 <Icon
-                  icon={faCog}
+                  icon={getIcon("Cog")}
                   color="text-primary"
                 />
-                <Typography
-                  text={"XXXXX"}
-                  variant="body-large"
-                />
+                <Typography text={translations["settings"]} />
               </TouchableOpacity>
 
-              {customActions.map((action, index) => (
+              {customActions.map((action, i) => (
                 <TouchableOpacity
-                  key={index}
+                  key={`GlobalMenuCustomActions/${i}`}
                   style={styles.navItem}
                   onPress={() => {
                     onClose();
@@ -155,13 +147,10 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
                   }}
                 >
                   <Icon
-                    icon={action.icon}
+                    icon={getIcon(action.icon)}
                     color="text-primary"
                   />
-                  <Typography
-                    text={"YYYY"}
-                    variant="body-large"
-                  />
+                  <Typography text={translations[action.labelKey]} />
                 </TouchableOpacity>
               ))}
             </Scroll>
@@ -170,7 +159,7 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
           <View style={styles.footerSection}>
             <Button
               text={translations["signOut"]}
-              onPress={onSignOut}
+              onPress={signOut}
             />
           </View>
         </Animated.View>
@@ -200,9 +189,13 @@ const useStyles = () => {
       height: theme.spacing(15),
       paddingHorizontal: theme.spacing(7),
       flexDirection: "row",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       alignItems: "center",
       backgroundColor: theme.colors["background-primary"],
+    },
+    profileIcon: {
+      justifyContent: "center",
+      paddingRight: theme.spacing(3),
     },
     closeButton: {
       padding: theme.spacing(1),
@@ -227,7 +220,9 @@ const useStyles = () => {
       gap: theme.spacing(2),
     },
     footerSection: {
-      padding: theme.spacing(3),
+      height: theme.spacing(15),
+      paddingHorizontal: theme.spacing(3),
+      justifyContent: "center",
       borderTopWidth: 1,
       borderTopColor: theme.colors["background-primary"],
     },
