@@ -1,16 +1,19 @@
 import { FC } from "react";
-import { useThemeContext } from "@/app/hooks";
+import { useThemeContext, useTranslations } from "@/app/hooks";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "../Icon";
 import { getIcon } from "@/app/utils";
 import { IconKeys } from "@/app/constants/iconKeys";
+import { Typography } from "../Typography";
+import { TranslationKeys } from "@/app/constants/translations";
 
 export const TabBar: FC<BottomTabBarProps> = ({
   state,
   descriptors,
   navigation,
 }) => {
+  const translations = useTranslations();
   const styles = useStyles();
 
   return (
@@ -35,6 +38,8 @@ export const TabBar: FC<BottomTabBarProps> = ({
 
         const { options } = descriptors[route.key];
         const iconKey = options.tabBarAccessibilityLabel as IconKeys;
+        const translationKey =
+          options.tabBarAccessibilityLabel?.toLowerCase() as TranslationKeys;
 
         return (
           <TouchableOpacity
@@ -43,11 +48,19 @@ export const TabBar: FC<BottomTabBarProps> = ({
             activeOpacity={0.7}
             style={styles.tab}
           >
-            <Icon
-              icon={getIcon(iconKey)}
-              size={iconSize}
-              color={iconColor}
-            />
+            <View style={styles.tabIcon}>
+              <Icon
+                icon={getIcon(iconKey)}
+                size={iconSize}
+                color={iconColor}
+              />
+            </View>
+            <View style={styles.tabDescription}>
+              <Typography
+                text={translations[translationKey]}
+                variant="body-small"
+              />
+            </View>
           </TouchableOpacity>
         );
       })}
@@ -71,6 +84,11 @@ const useStyles = () => {
       justifyContent: "center",
       alignItems: "center",
     },
+    tabIcon: {
+      flex: 1,
+      justifyContent: "center",
+    },
+    tabDescription: { paddingBottom: theme.spacing(1) },
   });
 };
 

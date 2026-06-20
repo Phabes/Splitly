@@ -7,6 +7,7 @@ export * from "./ListItem";
 export * from "./Loading";
 export * from "./LoadingWrapper";
 export * from "./NavBar";
+export * from "./NotificationIndicator";
 export * from "./Scroll";
 export * from "./Select";
 export * from "./TabBar";

@@ -1,6 +1,5 @@
 import { GROUPS_SEARCH_DELAY } from "@/app/constants/pagination";
-import { useAppNavigation, useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { TabParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
+import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { getGroupListCall } from "@/app/services";
 import { GroupResult, GroupsResponse, ResponseMessage } from "@/app/types";
 import { useCallback, useEffect, useState } from "react";
@@ -10,6 +9,7 @@ export const useGroupsData = () => {
   const [searchValue, setSearchValue] = useState("");
   const [groups, setGroups] = useState<GroupResult[]>([]);
   const [isSearching, setIsSearching] = useState(true);
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
 
   const request = useAuthenticatedApi();
   const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
@@ -46,6 +46,7 @@ export const useGroupsData = () => {
             }
             setHasMore(false);
           }
+          setPendingRequestsCount(result.pendingRequestsCount);
         } else {
           const data: ResponseMessage = await response.json();
           throw new Error(data.message);
@@ -118,6 +119,7 @@ export const useGroupsData = () => {
     isLoadingMore,
     loadMoreGroups,
     forceLoadMore,
+    pendingRequestsCount,
   };
 };
 

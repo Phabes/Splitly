@@ -48,6 +48,7 @@ export type FriendResult = {
 export type FriendsResponse = ResponseMessage & {
   friends: FriendResult[];
   hasMore: boolean;
+  pendingRequestsCount: number;
 };
 
 export interface FriendRequestResult {
@@ -69,6 +70,7 @@ export type GroupResult = {
 export type GroupsResponse = ResponseMessage & {
   groups: GroupResult[];
   hasMore: boolean;
+  pendingRequestsCount: number;
 };
 
 export type GroupRequestResult = GroupResult & {

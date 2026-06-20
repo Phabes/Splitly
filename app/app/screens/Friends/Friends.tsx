@@ -33,6 +33,7 @@ export const Friends: FC = () => {
     isLoadingMore,
     loadMoreFriends,
     forceLoadMore,
+    pendingRequestsCount,
   } = useFriendsData();
   const { handleShowUserProfile } = useFriendActions();
 
@@ -41,7 +42,15 @@ export const Friends: FC = () => {
   const styles = useStyles();
 
   return (
-    <LayoutProvider navbar={<NavBar text={translations["friends"]} />}>
+    <LayoutProvider
+      navbar={
+        <NavBar
+          text={translations["friends"]}
+          notificationsPress={() => navigation.navigate("FriendRequests")}
+          notificationsExist={pendingRequestsCount > 0}
+        />
+      }
+    >
       <Input
         text={searchValue}
         onChange={handleSearchChange}

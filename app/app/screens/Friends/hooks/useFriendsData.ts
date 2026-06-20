@@ -9,6 +9,7 @@ export const useFriendsData = () => {
   const [searchValue, setSearchValue] = useState("");
   const [friends, setFriends] = useState<FriendResult[]>([]);
   const [isSearching, setIsSearching] = useState(true);
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
 
   const request = useAuthenticatedApi();
   const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
@@ -46,6 +47,7 @@ export const useFriendsData = () => {
             }
             setHasMore(false);
           }
+          setPendingRequestsCount(result.pendingRequestsCount);
         } else {
           const data: ResponseMessage = await response.json();
           throw new Error(data.message);
@@ -118,6 +120,7 @@ export const useFriendsData = () => {
     isLoadingMore,
     loadMoreFriends,
     forceLoadMore,
+    pendingRequestsCount,
   };
 };
 

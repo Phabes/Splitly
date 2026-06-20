@@ -31,18 +31,24 @@ export const getGroupList = async (
       _id: { $nin: groupIDs },
     };
 
-    const groups = await Group.find(fetchFilter)
-      .select("id name description")
-      .limit(limitNum);
-    // .sort({ updatedAt: -1 });
+    const pendingRequestsFilter = {
+      members: {
+        $elemMatch: { user: currentUserID, status: "pending" },
+      },
+    };
 
-    const totalCount = await Group.countDocuments(baseFilter);
+    const [groups, totalCount, pendingRequestsCount] = await Promise.all([
+      Group.find(fetchFilter).select("id name description").limit(limitNum), //.sort({ updatedAt: -1 }),
+      Group.countDocuments(baseFilter),
+      Group.countDocuments(pendingRequestsFilter),
+    ]);
 
     return res.status(200).json({
       code: "getGroupList/success",
       message: "Groups fetched successfully.",
       groups,
       hasMore: groupIDs.length + groups.length < totalCount,
+      pendingRequestsCount,
     });
   } catch (error) {
     return res.status(500).json({

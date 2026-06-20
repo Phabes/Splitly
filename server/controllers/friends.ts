@@ -261,13 +261,18 @@ export const getFriendList = async (
       _id: { $nin: friendIDs },
     };
 
-    const friends = await Friend.find(fetchFilter)
-      .populate("requester", "username email")
-      .populate("recipient", "username email")
-      .limit(limitNum);
-    // .sort({ updatedAt: -1 });
-
-    const totalCount = await Friend.countDocuments(baseFilter);
+    const pendingRequestsFilter = {
+      recipient: currentUserID,
+      status: "pending",
+    };
+    const [friends, totalCount, pendingRequestsCount] = await Promise.all([
+      Friend.find(fetchFilter)
+        .populate("requester", "username email")
+        .populate("recipient", "username email")
+        .limit(limitNum), //.sort({ updatedAt: -1 }),
+      Friend.countDocuments(baseFilter),
+      Friend.countDocuments(pendingRequestsFilter),
+    ]);
 
     const formattedFriends = friends.map((record: any) => {
       const isRequester =
@@ -283,6 +288,7 @@ export const getFriendList = async (
       message: "Friends fetched successfully.",
       friends: formattedFriends,
       hasMore: friendIDs.length + friends.length < totalCount,
+      pendingRequestsCount,
     });
   } catch (error) {
     return res.status(500).json({

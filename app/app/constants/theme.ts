@@ -14,6 +14,7 @@ export type ColorKeys =
   | "text-disabled"
   | "text-error"
   | "text-success"
+  | "text-notification"
   | "background-app"
   | "background-primary"
   | "background-secondary"
@@ -54,6 +55,7 @@ const lightColors: Record<ColorKeys, string> = {
   "text-disabled": "#BDBDBD",
   "text-error": "#E74C3C",
   "text-success": "#1ABC9C",
+  "text-notification": "#F39C12",
   "background-app": "#EDf3F7",
   "background-primary": "#8EC4E8",
   "background-secondary": "#60a2cc",
@@ -66,6 +68,7 @@ const darkColors: Record<ColorKeys, string> = {
   "text-disabled": "#666666",
   "text-error": "#C0392B",
   "text-success": "#1ABC9C",
+  "text-notification": "#DBDB4F",
   "background-app": "#1D1E30",
   "background-primary": "#2D2D70",
   "background-secondary": "#21214A",

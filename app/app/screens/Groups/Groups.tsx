@@ -33,6 +33,7 @@ export const Groups: FC = () => {
     isLoadingMore,
     loadMoreGroups,
     forceLoadMore,
+    pendingRequestsCount,
   } = useGroupsData();
 
   const { handleShowGroupProfile } = useGroupActions();
@@ -42,7 +43,15 @@ export const Groups: FC = () => {
   const styles = useStyles();
 
   return (
-    <LayoutProvider navbar={<NavBar text={translations["groups"]} />}>
+    <LayoutProvider
+      navbar={
+        <NavBar
+          text={translations["groups"]}
+          notificationsPress={() => navigation.navigate("GroupRequests")}
+          notificationsExist={pendingRequestsCount > 0}
+        />
+      }
+    >
       <Input
         text={searchValue}
         onChange={handleSearchChange}

@@ -19,7 +19,10 @@ import {
   faRotateRight,
   faChevronDown,
   faChevronUp,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { faBell as faEmptyBell } from "@fortawesome/free-regular-svg-icons";
 
 const Icons: Record<IconKeys, IconDefinition> = {
   Bars: faBars,
@@ -40,6 +43,8 @@ const Icons: Record<IconKeys, IconDefinition> = {
   RotateRight: faRotateRight,
   ChevronDown: faChevronDown,
   ChevronUp: faChevronUp,
+  Bell: faBell,
+  EmptyBell: faEmptyBell,
 };
 
 export const getIcon = (name: IconKeys): IconDefinition => {
