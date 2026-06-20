@@ -21,6 +21,7 @@ import {
   GLOBAL_MENU_WIDTH_CLOSE_ANIMATION_DURATION,
 } from "@/app/constants/globalMenu";
 import { getIcon } from "@/app/utils";
+import { TouchableIcon } from "@/app/components/TouchableIcon";
 
 export interface MenuAction {
   labelKey: TranslationKeys;
@@ -98,16 +99,11 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
                 size="large"
               />
             </View>
-            <TouchableOpacity
+            <TouchableIcon
+              icon={getIcon("X")}
               onPress={onClose}
-              style={styles.closeButton}
-            >
-              <Icon
-                icon={getIcon("X")}
-                color="text-secondary"
-                size="large"
-              />
-            </TouchableOpacity>
+              color="text-primary"
+            />
           </View>
 
           <View style={styles.profileSection}>
@@ -195,10 +191,6 @@ const useStyles = () => {
     },
     profileIcon: {
       justifyContent: "center",
-      paddingRight: theme.spacing(3),
-    },
-    closeButton: {
-      padding: theme.spacing(1),
     },
     profileSection: {
       alignItems: "center",
