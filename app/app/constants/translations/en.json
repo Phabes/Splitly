@@ -63,5 +63,7 @@
   "totalGroupSpend": "Total group spend",
   "expenses": "Expenses",
   "balances": "Balances",
-  "members": "Members"
+  "members": "Members",
+
+  "settings": "Settings"
 }

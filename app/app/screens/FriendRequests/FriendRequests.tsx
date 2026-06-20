@@ -1,5 +1,4 @@
 import {
-  Button,
   ListItem,
   Loading,
   LoadingWrapper,
@@ -8,7 +7,7 @@ import {
   TouchableIcon,
   Typography,
 } from "@/app/components";
-import { useAppNavigation, useAuthContext, useTranslations } from "@/app/hooks";
+import { useAppNavigation, useTranslations } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
@@ -16,7 +15,6 @@ import { useFriendRequests } from "./hooks";
 import { getIcon } from "@/app/utils";
 
 export const FriendRequests: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
@@ -45,12 +43,6 @@ export const FriendRequests: FC = () => {
             DeviceEventEmitter.emit("refreshFriendList");
             navigation.goBack();
           }}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
         />
       }
     >

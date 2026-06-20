@@ -11,7 +11,6 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -22,7 +21,6 @@ import { useGroupActions, useGroupsData } from "./hooks";
 import { getIcon } from "@/app/utils";
 
 export const Groups: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
@@ -36,6 +34,7 @@ export const Groups: FC = () => {
     loadMoreGroups,
     forceLoadMore,
   } = useGroupsData();
+
   const { handleShowGroupProfile } = useGroupActions();
 
   const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
@@ -43,19 +42,7 @@ export const Groups: FC = () => {
   const styles = useStyles();
 
   return (
-    <LayoutProvider
-      navbar={
-        <NavBar
-          text={translations["groups"]}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
-        />
-      }
-    >
+    <LayoutProvider navbar={<NavBar text={translations["groups"]} />}>
       <Input
         text={searchValue}
         onChange={handleSearchChange}
@@ -80,7 +67,6 @@ export const Groups: FC = () => {
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
           gapSize="small"
-          keyboardPersist="never"
           centerContent={groups.length === 0}
           hasMore={hasMore}
           handleScrollEnd={loadMoreGroups}

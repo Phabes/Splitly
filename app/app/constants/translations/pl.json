@@ -63,5 +63,7 @@
   "totalGroupSpend": "Sumaryczne wydatki grupy",
   "expenses": "Wydatki",
   "balances": "Saldo",
-  "members": "Członkowie"
+  "members": "Członkowie",
+
+  "settings": "Ustawienia"
 }

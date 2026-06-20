@@ -1,15 +1,18 @@
+import { IconKeys } from "../constants/iconKeys";
 import {
+  faBars,
   faUserFriends,
   faLayerGroup,
   IconDefinition,
   faUser,
+  faUsers,
+  faUserCircle,
   faSearch,
   faPlus,
   faMinus,
   faCheck,
   faXmark,
   faCog,
-  faUsers,
   faEye,
   faEyeSlash,
   faAngleLeft,
@@ -18,29 +21,13 @@ import {
   faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
 
-type IconKeys =
-  | "Friends"
-  | "Groups"
-  | "User"
-  | "Users"
-  | "Search"
-  | "Plus"
-  | "Minus"
-  | "Check"
-  | "X"
-  | "Cog"
-  | "Eye"
-  | "EyeSlash"
-  | "AngleLeft"
-  | "RotateRight"
-  | "ChevronDown"
-  | "ChevronUp";
-
 const Icons: Record<IconKeys, IconDefinition> = {
+  Bars: faBars,
   Friends: faUserFriends,
   Groups: faLayerGroup,
   User: faUser,
   Users: faUsers,
+  UserCircle: faUserCircle,
   Search: faSearch,
   Plus: faPlus,
   Minus: faMinus,

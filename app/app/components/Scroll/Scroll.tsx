@@ -19,7 +19,7 @@ import { getIcon } from "@/app/utils";
 
 type ScrollProps = {
   gapSize?: "small" | "large";
-  keyboardPersist?: "never" | "handled";
+  keyboardPersist?: "never" | "handled" | "always";
   centerContent?: boolean;
   hasMore?: boolean;
   handleScrollEnd?: () => void;

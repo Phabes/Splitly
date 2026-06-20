@@ -8,6 +8,7 @@ export type ResponseCodeKeys =
   | "verification/success"
   | "verification/error"
   | "tokensRenewal/noRefreshToken"
+  | "tokensRenewal/userNotFound"
   | "tokensRenewal/success"
   | "tokensRenewal/error"
   | "signUp/fieldsValidationError"

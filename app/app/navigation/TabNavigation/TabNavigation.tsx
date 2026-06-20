@@ -15,10 +15,12 @@ export const TabNavigation = () => {
       <Tab.Screen
         name="Friends"
         component={Friends}
+        options={{ tabBarAccessibilityLabel: "Friends" }}
       />
       <Tab.Screen
         name="Groups"
         component={Groups}
+        options={{ tabBarAccessibilityLabel: "Groups" }}
       />
     </Tab.Navigator>
   );

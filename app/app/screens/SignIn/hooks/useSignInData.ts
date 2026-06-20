@@ -55,7 +55,7 @@ export const useSignInData = () => {
 
       if (response.ok) {
         const data: SignInResponse = await response.json();
-        await signIn(data.userToken, data.refreshToken);
+        await signIn(data.userToken, data.refreshToken, data.user);
       } else if (response.status === 400) {
         const data: SignInFailResponse = await response.json();
         if (data.code === "signIn/fieldsValidationError") {

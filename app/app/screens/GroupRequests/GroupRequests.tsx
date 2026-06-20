@@ -12,7 +12,6 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -21,7 +20,6 @@ import { useGroupRequests } from "./hooks";
 import { getIcon } from "@/app/utils";
 
 export const GroupRequests: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
@@ -49,12 +47,6 @@ export const GroupRequests: FC = () => {
             DeviceEventEmitter.emit("refreshGroupList");
             navigation.goBack();
           }}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
         />
       }
     >

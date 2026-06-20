@@ -1,8 +1,10 @@
 import bcrypt from "bcrypt";
 import User from "@/models/user.ts";
+import { getSafeUser } from "@/utils/getSafeUser.ts";
 
 export const signUpValidator = async (email: string, username: string) => {
   const validationErrors = [];
+
   const existingEmail = await User.findOne({ email });
   if (existingEmail) {
     validationErrors.push({
@@ -26,8 +28,8 @@ export const signUpValidator = async (email: string, username: string) => {
 
 export const signInValidator = async (username: string, password: string) => {
   const validationErrors = [];
-  const user = await User.findOne({ username });
 
+  const user = await User.findOne({ username });
   if (!user) {
     validationErrors.push({
       field: "username",
@@ -46,7 +48,9 @@ export const signInValidator = async (username: string, password: string) => {
     });
   }
 
-  return { validationErrors, user };
+  const safeUser = getSafeUser(user);
+
+  return { validationErrors, user: safeUser };
 };
 
 export default { signUpValidator, signInValidator };
