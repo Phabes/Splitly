@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   Button,
   NavBar,
@@ -7,15 +7,15 @@ import {
   ListItem,
   Scroll,
   TabSelector,
+  Fab,
+  TouchableIcon,
 } from "@/app/components";
 import {
   useAppNavigation,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
-import { Icon } from "@/app/components/Icon";
 import { LayoutProvider } from "@/app/providers";
-import { getIcon } from "@/app/utils";
 
 export const GroupDetails: FC = () => {
   const translations = useTranslations();
@@ -178,16 +178,14 @@ export const GroupDetails: FC = () => {
               text={mockGroupName}
               variant="header-large"
             />
-            <TouchableOpacity
-              onPress={() => {}}
-              style={styles.editIcon}
-            >
-              <Icon
-                icon={getIcon("Cog")}
+            <View style={styles.editIcon}>
+              <TouchableIcon
+                icon="Cog"
+                onPress={() => {}}
                 size="small"
                 color="text-secondary"
               />
-            </TouchableOpacity>
+            </View>
           </View>
 
           <View style={styles.totalSpend}>
@@ -219,22 +217,8 @@ export const GroupDetails: FC = () => {
         <Scroll>
           <View style={styles.scrollContent}>{renderTabContent()}</View>
         </Scroll>
-
-        {activeTab === "expenses" && (
-          <TouchableOpacity
-            style={styles.fab}
-            activeOpacity={0.7}
-            onPress={() => {
-              /* Navigate to Add Expense */
-            }}
-          >
-            <Icon
-              icon={getIcon("Plus")}
-              size="large"
-            />
-          </TouchableOpacity>
-        )}
       </View>
+      {activeTab === "expenses" && <Fab onPress={() => {}} />}
     </LayoutProvider>
   );
 };
@@ -271,21 +255,6 @@ const useStyles = () => {
       paddingHorizontal: theme.spacing(3),
       borderRadius: theme.spacing(3),
     },
-    tabsRow: {
-      flexDirection: "row",
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors["background-secondary"],
-    },
-    tabButton: {
-      flex: 1,
-      alignItems: "center",
-      paddingVertical: theme.spacing(3),
-      borderBottomWidth: theme.spacing(0.5),
-      borderBottomColor: "transparent",
-    },
-    tabButtonActive: {
-      borderBottomColor: theme.colors["background-primary"],
-    },
     scrollContent: {
       padding: theme.spacing(2),
       flex: 1,
@@ -306,18 +275,6 @@ const useStyles = () => {
     },
     addMemberContainer: {
       marginTop: theme.spacing(4),
-    },
-    fab: {
-      position: "absolute",
-      bottom: theme.spacing(4),
-      right: theme.spacing(3),
-      backgroundColor: theme.colors["background-primary"],
-      width: 64,
-      aspectRatio: 1,
-      borderRadius: 32,
-      justifyContent: "center",
-      alignItems: "center",
-      elevation: 5,
     },
   });
 };

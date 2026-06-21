@@ -27,7 +27,6 @@ export const useSignUpData = () => {
   const repeatedPasswordField = useFormData();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState(translations["loading"]);
 
   const clearAllErrors = () => {
     emailField.setError(undefined);
@@ -115,7 +114,6 @@ export const useSignUpData = () => {
 
   return {
     isLoading,
-    loadingText,
     emailField,
     usernameField,
     passwordField,

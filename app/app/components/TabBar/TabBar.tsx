@@ -3,7 +3,6 @@ import { useThemeContext, useTranslations } from "@/app/hooks";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "../Icon";
-import { getIcon } from "@/app/utils";
 import { IconKeys } from "@/app/constants/iconKeys";
 import { Typography } from "../Typography";
 import { TranslationKeys } from "@/app/constants/translations";
@@ -50,7 +49,7 @@ export const TabBar: FC<BottomTabBarProps> = ({
           >
             <View style={styles.tabIcon}>
               <Icon
-                icon={getIcon(iconKey)}
+                icon={iconKey}
                 size={iconSize}
                 color={iconColor}
               />

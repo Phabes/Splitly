@@ -1,7 +1,6 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 import {
-  Button,
   ListItem,
   Loading,
   LoadingWrapper,
@@ -17,7 +16,6 @@ import {
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { useGroupRequests } from "./hooks";
-import { getIcon } from "@/app/utils";
 
 export const GroupRequests: FC = () => {
   const translations = useTranslations();
@@ -73,11 +71,11 @@ export const GroupRequests: FC = () => {
               onPress={() => {}}
             >
               <TouchableIcon
-                icon={getIcon("Check")}
+                icon="Check"
                 onPress={() => handleAcceptGroupRequest(item._id)}
               />
               <TouchableIcon
-                icon={getIcon("X")}
+                icon="X"
                 onPress={() => handleRejectGroupRequest(item._id)}
                 color="text-error"
               />

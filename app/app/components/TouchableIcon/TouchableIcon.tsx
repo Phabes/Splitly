@@ -1,14 +1,14 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FC } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Icon } from "../Icon";
 import { useThemeContext } from "@/app/hooks";
 import { ColorKeys } from "@/app/constants/theme";
 import { IconProps } from "../Icon/Icon";
 import { NotificationIndicator } from "../NotificationIndicator";
+import { IconKeys } from "@/app/constants/iconKeys";
 
 type TouchableIconProps = {
-  icon: IconProp;
+  icon: IconKeys;
   onPress: () => void;
   color?: ColorKeys;
   size?: IconProps["size"];

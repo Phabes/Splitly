@@ -6,7 +6,6 @@ import { Typography } from "../Typography";
 import { Icon } from "../Icon";
 import { TouchableIcon } from "../TouchableIcon";
 import { NotificationIndicator } from "../NotificationIndicator";
-import { getIcon } from "@/app/utils";
 import { GlobalMenu, MenuAction } from "./components";
 import { useRingingBell } from "./hooks/useRingingBell";
 
@@ -45,7 +44,7 @@ export const NavBar: FC<NavBarProps> = ({
       >
         {onBackPress && (
           <Icon
-            icon={getIcon("AngleLeft")}
+            icon="AngleLeft"
             size="large"
           />
         )}
@@ -66,7 +65,7 @@ export const NavBar: FC<NavBarProps> = ({
               ]}
             >
               <TouchableIcon
-                icon={getIcon(bell)}
+                icon={bell}
                 onPress={notificationsPress}
                 color="text-notification"
                 size="small"
@@ -79,7 +78,7 @@ export const NavBar: FC<NavBarProps> = ({
         {showMenu && (
           <>
             <TouchableIcon
-              icon={getIcon("Bars")}
+              icon="Bars"
               onPress={() => setIsMenuVisible(true)}
               color="text-primary"
             />

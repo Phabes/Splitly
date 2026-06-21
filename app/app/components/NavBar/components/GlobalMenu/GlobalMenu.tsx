@@ -20,7 +20,6 @@ import {
   GLOBAL_MENU_WIDTH_ENTRY_ANIMATION_DURATION,
   GLOBAL_MENU_WIDTH_CLOSE_ANIMATION_DURATION,
 } from "@/app/constants/globalMenu";
-import { getIcon } from "@/app/utils";
 import { TouchableIcon } from "@/app/components/TouchableIcon";
 
 export interface MenuAction {
@@ -94,13 +93,13 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
           <View style={styles.header}>
             <View style={styles.profileIcon}>
               <Icon
-                icon={getIcon("UserCircle")}
+                icon="UserCircle"
                 color="text-secondary"
                 size="large"
               />
             </View>
             <TouchableIcon
-              icon={getIcon("X")}
+              icon="X"
               onPress={onClose}
               color="text-primary"
             />
@@ -127,7 +126,7 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
                 }}
               >
                 <Icon
-                  icon={getIcon("Cog")}
+                  icon="Cog"
                   color="text-primary"
                 />
                 <Typography text={translations["settings"]} />
@@ -143,7 +142,7 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
                   }}
                 >
                   <Icon
-                    icon={getIcon(action.icon)}
+                    icon={action.icon}
                     color="text-primary"
                   />
                   <Typography text={translations[action.labelKey]} />

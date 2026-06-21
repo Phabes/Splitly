@@ -2,25 +2,26 @@ import { FC } from "react";
 import { ColorKeys } from "../../constants/theme";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useThemeContext } from "@/app/hooks";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { IconKeys } from "@/app/constants/iconKeys";
+import { getIcon } from "@/app/utils";
 
 export type IconProps = {
-  icon: IconProp;
+  icon: IconKeys;
   color?: ColorKeys;
-  size?: "small" | "large";
+  size?: "large" | "medium" | "small";
 };
 
 export const Icon: FC<IconProps> = ({
   icon,
   color = "text-success",
-  size = "small",
+  size = "medium",
 }) => {
-  const iconSize = size === "small" ? 6 : 7;
+  const iconSize = size === "small" ? 5 : size === "medium" ? 6 : 7;
   const theme = useThemeContext();
 
   return (
     <FontAwesomeIcon
-      icon={icon}
+      icon={getIcon(icon)}
       color={theme.colors[color]}
       size={theme.spacing(iconSize)}
     />

@@ -12,7 +12,7 @@ export const useAddMembersData = () => {
     isLoadingMore,
     hasMore,
     fetchFriends,
-  } = useFriendsList();
+  } = useFriendsList(searchQuery);
 
   useEffect(() => {
     setIsSearching(true);

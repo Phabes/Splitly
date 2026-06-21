@@ -1,4 +1,4 @@
-import { FC, Fragment, JSX, PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Typography } from "../Typography";
 import { useThemeContext } from "@/app/hooks";
@@ -34,12 +34,14 @@ const useStyles = () => {
   return StyleSheet.create({
     container: {
       flexDirection: "row",
+      minHeight: theme.spacing(16),
       alignItems: "center",
       borderWidth: 1,
       borderRadius: theme.spacing(2),
       borderColor: theme.colors["text-secondary"],
       paddingHorizontal: theme.spacing(4),
       paddingVertical: theme.spacing(3),
+      backgroundColor: theme.colors["background-primary"],
     },
     text: { flex: 1 },
     buttons: {

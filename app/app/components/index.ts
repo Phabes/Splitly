@@ -1,4 +1,5 @@
 export * from "./Button";
+export * from "./Fab";
 export * from "./FormData";
 export * from "./FormLabel";
 export * from "./Icon";

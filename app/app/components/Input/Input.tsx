@@ -1,12 +1,11 @@
 import { AppTheme } from "@/app/constants/theme";
 import { useThemeContext } from "@/app/hooks";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { TogglePassword } from "./components/TogglePassword";
-import { InputIcon } from "./components/InputIcon";
+import { Icon } from "../Icon";
 import { TouchableOpacity } from "react-native";
-import { getIcon } from "@/app/utils";
+import { IconKeys } from "@/app/constants/iconKeys";
 
 type InputProps = {
   text: string;
@@ -18,7 +17,7 @@ type InputProps = {
   centerText?: boolean;
   disabled?: boolean;
   password?: boolean;
-  beginIcon?: IconProp;
+  beginIcon?: IconKeys;
   allowClear?: boolean;
 };
 
@@ -74,7 +73,11 @@ export const Input: FC<InputProps> = ({
           onPress={handleIconPress}
           activeOpacity={1}
         >
-          <InputIcon icon={beginIcon} />
+          <Icon
+            icon={beginIcon}
+            color="text-disabled"
+            size="small"
+          />
         </TouchableOpacity>
       )}
       <View style={{ flex: 1 }}>
@@ -101,7 +104,11 @@ export const Input: FC<InputProps> = ({
       )}
       {allowClear && text !== "" && (
         <TouchableOpacity onPress={clearInput}>
-          <InputIcon icon={getIcon("X")} />
+          <Icon
+            icon="X"
+            color="text-disabled"
+            size="small"
+          />
         </TouchableOpacity>
       )}
     </View>

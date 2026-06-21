@@ -16,7 +16,6 @@ export const useSignInData = () => {
   const passwordField = useFormData();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState(translations["loading"]);
 
   const clearAllErrors = () => {
     usernameField.setError(undefined);
@@ -87,7 +86,6 @@ export const useSignInData = () => {
 
   return {
     isLoading,
-    loadingText,
     usernameField,
     passwordField,
     handleSignIn,

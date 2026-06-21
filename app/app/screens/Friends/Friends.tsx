@@ -1,5 +1,5 @@
 import {
-  Button,
+  Fab,
   Input,
   ListItem,
   Loading,
@@ -9,16 +9,11 @@ import {
   TouchableIcon,
   Typography,
 } from "@/app/components";
-import {
-  useAppNavigation,
-  useThemeContext,
-  useTranslations,
-} from "@/app/hooks";
+import { useAppNavigation, useTranslations } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useFriendActions, useFriendsData } from "./hooks";
-import { getIcon } from "@/app/utils";
 
 export const Friends: FC = () => {
   const translations = useTranslations();
@@ -55,22 +50,9 @@ export const Friends: FC = () => {
         text={searchValue}
         onChange={handleSearchChange}
         placeholder={translations["searchFriends"]}
-        beginIcon={getIcon("Search")}
+        beginIcon="Search"
         allowClear={true}
       />
-
-      <View style={styles.mainButtons}>
-        <Button
-          text={translations["addFriend"]}
-          onPress={() => navigation.navigate("AddFriend")}
-          fullWidth={true}
-        />
-        <Button
-          text={translations["friendRequests"]}
-          onPress={() => navigation.navigate("FriendRequests")}
-          fullWidth={true}
-        />
-      </View>
 
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
@@ -89,7 +71,7 @@ export const Friends: FC = () => {
                 onPress={() => handleShowUserProfile(item.user._id)}
               >
                 <TouchableIcon
-                  icon={getIcon("User")}
+                  icon="User"
                   onPress={() => handleShowUserProfile(item.user._id)}
                 />
               </ListItem>
@@ -120,15 +102,13 @@ export const Friends: FC = () => {
           </View>
         </Scroll>
       </LoadingWrapper>
+      <Fab onPress={() => navigation.navigate("AddFriend")} />
     </LayoutProvider>
   );
 };
 
 const useStyles = () => {
-  const theme = useThemeContext();
-
   return StyleSheet.create({
-    mainButtons: { flexDirection: "row", gap: theme.spacing(4) },
     footerContainer: {
       alignItems: "center",
     },

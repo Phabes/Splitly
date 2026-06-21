@@ -15,7 +15,6 @@ import {
   TOUCH_ADDITIONAL_REFRESH_THRESHOLD,
 } from "@/app/constants/pagination";
 import { Icon } from "../Icon";
-import { getIcon } from "@/app/utils";
 
 type ScrollProps = {
   gapSize?: "small" | "large";
@@ -170,7 +169,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
               }}
             >
               <Icon
-                icon={getIcon("RotateRight")}
+                icon="RotateRight"
                 size="large"
               />
             </View>

@@ -5,7 +5,7 @@ import {
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { getAddFriendListCall } from "@/app/services";
 import { AddFriendResponse, ResponseMessage, UserResult } from "@/app/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 
 export const useUserSearch = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -15,82 +15,94 @@ export const useUserSearch = () => {
   const request = useAuthenticatedApi();
   const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
 
-  const retrieveData = async () => {
-    const userIDs = users.map((user) => user._id);
+  const latestSearchValueRef = useRef(searchValue);
 
-    const response = await request(getAddFriendListCall, searchValue, userIDs);
-
-    if (response.ok) {
-      const result: AddFriendResponse = await response.json();
-
-      if (result.users.length > 0) {
-        setUsers((prev) => [...prev, ...result.users]);
-        setHasMore(result.hasMore);
+  const fetchUsers = useCallback(
+    async (
+      userIDs: string[],
+      isInitial: boolean = false,
+      currentSearchValue: string = "",
+    ) => {
+      if (isInitial) {
+        setIsSearching(true);
       } else {
-        setHasMore(false);
+        setIsLoadingMore(true);
       }
-    } else {
-      const data: ResponseMessage = await response.json();
-      throw new Error(data.message);
-    }
-  };
 
-  const handleSearchChange = (text: string) => {
-    setSearchValue(text);
-
-    if (text.trim().length >= ADD_FRIENDS_MIN_SEARCH_LENGTH) {
-      setIsSearching(true);
-      setHasMore(true);
-    } else {
-      setIsSearching(false);
-      setUsers([]);
-    }
-  };
-
-  useEffect(() => {
-    if (searchValue.trim().length < ADD_FRIENDS_MIN_SEARCH_LENGTH) {
-      return;
-    }
-
-    const delayDebounceFn = setTimeout(async () => {
       try {
-        const response = await request(getAddFriendListCall, searchValue, []);
+        const response = await request(
+          getAddFriendListCall,
+          currentSearchValue,
+          userIDs,
+        );
+
+        if (isInitial && currentSearchValue !== latestSearchValueRef.current) {
+          return;
+        }
 
         if (response.ok) {
           const result: AddFriendResponse = await response.json();
 
-          setUsers(result.users);
-          setHasMore(result.hasMore);
+          if (result.users.length > 0) {
+            setUsers((prev) =>
+              isInitial ? result.users : [...prev, ...result.users],
+            );
+            setHasMore(result.hasMore);
+          } else {
+            if (isInitial) {
+              setUsers([]);
+            }
+            setHasMore(false);
+          }
         } else {
           const data: ResponseMessage = await response.json();
           throw new Error(data.message);
         }
       } catch (error) {
-        // Initial search failed
         console.error(error);
       } finally {
-        setIsSearching(false);
+        if (isInitial) {
+          if (currentSearchValue === latestSearchValueRef.current) {
+            setIsSearching(false);
+          }
+        } else {
+          setIsLoadingMore(false);
+        }
       }
-    }, ADD_FRIENDS_SEARCH_DELAY);
+    },
+    [request, setHasMore, setIsLoadingMore],
+  );
+
+  const handleSearchChange = (text: string) => {
+    setSearchValue(text);
+  };
+
+  useEffect(() => {
+    latestSearchValueRef.current = searchValue;
+
+    if (searchValue.trim().length < ADD_FRIENDS_MIN_SEARCH_LENGTH) {
+      setIsSearching(false);
+      setUsers([]);
+      setHasMore(false);
+      return;
+    }
+
+    setIsSearching(true);
+
+    const delayDebounceFn = setTimeout(() => {
+      fetchUsers([], true, searchValue);
+    }, ADD_FRIENDS_SEARCH_DELAY || 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchValue]);
+  }, [searchValue, fetchUsers]);
 
   const loadMoreUsers = async () => {
     if (isLoadingMore || isSearching || !hasMore) {
       return;
     }
 
-    setIsLoadingMore(true);
-
-    try {
-      await retrieveData();
-    } catch (error) {
-      // Load more failed
-      console.error(error);
-    } finally {
-      setIsLoadingMore(false);
-    }
+    const userIDs = users.map((user) => user._id);
+    await fetchUsers(userIDs, false, searchValue);
   };
 
   const forceLoadMore = useCallback(async () => {
@@ -102,17 +114,9 @@ export const useUserSearch = () => {
       return;
     }
 
-    setIsLoadingMore(true);
-
-    try {
-      await retrieveData();
-    } catch (error) {
-      // Manual force load failed
-      console.error(error);
-    } finally {
-      setIsLoadingMore(false);
-    }
-  }, [isLoadingMore, isSearching, searchValue]);
+    const userIDs = users.map((user) => user._id);
+    await fetchUsers(userIDs, false, searchValue);
+  }, [isLoadingMore, isSearching, searchValue, users, fetchUsers]);
 
   return {
     searchValue,

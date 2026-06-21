@@ -12,7 +12,6 @@ import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 import { useFriendRequests } from "./hooks";
-import { getIcon } from "@/app/utils";
 
 export const FriendRequests: FC = () => {
   const translations = useTranslations();
@@ -70,11 +69,11 @@ export const FriendRequests: FC = () => {
                 onPress={() => handleShowUserProfile(item.requester._id)}
               >
                 <TouchableIcon
-                  icon={getIcon("Check")}
+                  icon="Check"
                   onPress={() => handleAcceptFriendRequest(item._id)}
                 />
                 <TouchableIcon
-                  icon={getIcon("X")}
+                  icon="X"
                   onPress={() => handleRejectFriendRequest(item._id)}
                   color="text-error"
                 />

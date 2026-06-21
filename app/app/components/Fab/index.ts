@@ -1,4 +1,4 @@
-export { InputIcon } from "./InputIcon";
+export { Fab } from "./Fab";
 
 export default function Index() {
   return null;
