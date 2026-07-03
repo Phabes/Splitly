@@ -2,16 +2,19 @@ import { FRIENDS_SEARCH_DELAY } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { getFriendListCall } from "@/app/services";
 import { FriendsResponse, FriendResult, ResponseMessage } from "@/app/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DeviceEventEmitter } from "react-native";
 
 export const useFriendsData = () => {
   const [searchValue, setSearchValue] = useState("");
   const [friends, setFriends] = useState<FriendResult[]>([]);
   const [isSearching, setIsSearching] = useState(true);
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
 
   const request = useAuthenticatedApi();
   const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
+
+  const latestSearchValueRef = useRef(searchValue);
 
   const fetchFriends = useCallback(
     async (
@@ -31,6 +34,9 @@ export const useFriendsData = () => {
           friendIDs,
           currentSearchValue,
         );
+        if (isInitial && currentSearchValue !== latestSearchValueRef.current) {
+          return;
+        }
 
         if (response.ok) {
           const result: FriendsResponse = await response.json();
@@ -46,6 +52,7 @@ export const useFriendsData = () => {
             }
             setHasMore(false);
           }
+          setPendingRequestsCount(result.pendingRequestsCount);
         } else {
           const data: ResponseMessage = await response.json();
           throw new Error(data.message);
@@ -55,7 +62,9 @@ export const useFriendsData = () => {
         console.error(error);
       } finally {
         if (isInitial) {
-          setIsSearching(false);
+          if (currentSearchValue === latestSearchValueRef.current) {
+            setIsSearching(false);
+          }
         } else {
           setIsLoadingMore(false);
         }
@@ -65,6 +74,7 @@ export const useFriendsData = () => {
   );
 
   useEffect(() => {
+    latestSearchValueRef.current = searchValue;
     setIsSearching(true);
 
     const delayDebounceFn = setTimeout(() => {
@@ -118,6 +128,7 @@ export const useFriendsData = () => {
     isLoadingMore,
     loadMoreFriends,
     forceLoadMore,
+    pendingRequestsCount,
   };
 };
 

@@ -1,16 +1,20 @@
 import { TypographyKeys } from "@/app/constants/theme";
 import { FC, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Typography } from "../Typography";
+import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useThemeContext } from "@/app/hooks";
+import { Typography } from "../Typography";
 import { Icon } from "../Icon";
-import { getIcon } from "@/app/utils";
+import { TouchableIcon } from "../TouchableIcon";
+import { NotificationIndicator } from "../NotificationIndicator";
 import { GlobalMenu, MenuAction } from "./components";
+import { useRingingBell } from "./hooks/useRingingBell";
 
 export type NavBarProps = {
   text: string;
   variant?: TypographyKeys;
   onBackPress?: () => void;
+  notificationsPress?: () => void;
+  notificationsExist?: boolean;
   showMenu?: boolean;
   menuActions?: MenuAction[];
 };
@@ -19,12 +23,17 @@ export const NavBar: FC<NavBarProps> = ({
   text,
   variant = "header-medium",
   onBackPress,
+  notificationsPress,
+  notificationsExist = false,
   showMenu = true,
   menuActions = [],
 }) => {
+  const { spin } = useRingingBell();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   const styles = useStyles();
+
+  const bell = notificationsExist ? "Bell" : "EmptyBell";
 
   return (
     <View style={styles.container}>
@@ -35,7 +44,7 @@ export const NavBar: FC<NavBarProps> = ({
       >
         {onBackPress && (
           <Icon
-            icon={getIcon("AngleLeft")}
+            icon="AngleLeft"
             size="large"
           />
         )}
@@ -45,22 +54,43 @@ export const NavBar: FC<NavBarProps> = ({
         />
       </TouchableOpacity>
 
-      {showMenu && (
-        <>
-          <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
-            <Icon
-              icon={getIcon("Bars")}
+      <View style={styles.rightSide}>
+        {notificationsPress && (
+          <View>
+            <Animated.View
+              style={[
+                notificationsExist && {
+                  transform: [{ rotate: spin }],
+                },
+              ]}
+            >
+              <TouchableIcon
+                icon={bell}
+                onPress={notificationsPress}
+                color="text-notification"
+                size="small"
+                hitBox="large"
+              />
+            </Animated.View>
+            {notificationsExist && <NotificationIndicator />}
+          </View>
+        )}
+        {showMenu && (
+          <>
+            <TouchableIcon
+              icon="Bars"
+              onPress={() => setIsMenuVisible(true)}
               color="text-primary"
             />
-          </TouchableOpacity>
 
-          <GlobalMenu
-            isVisible={isMenuVisible}
-            onClose={() => setIsMenuVisible(false)}
-            customActions={menuActions}
-          />
-        </>
-      )}
+            <GlobalMenu
+              isVisible={isMenuVisible}
+              onClose={() => setIsMenuVisible(false)}
+              customActions={menuActions}
+            />
+          </>
+        )}
+      </View>
     </View>
   );
 };
@@ -81,6 +111,11 @@ const useStyles = () => {
       flexDirection: "row",
       alignItems: "center",
       gap: theme.spacing(2),
+    },
+    rightSide: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(4),
     },
   });
 };

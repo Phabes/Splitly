@@ -1,7 +1,5 @@
 import { FC } from "react";
-import { TouchableOpacity } from "react-native";
-import { InputIcon } from "../InputIcon";
-import { getIcon } from "@/app/utils";
+import { TouchableIcon } from "@/app/components/TouchableIcon";
 
 type TogglePasswordProps = {
   status: boolean;
@@ -12,16 +10,20 @@ export const TogglePassword: FC<TogglePasswordProps> = ({
   status,
   toggleStatus,
 }) => {
-  const passwordIcon = getIcon(status ? "Eye" : "EyeSlash");
+  const passwordIcon = status ? "Eye" : "EyeSlash";
 
   const togglePasswordIcon = () => {
     toggleStatus(!status);
   };
 
   return (
-    <TouchableOpacity onPress={togglePasswordIcon}>
-      <InputIcon icon={passwordIcon} />
-    </TouchableOpacity>
+    <TouchableIcon
+      icon={passwordIcon}
+      onPress={togglePasswordIcon}
+      color="text-disabled"
+      size="small"
+      hitBox="large"
+    />
   );
 };
 

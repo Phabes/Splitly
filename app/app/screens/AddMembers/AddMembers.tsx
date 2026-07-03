@@ -20,7 +20,6 @@ import { LayoutProvider } from "@/app/providers";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
 import { useAddMembersData } from "./hooks";
-import { getIcon } from "@/app/utils";
 
 export const AddMembers: FC = () => {
   const translations = useTranslations();
@@ -74,7 +73,7 @@ export const AddMembers: FC = () => {
           text={searchQuery}
           placeholder={translations["searchFriends"] || "Search friends..."}
           onChange={setSearchQuery}
-          beginIcon={getIcon("Search")}
+          beginIcon="Search"
           allowClear={true}
         />
         <LoadingWrapper isLoading={isSearching}>
@@ -103,7 +102,7 @@ export const AddMembers: FC = () => {
                   onPress={() => toggleMember(item.user._id)}
                 >
                   <TouchableIcon
-                    icon={getIcon(isSelected ? "Minus" : "Plus")}
+                    icon={isSelected ? "Minus" : "Plus"}
                     onPress={() => toggleMember(item.user._id)}
                   />
                 </ListItem>

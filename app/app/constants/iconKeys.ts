@@ -16,7 +16,9 @@ export type IconKeys =
   | "AngleLeft"
   | "RotateRight"
   | "ChevronDown"
-  | "ChevronUp";
+  | "ChevronUp"
+  | "Bell"
+  | "EmptyBell";
 
 export default function Index() {
   return null;

@@ -14,7 +14,8 @@
     "types": ["node"],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "noUnusedLocals": true
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]

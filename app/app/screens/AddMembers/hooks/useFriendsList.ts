@@ -1,14 +1,20 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { FriendResult, ResponseMessage } from "@/app/types";
 import { getFriendListCall } from "@/app/services";
 
-export const useFriendsList = () => {
+export const useFriendsList = (currentSearchValue: string = "") => {
   const [friends, setFriends] = useState<FriendResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
   const request = useAuthenticatedApi();
+
+  const latestSearchValueRef = useRef(currentSearchValue);
+
+  useEffect(() => {
+    latestSearchValueRef.current = currentSearchValue;
+  }, [currentSearchValue]);
 
   const fetchFriends = useCallback(
     async (
@@ -28,6 +34,9 @@ export const useFriendsList = () => {
           friendIDs,
           searchValue,
         );
+        if (isInitial && searchValue !== latestSearchValueRef.current) {
+          return;
+        }
 
         if (response.ok) {
           const result = await response.json();
@@ -49,7 +58,9 @@ export const useFriendsList = () => {
         console.error(error);
       } finally {
         if (isInitial) {
-          setIsSearching(false);
+          if (searchValue === latestSearchValueRef.current) {
+            setIsSearching(false);
+          }
         } else {
           setIsLoadingMore(false);
         }

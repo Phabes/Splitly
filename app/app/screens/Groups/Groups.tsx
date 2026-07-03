@@ -1,5 +1,5 @@
 import {
-  Button,
+  Fab,
   Input,
   ListItem,
   Loading,
@@ -9,16 +9,11 @@ import {
   TouchableIcon,
   Typography,
 } from "@/app/components";
-import {
-  useAppNavigation,
-  useThemeContext,
-  useTranslations,
-} from "@/app/hooks";
+import { useAppNavigation, useTranslations } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
-import { useGroupActions, useGroupsData } from "./hooks";
-import { getIcon } from "@/app/utils";
+import { useGroupsData } from "./hooks";
 
 export const Groups: FC = () => {
   const translations = useTranslations();
@@ -33,36 +28,30 @@ export const Groups: FC = () => {
     isLoadingMore,
     loadMoreGroups,
     forceLoadMore,
+    pendingRequestsCount,
   } = useGroupsData();
-
-  const { handleShowGroupProfile } = useGroupActions();
 
   const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   const styles = useStyles();
 
   return (
-    <LayoutProvider navbar={<NavBar text={translations["groups"]} />}>
+    <LayoutProvider
+      navbar={
+        <NavBar
+          text={translations["groups"]}
+          notificationsPress={() => navigation.navigate("GroupRequests")}
+          notificationsExist={pendingRequestsCount > 0}
+        />
+      }
+    >
       <Input
         text={searchValue}
         onChange={handleSearchChange}
         placeholder={translations["searchGroups"]}
-        beginIcon={getIcon("Search")}
+        beginIcon="Search"
         allowClear={true}
       />
-
-      <View style={styles.mainButtons}>
-        <Button
-          text={translations["createGroup"]}
-          onPress={() => navigation.navigate("CreateGroup")}
-          fullWidth={true}
-        />
-        <Button
-          text={translations["friendRequests"]}
-          onPress={() => navigation.navigate("GroupRequests")}
-          fullWidth={true}
-        />
-      </View>
 
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
@@ -78,12 +67,10 @@ export const Groups: FC = () => {
                 key={`Groups/${i}`}
                 text={`${item.name} - ${item.description}`}
                 onPress={() => navigation.navigate("GroupDetails")}
-                // onPress={() => handleShowGroupProfile(item.name)}
               >
                 <TouchableIcon
-                  icon={getIcon("Users")}
+                  icon="Users"
                   onPress={() => navigation.navigate("GroupDetails")}
-                  // onPress={() => handleShowGroupProfile(item.name)}
                 />
               </ListItem>
             );
@@ -113,17 +100,19 @@ export const Groups: FC = () => {
           </View>
         </Scroll>
       </LoadingWrapper>
+      <Fab onPress={() => navigation.navigate("CreateGroup")} />
     </LayoutProvider>
   );
 };
 
 const useStyles = () => {
-  const theme = useThemeContext();
-
   return StyleSheet.create({
-    mainButtons: { flexDirection: "row", gap: theme.spacing(4) },
     footerContainer: {
       alignItems: "center",
+    },
+    content: {
+      flex: 1,
+      position: "relative",
     },
   });
 };

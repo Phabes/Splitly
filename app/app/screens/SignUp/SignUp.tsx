@@ -19,7 +19,6 @@ export const SignUp: FC = () => {
 
   const {
     isLoading,
-    loadingText,
     emailField,
     usernameField,
     passwordField,
@@ -40,7 +39,7 @@ export const SignUp: FC = () => {
     >
       <LoadingWrapper
         isLoading={isLoading}
-        text={loadingText}
+        text={translations["loading"]}
       >
         <Scroll>
           <View style={styles.inputs}>

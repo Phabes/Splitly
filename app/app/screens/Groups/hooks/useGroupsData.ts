@@ -1,18 +1,20 @@
 import { GROUPS_SEARCH_DELAY } from "@/app/constants/pagination";
-import { useAppNavigation, useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { TabParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
+import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { getGroupListCall } from "@/app/services";
 import { GroupResult, GroupsResponse, ResponseMessage } from "@/app/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DeviceEventEmitter } from "react-native";
 
 export const useGroupsData = () => {
   const [searchValue, setSearchValue] = useState("");
   const [groups, setGroups] = useState<GroupResult[]>([]);
   const [isSearching, setIsSearching] = useState(true);
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
 
   const request = useAuthenticatedApi();
   const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
+
+  const latestSearchValueRef = useRef(searchValue);
 
   const fetchGroups = useCallback(
     async (
@@ -32,6 +34,10 @@ export const useGroupsData = () => {
           groupIDs,
           currentSearchValue,
         );
+        if (isInitial && currentSearchValue !== latestSearchValueRef.current) {
+          return;
+        }
+
         if (response.ok) {
           const result: GroupsResponse = await response.json();
 
@@ -46,6 +52,7 @@ export const useGroupsData = () => {
             }
             setHasMore(false);
           }
+          setPendingRequestsCount(result.pendingRequestsCount);
         } else {
           const data: ResponseMessage = await response.json();
           throw new Error(data.message);
@@ -55,7 +62,9 @@ export const useGroupsData = () => {
         console.error(error);
       } finally {
         if (isInitial) {
-          setIsSearching(false);
+          if (currentSearchValue === latestSearchValueRef.current) {
+            setIsSearching(false);
+          }
         } else {
           setIsLoadingMore(false);
         }
@@ -65,6 +74,7 @@ export const useGroupsData = () => {
   );
 
   useEffect(() => {
+    latestSearchValueRef.current = searchValue;
     setIsSearching(true);
 
     const delayDebounceFn = setTimeout(() => {
@@ -92,8 +102,8 @@ export const useGroupsData = () => {
       return;
     }
 
-    const friendRecordIDs = groups.map((f) => f._id);
-    await fetchGroups(friendRecordIDs, false, searchValue);
+    const groupsRecordIDs = groups.map((f) => f._id);
+    await fetchGroups(groupsRecordIDs, false, searchValue);
   }, [isLoadingMore, isSearching, groups, fetchGroups, searchValue]);
 
   useEffect(() => {
@@ -118,6 +128,7 @@ export const useGroupsData = () => {
     isLoadingMore,
     loadMoreGroups,
     forceLoadMore,
+    pendingRequestsCount,
   };
 };
 

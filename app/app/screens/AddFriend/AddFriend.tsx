@@ -18,7 +18,6 @@ import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useUsers } from "./hooks";
 import { ADD_FRIENDS_MIN_SEARCH_LENGTH } from "@/app/constants/pagination";
-import { getIcon } from "@/app/utils";
 
 export const AddFriend: FC = () => {
   const translations = useTranslations();
@@ -60,7 +59,7 @@ export const AddFriend: FC = () => {
           text={searchValue}
           onChange={handleSearchChange}
           placeholder={translations["searchFriends"]}
-          beginIcon={getIcon("Search")}
+          beginIcon="Search"
         />
         <LoadingWrapper isLoading={isSearching}>
           <Scroll
@@ -86,7 +85,7 @@ export const AddFriend: FC = () => {
                   onPress={() => handleShowUserProfile(item._id)}
                 >
                   <TouchableIcon
-                    icon={getIcon("Plus")}
+                    icon="Plus"
                     onPress={() => handleAddFriend(item._id)}
                   />
                 </ListItem>
