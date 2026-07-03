@@ -165,7 +165,7 @@ export const decideGroupRequest = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const groupRequestID = req.params.id;
+    const { groupRequestID } = req.params;
     const { decision } = req.body;
     const currentUserID = req.userID;
 
@@ -203,6 +203,51 @@ export const decideGroupRequest = async (
     return res.status(500).json({
       code: "patchGroupRequest/error",
       message: "Server error while processing group request decision.",
+    });
+  }
+};
+
+export const getGroupDetails = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { groupID } = req.params;
+    const currentUserID = req.userID;
+
+    const group = await Group.findById(groupID).select(
+      "name description baseCurrency members",
+    );
+
+    if (!group) {
+      return res.status(404).json({
+        code: "getGroupDetails/not-found",
+        message: "Group not found.",
+      });
+    }
+
+    const currentUserMember = group.members.find(
+      (member) => member.user.toString() === currentUserID?.toString(),
+    );
+
+    const isAdmin = currentUserMember
+      ? currentUserMember.role === "admin"
+      : false;
+
+    return res.status(200).json({
+      code: "getGroupDetails/success",
+      message: "Group details fetched successfully.",
+      isAdmin,
+      group: {
+        name: group.name,
+        description: group.description,
+        baseCurrency: group.baseCurrency,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "getGroupDetails/error",
+      message: "Server error during fetching group details.",
     });
   }
 };

@@ -66,11 +66,15 @@ export const Groups: FC = () => {
               <ListItem
                 key={`Groups/${i}`}
                 text={`${item.name} - ${item.description}`}
-                onPress={() => navigation.navigate("GroupDetails")}
+                onPress={() =>
+                  navigation.navigate("GroupDetails", { groupID: item._id })
+                }
               >
                 <TouchableIcon
                   icon="Users"
-                  onPress={() => navigation.navigate("GroupDetails")}
+                  onPress={() =>
+                    navigation.navigate("GroupDetails", { groupID: item._id })
+                  }
                 />
               </ListItem>
             );

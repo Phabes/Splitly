@@ -1,3 +1,4 @@
+import { GroupDetailsResult } from "@/app/types";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -13,7 +14,8 @@ export type AppStackParamList = {
   CreateGroup: undefined;
   AddMembers: { initialSelectedMembers?: string[] } | undefined;
   GroupRequests: undefined;
-  GroupDetails: undefined;
+  GroupDetails: { groupID: string };
+  EditGroup: GroupDetailsResult;
 };
 
 export type AppNavigationProps = NativeStackNavigationProp<AppStackParamList>;

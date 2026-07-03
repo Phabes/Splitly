@@ -2,6 +2,7 @@
   "loading": "Ładowanie",
   "sentBy": "Wysłane przez",
   "fieldRequired": "Wymagane",
+  "settings": "Ustawienia",
 
   "signUp": "Załóż konto",
   "signIn": "Zaloguj się",
@@ -64,6 +65,5 @@
   "expenses": "Wydatki",
   "balances": "Saldo",
   "members": "Członkowie",
-
-  "settings": "Ustawienia"
+  "editGroup": "Edycja grupy"
 }

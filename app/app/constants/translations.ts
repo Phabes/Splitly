@@ -10,6 +10,7 @@ export type TranslationKeys =
   | "loading"
   | "sentBy"
   | "fieldRequired"
+  | "settings"
   // authentication
   | "signUp"
   | "signIn"
@@ -72,7 +73,7 @@ export type TranslationKeys =
   | "expenses"
   | "balances"
   | "members"
-  | "settings";
+  | "editGroup";
 
 export const translations: Record<
   LanguageKeys,

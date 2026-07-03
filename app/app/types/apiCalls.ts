@@ -82,6 +82,17 @@ export type GroupRequestsResponse = ResponseMessage & {
   hasMore: boolean;
 };
 
+export type GroupDetailsResult = {
+  name: string;
+  description: string;
+  baseCurrency: string;
+};
+
+export type GroupDetailsResponse = ResponseMessage & {
+  isAdmin: boolean;
+  group: GroupDetailsResult;
+};
+
 export default function Index() {
   return null;
 }

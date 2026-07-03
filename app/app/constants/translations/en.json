@@ -2,6 +2,7 @@
   "loading": "Loading",
   "sentBy": "Sent by",
   "fieldRequired": "Required",
+  "settings": "Settings",
 
   "signUp": "Sign up",
   "signIn": "Sign in",
@@ -64,6 +65,5 @@
   "expenses": "Expenses",
   "balances": "Balances",
   "members": "Members",
-
-  "settings": "Settings"
+  "editGroup": "Edit group"
 }
