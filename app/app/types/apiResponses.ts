@@ -1,15 +1,17 @@
-import { ResponseCodeKeys } from "../constants/responseCodeKeys";
+import { ResponseCodeKeys } from "@/app/constants/responseCodeKeys";
+import {
+  FriendRequestResult,
+  FriendResult,
+  GroupDetailsResult,
+  GroupRequestResult,
+  GroupResult,
+  UserResult,
+} from "./entityResults";
 
 export type ResponseMessage = {
   code: ResponseCodeKeys;
   message: string;
 };
-
-export interface UserResult {
-  _id: string;
-  username: string;
-  email: string;
-}
 
 export type VerifyUserResponse = ResponseMessage & {
   user: UserResult;
@@ -40,31 +42,15 @@ export type AddFriendResponse = ResponseMessage & {
   hasMore: boolean;
 };
 
-export type FriendResult = {
-  _id: string;
-  user: UserResult;
-};
-
 export type FriendsResponse = ResponseMessage & {
   friends: FriendResult[];
   hasMore: boolean;
   pendingRequestsCount: number;
 };
 
-export interface FriendRequestResult {
-  _id: string;
-  requester: UserResult;
-}
-
 export type FriendRequestsResponse = ResponseMessage & {
   requests: FriendRequestResult[];
   hasMore: boolean;
-};
-
-export type GroupResult = {
-  _id: string;
-  name: string;
-  description: string;
 };
 
 export type GroupsResponse = ResponseMessage & {
@@ -73,24 +59,18 @@ export type GroupsResponse = ResponseMessage & {
   pendingRequestsCount: number;
 };
 
-export type GroupRequestResult = GroupResult & {
-  creator: UserResult;
-};
-
 export type GroupRequestsResponse = ResponseMessage & {
   requests: GroupRequestResult[];
   hasMore: boolean;
 };
 
-export type GroupDetailsResult = {
-  name: string;
-  description: string;
-  baseCurrency: string;
-};
-
 export type GroupDetailsResponse = ResponseMessage & {
   isAdmin: boolean;
-  group: GroupDetailsResult;
+  groupDetails: GroupDetailsResult;
+};
+
+export type EditGroupDetailsResponse = ResponseMessage & {
+  groupDetails: GroupDetailsResult;
 };
 
 export default function Index() {

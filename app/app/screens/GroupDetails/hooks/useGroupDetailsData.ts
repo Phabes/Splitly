@@ -6,15 +6,29 @@ import {
   ResponseMessage,
 } from "@/app/types";
 import { useEffect, useState } from "react";
+import { DeviceEventEmitter } from "react-native";
 
 export const useGroupDetailsData = (groupID: string) => {
   const request = useAuthenticatedApi();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [groupDetails, setGroupDetails] = useState<GroupDetailsResult | null>(
     null,
   );
-  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "refreshGroupDetails",
+      (groupDetails: GroupDetailsResult) => {
+        setGroupDetails(groupDetails);
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -24,7 +38,7 @@ export const useGroupDetailsData = (groupID: string) => {
         if (response.ok) {
           const data: GroupDetailsResponse = await response.json();
           setIsAdmin(data.isAdmin);
-          setGroupDetails(data.group);
+          setGroupDetails(data.groupDetails);
         } else {
           const data: ResponseMessage = await response.json();
           throw new Error(data.message);

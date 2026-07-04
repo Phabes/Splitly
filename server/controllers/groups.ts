@@ -238,7 +238,8 @@ export const getGroupDetails = async (
       code: "getGroupDetails/success",
       message: "Group details fetched successfully.",
       isAdmin,
-      group: {
+      groupDetails: {
+        _id: groupID,
         name: group.name,
         description: group.description,
         baseCurrency: group.baseCurrency,
@@ -248,6 +249,60 @@ export const getGroupDetails = async (
     return res.status(500).json({
       code: "getGroupDetails/error",
       message: "Server error during fetching group details.",
+    });
+  }
+};
+
+export const editGroupDetails = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { groupID } = req.params;
+    const currentUserID = req.userID;
+    const { name, description, currency } = req.body;
+
+    const updatedGroup = await Group.findOneAndUpdate(
+      {
+        _id: groupID,
+        members: {
+          $elemMatch: { user: currentUserID, role: "admin" },
+        },
+      },
+      {
+        $set: {
+          name,
+          description,
+          baseCurrency: currency,
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).select("name description baseCurrency");
+
+    if (!updatedGroup) {
+      return res.status(403).json({
+        code: "editGroup/forbidden-or-not-found",
+        message: "Group not found or you do not have permission to edit it.",
+      });
+    }
+
+    return res.status(200).json({
+      code: "editGroup/success",
+      message: "Group updated successfully.",
+      groupDetails: {
+        _id: groupID,
+        name: updatedGroup.name,
+        description: updatedGroup.description,
+        baseCurrency: updatedGroup.baseCurrency,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "editGroup/error",
+      message: "Server error during group update.",
     });
   }
 };

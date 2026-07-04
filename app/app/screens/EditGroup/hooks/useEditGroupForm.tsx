@@ -5,45 +5,32 @@ import {
   useLoadingContext,
   useTranslations,
 } from "@/app/hooks";
-import { createGroupCall } from "@/app/services";
-import { ResponseMessage } from "@/app/types";
-
+import { editGroupCall } from "@/app/services";
+import { EditGroupDetailsResponse, ResponseMessage } from "@/app/types";
 import { fieldRequiredValidation } from "@/app/utils";
-import { useEffect, useState } from "react";
 import { DeviceEventEmitter } from "react-native";
 
-export const useCreateGroup = () => {
+export const useEditGroupForm = (
+  groupID: string,
+  name: string,
+  description: string,
+  baseCurrency: string,
+) => {
   const translations = useTranslations();
   const navigation = useAppNavigation();
   const request = useAuthenticatedApi();
   const { showLoading, hideLoading } = useLoadingContext();
 
-  const nameField = useFormData();
-  const descriptionField = useFormData();
-  const currencyField = useFormData();
+  const nameField = useFormData(name);
+  const descriptionField = useFormData(description);
+  const currencyField = useFormData(baseCurrency);
 
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const editGroupButtonDisabled =
+    name === nameField.value &&
+    description === descriptionField.value &&
+    baseCurrency === currencyField.value;
 
-  useEffect(() => {
-    const subscription = DeviceEventEmitter.addListener(
-      "onMembersSelected",
-      (ids: string[]) => {
-        setSelectedMembers(ids);
-      },
-    );
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  const goToAddMembers = () => {
-    navigation.navigate("AddMembers", {
-      initialSelectedMembers: selectedMembers,
-    });
-  };
-
-  const validateAddGroup = () => {
+  const validateEditGroup = () => {
     const nameError = fieldRequiredValidation(nameField.value);
     const descriptionError = fieldRequiredValidation(descriptionField.value);
     const currencyError = fieldRequiredValidation(currencyField.value);
@@ -64,9 +51,9 @@ export const useCreateGroup = () => {
     return isError;
   };
 
-  const handleCreateGroup = async () => {
+  const handleEditGroup = async () => {
     showLoading(translations["creatingGroup"]);
-    const isError = validateAddGroup();
+    const isError = validateEditGroup();
     if (isError) {
       hideLoading();
       return;
@@ -74,21 +61,23 @@ export const useCreateGroup = () => {
 
     try {
       const response = await request(
-        createGroupCall,
+        editGroupCall,
+        groupID,
         nameField.value,
         descriptionField.value,
         currencyField.value,
-        selectedMembers,
       );
       if (response.ok) {
-        DeviceEventEmitter.emit("refreshGroupList");
+        const result: EditGroupDetailsResponse = await response.json();
+        DeviceEventEmitter.emit("refreshGroupDetails", result.groupDetails);
+
         navigation.goBack();
       } else {
         const data: ResponseMessage = await response.json();
         throw new Error(data.message);
       }
     } catch (error) {
-      // Creating group error
+      // Editting group error
       console.error(error);
     } finally {
       hideLoading();
@@ -99,10 +88,9 @@ export const useCreateGroup = () => {
     nameField,
     descriptionField,
     currencyField,
-    selectedMembers,
-    handleCreateGroup,
-    goToAddMembers,
+    editGroupButtonDisabled,
+    handleEditGroup,
   };
 };
 
-export default useCreateGroup;
+export default useEditGroupForm;

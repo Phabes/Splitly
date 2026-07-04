@@ -10,13 +10,13 @@ import {
 import {
   useAppNavigation,
   useCurrencies,
-  useFormData,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
+import { useEditGroupForm } from "./hooks";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
 
@@ -25,11 +25,15 @@ export const EditGroup: FC = () => {
   const navigation = useAppNavigation();
 
   const route = useRoute<RouteProp<AppStackParamList, "EditGroup">>();
-  const { name, description, baseCurrency } = route.params;
+  const { _id: groupID, name, description, baseCurrency } = route.params;
 
-  const nameField = useFormData(name);
-  const descriptionField = useFormData(description);
-  const currencyField = useFormData(baseCurrency);
+  const {
+    nameField,
+    descriptionField,
+    currencyField,
+    editGroupButtonDisabled,
+    handleEditGroup,
+  } = useEditGroupForm(groupID, name, description, baseCurrency);
 
   const { currencies, isLoading } = useCurrencies(currencyField.value);
 
@@ -89,13 +93,9 @@ export const EditGroup: FC = () => {
           <View style={styles.buttons}>
             <Button
               text={translations["editGroup"]}
-              onPress={() => {}}
+              disabled={editGroupButtonDisabled}
+              onPress={handleEditGroup}
             />
-            {/* <Button
-              text={`${translations["addMembers"]} (${selectedMembers.length})`}
-              variant="secondary"
-              onPress={goToAddMembers}
-            /> */}
           </View>
         </Scroll>
       </LoadingWrapper>

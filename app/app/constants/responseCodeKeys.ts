@@ -51,7 +51,10 @@ export type ResponseCodeKeys =
   | "patchGroupRequest/error"
   | "getGroupDetails/not-found"
   | "getGroupDetails/success"
-  | "getGroupDetails/error";
+  | "getGroupDetails/error"
+  | "editGroup/forbidden-or-not-found"
+  | "editGroup/success"
+  | "editGroup/error";
 
 export default function Index() {
   return null;

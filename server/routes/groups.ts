@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createGroup,
   decideGroupRequest,
+  editGroupDetails,
   getGroupDetails,
   getGroupList,
   searchGroupRequests,
@@ -20,5 +21,7 @@ routerGroup.post("/requests/search", protect, searchGroupRequests);
 routerGroup.patch("/requests/:groupRequestID", protect, decideGroupRequest);
 // GET - group details
 routerGroup.get("/:groupID", protect, getGroupDetails);
+// PATCH - edit group details
+routerGroup.patch("/:groupID", protect, editGroupDetails);
 
 export default routerGroup;
