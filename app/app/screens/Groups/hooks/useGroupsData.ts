@@ -1,7 +1,12 @@
 import { GROUPS_SEARCH_DELAY } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { getGroupListCall } from "@/app/services";
-import { GroupResult, GroupsResponse, ResponseMessage } from "@/app/types";
+import {
+  GroupDetailsResult,
+  GroupResult,
+  GroupsResponse,
+  ResponseMessage,
+} from "@/app/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DeviceEventEmitter } from "react-native";
 
@@ -118,6 +123,30 @@ export const useGroupsData = () => {
       subscription.remove();
     };
   }, [forceLoadMore]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "refreshGroupDetails",
+      (groupDetails: GroupDetailsResult) => {
+        setGroups((prevGroups) =>
+          prevGroups.map((group) => {
+            if (group._id === groupDetails._id) {
+              return {
+                ...group,
+                name: groupDetails.name,
+                description: groupDetails.description,
+              };
+            }
+            return group;
+          }),
+        );
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return {
     searchValue,

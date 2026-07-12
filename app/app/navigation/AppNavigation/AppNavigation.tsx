@@ -5,6 +5,7 @@ import {
   AddFriend,
   AddMembers,
   CreateGroup,
+  EditGroup,
   FriendRequests,
   GroupDetails,
   GroupRequests,
@@ -45,6 +46,10 @@ export const AppNavigation = () => {
       <Stack.Screen
         name="GroupDetails"
         component={GroupDetails}
+      />
+      <Stack.Screen
+        name="EditGroup"
+        component={EditGroup}
       />
     </Stack.Navigator>
   );

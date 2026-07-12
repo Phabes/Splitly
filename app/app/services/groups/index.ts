@@ -1,4 +1,6 @@
 export { createGroupCall } from "./createGroupCall";
+export { editGroupCall } from "./editGroupCall";
+export { getGroupDetailsCall } from "./getGroupDetailsCall";
 export { getGroupListCall } from "./getGroupListCall";
 export { getGroupRequestsCall } from "./getGroupRequestsCall";
 export { respondToGroupRequestCall } from "./respondToGroupRequestCall";

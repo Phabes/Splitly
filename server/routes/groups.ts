@@ -2,6 +2,8 @@ import { Router } from "express";
 import {
   createGroup,
   decideGroupRequest,
+  editGroupDetails,
+  getGroupDetails,
   getGroupList,
   searchGroupRequests,
 } from "@/controllers/groups.ts";
@@ -13,9 +15,13 @@ const routerGroup = Router();
 routerGroup.post("/list", protect, getGroupList);
 // POST - create group
 routerGroup.post("/", protect, createGroup);
-// GET - friend requests
+// GET - group requests
 routerGroup.post("/requests/search", protect, searchGroupRequests);
-// PATCH - accept/decline friend request
-routerGroup.patch("/requests/:id", protect, decideGroupRequest);
+// PATCH - accept/decline group request
+routerGroup.patch("/requests/:groupRequestID", protect, decideGroupRequest);
+// GET - group details
+routerGroup.get("/:groupID", protect, getGroupDetails);
+// PATCH - edit group details
+routerGroup.patch("/:groupID", protect, editGroupDetails);
 
 export default routerGroup;
