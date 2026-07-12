@@ -215,9 +215,9 @@ export const getGroupDetails = async (
     const { groupID } = req.params;
     const currentUserID = req.userID;
 
-    const group = await Group.findById(groupID).select(
-      "name description baseCurrency members",
-    );
+    const group = await Group.findById(groupID)
+      .select("name description baseCurrency members")
+      .populate("members.user", "username email");
 
     if (!group) {
       return res.status(404).json({
@@ -234,6 +234,14 @@ export const getGroupDetails = async (
       ? currentUserMember.role === "admin"
       : false;
 
+    const formattedMembers = group.members.map((member: any) => ({
+      _id: member.user._id,
+      username: member.user.username,
+      email: member.user.email,
+      role: member.role,
+      status: member.status,
+    }));
+
     return res.status(200).json({
       code: "getGroupDetails/success",
       message: "Group details fetched successfully.",
@@ -243,6 +251,7 @@ export const getGroupDetails = async (
         name: group.name,
         description: group.description,
         baseCurrency: group.baseCurrency,
+        members: formattedMembers,
       },
     });
   } catch (error) {
