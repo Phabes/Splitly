@@ -1,4 +1,4 @@
-export { TabSelector } from "./TabSelector";
+export { TopTabBar } from "./TopTabBar";
 
 export default function Index() {
   return null;

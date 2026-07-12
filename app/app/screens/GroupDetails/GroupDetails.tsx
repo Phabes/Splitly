@@ -1,24 +1,21 @@
-import { FC, useState } from "react";
-import { StyleSheet, View } from "react-native";
 import {
-  NavBar,
-  Typography,
-  Scroll,
-  TabSelector,
-  Fab,
-  TouchableIcon,
   LoadingWrapper,
+  NavBar,
+  TouchableIcon,
+  Typography,
 } from "@/app/components";
 import {
   useAppNavigation,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
-import { LayoutProvider } from "@/app/providers";
-import { RouteProp, useRoute } from "@react-navigation/native";
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
-import { renderTabContent } from "./mocks/renderTabContent";
+import { GroupProvider, LayoutProvider } from "@/app/providers";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { FC } from "react";
+import { StyleSheet, View } from "react-native";
 import { useGroupDetailsData } from "./hooks";
+import { GroupDetailsTabs } from "./tabs";
 
 export const GroupDetails: FC = () => {
   const translations = useTranslations();
@@ -30,81 +27,71 @@ export const GroupDetails: FC = () => {
 
   const styles = useStyles();
 
-  const GROUP_TABS = ["expenses", "balances", "members"] as const;
-  type GroupTab = (typeof GROUP_TABS)[number];
-
-  const [activeTab, setActiveTab] = useState<GroupTab>("expenses");
-
-  const mockGroupName = "✈️ Trip to Paris";
   const mockTotalSpend = "1,250.00 PLN";
   const mockPersonalBalance = "🟢 You are owed 150.00 PLN";
 
   return (
-    <LayoutProvider
-      navbar={
-        <NavBar
-          text={translations["groupDetails"]}
-          onBackPress={navigation.goBack}
-        />
-      }
+    <GroupProvider
+      groupID={groupID}
+      groupDetails={groupDetails}
+      isAdmin={isAdmin}
     >
-      <LoadingWrapper isLoading={isLoading}>
-        <View style={styles.container}>
-          <View style={styles.heroSection}>
-            <View style={styles.titleWrapper}>
-              <Typography
-                text={mockGroupName}
-                variant="header-large"
-              />
-              {isAdmin && (
-                <View style={styles.editIcon}>
-                  <TouchableIcon
-                    icon="Cog"
-                    onPress={() =>
-                      navigation.navigate("EditGroup", groupDetails!)
-                    }
-                    size="small"
-                    color="text-secondary"
-                  />
-                </View>
-              )}
-            </View>
-
-            <View style={styles.totalSpend}>
-              <Typography
-                text={translations["totalGroupSpend"]}
-                color="text-secondary"
-                variant="body-small"
-              />
-              <Typography
-                text={mockTotalSpend}
-                variant="header-medium"
-              />
-            </View>
-
-            <View style={styles.balanceBadge}>
-              <Typography
-                text={mockPersonalBalance}
-                variant="body-large"
-              />
-            </View>
-          </View>
-
-          <TabSelector
-            tabs={GROUP_TABS}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
+      <LayoutProvider
+        navbar={
+          <NavBar
+            text={translations["groupDetails"]}
+            onBackPress={navigation.goBack}
           />
+        }
+      >
+        <LoadingWrapper isLoading={isLoading}>
+          <View style={styles.container}>
+            <View style={styles.heroSection}>
+              <View style={styles.titleWrapper}>
+                <Typography
+                  text={groupDetails ? groupDetails.name : ""}
+                  variant="header-large"
+                />
+                {isAdmin && (
+                  <View style={styles.editIcon}>
+                    <TouchableIcon
+                      icon="Cog"
+                      onPress={() =>
+                        navigation.navigate("EditGroup", groupDetails!)
+                      }
+                      size="small"
+                      color="text-secondary"
+                    />
+                  </View>
+                )}
+              </View>
 
-          <Scroll>
-            <View style={styles.scrollContent}>
-              {renderTabContent(activeTab, styles)}
+              <View style={styles.totalSpend}>
+                <Typography
+                  text={translations["totalGroupSpend"]}
+                  color="text-secondary"
+                  variant="body-small"
+                />
+                <Typography
+                  text={mockTotalSpend}
+                  variant="header-medium"
+                />
+              </View>
+
+              <View style={styles.balanceBadge}>
+                <Typography
+                  text={mockPersonalBalance}
+                  variant="body-large"
+                />
+              </View>
             </View>
-          </Scroll>
-        </View>
-        {activeTab === "expenses" && <Fab onPress={() => {}} />}
-      </LoadingWrapper>
-    </LayoutProvider>
+
+            <GroupDetailsTabs />
+          </View>
+          {/* {activeTab === "expenses" && <Fab onPress={() => {}} />} */}
+        </LoadingWrapper>
+      </LayoutProvider>
+    </GroupProvider>
   );
 };
 

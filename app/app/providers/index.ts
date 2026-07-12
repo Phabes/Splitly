@@ -1,4 +1,5 @@
 export * from "./AuthProvider";
+export * from "./GroupProvider";
 export * from "./LanguageProvider";
 export * from "./LayoutProvider";
 export * from "./LoadingProvider";
