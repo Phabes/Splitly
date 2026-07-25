@@ -1,3 +1,4 @@
+export * from "./AppendMemberContext";
 export * from "./AuthContext";
 export * from "./GroupContext";
 export * from "./LanguageContext";

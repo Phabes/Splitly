@@ -1,7 +1,7 @@
 import { UserResult } from "@/app/types";
 import { createContext } from "react";
 
-type AuthContextType = {
+interface AuthContextType {
   userToken: string | null;
   refreshToken: string | null;
   userData: UserResult | null;
@@ -10,7 +10,7 @@ type AuthContextType = {
   signUp: (token: string, refresh: string, user: UserResult) => Promise<void>;
   signOut: () => Promise<void>;
   performTokenRefresh: (currentRefreshToken: string) => Promise<string | null>;
-};
+}
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined,

@@ -2,6 +2,7 @@ import { useThemeContext } from "@/app/hooks";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { FC, ReactNode } from "react";
 import { TopTabBar } from "./components/TopTabBar";
+import { StyleSheet } from "react-native";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -12,22 +13,32 @@ interface TopTabSelectorProps {
 }
 
 export const TopTabSelector: FC<TopTabSelectorProps> = ({ children }) => {
-  const theme = useThemeContext();
+  const styles = useStyles();
 
   return (
     <Tab.Navigator
       tabBar={(props) => <TopTabBar {...props} />}
-      style={{ backgroundColor: "transparent" }}
+      style={styles.tabs}
       screenOptions={{
-        sceneStyle: {
-          backgroundColor: "transparent",
-          marginTop: theme.spacing(1),
-        },
+        sceneStyle: styles.tabContent,
+        // swipeEnabled: false,
       }}
     >
       {children}
     </Tab.Navigator>
   );
+};
+
+const useStyles = () => {
+  const theme = useThemeContext();
+
+  return StyleSheet.create({
+    tabs: { backgroundColor: "transparent" },
+    tabContent: {
+      backgroundColor: "transparent",
+      marginTop: theme.spacing(1),
+    },
+  });
 };
 
 export default { TopTabSelector, TopTabScreen };

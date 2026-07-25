@@ -114,10 +114,6 @@ const useStyles = () => {
     footerContainer: {
       alignItems: "center",
     },
-    content: {
-      flex: 1,
-      position: "relative",
-    },
   });
 };
 

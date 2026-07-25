@@ -1,6 +1,8 @@
 import {
   LoadingWrapper,
   NavBar,
+  TopTabScreen,
+  TopTabSelector,
   TouchableIcon,
   Typography,
 } from "@/app/components";
@@ -15,7 +17,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useGroupDetailsData } from "./hooks";
-import { GroupDetailsTabs } from "./tabs";
+import { Members } from "./tabs";
 
 export const GroupDetails: FC = () => {
   const translations = useTranslations();
@@ -86,9 +88,21 @@ export const GroupDetails: FC = () => {
               </View>
             </View>
 
-            <GroupDetailsTabs />
+            <TopTabSelector>
+              <TopTabScreen
+                name="Expenses"
+                component={Members}
+              />
+              <TopTabScreen
+                name="Balances"
+                component={Members}
+              />
+              <TopTabScreen
+                name="Members"
+                component={Members}
+              />
+            </TopTabSelector>
           </View>
-          {/* {activeTab === "expenses" && <Fab onPress={() => {}} />} */}
         </LoadingWrapper>
       </LayoutProvider>
     </GroupProvider>
@@ -126,27 +140,6 @@ const useStyles = () => {
       paddingVertical: theme.spacing(2),
       paddingHorizontal: theme.spacing(3),
       borderRadius: theme.spacing(3),
-    },
-    scrollContent: {
-      padding: theme.spacing(2),
-      flex: 1,
-    },
-    tabContent: {
-      gap: theme.spacing(1),
-    },
-    dateHeader: {
-      marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(1),
-      marginLeft: theme.spacing(1),
-    },
-    expenseRight: {
-      alignItems: "flex-end",
-    },
-    settleUpContainer: {
-      marginTop: theme.spacing(4),
-    },
-    addMemberContainer: {
-      marginTop: theme.spacing(4),
     },
   });
 };

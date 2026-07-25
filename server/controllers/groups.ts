@@ -1,7 +1,9 @@
 import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
-import Group from "@/models/group.ts";
 import { validCurrency } from "@/utils/validCurrency.ts";
+import Group from "@/models/group.ts";
+import User from "@/models/user.ts";
+import Friend from "@/models/friend.ts";
 
 export const getGroupList = async (
   req: AuthRequest,
@@ -227,7 +229,7 @@ export const getGroupDetails = async (
     }
 
     const currentUserMember = group.members.find(
-      (member) => member.user.toString() === currentUserID?.toString(),
+      (member) => member.user._id.toString() === currentUserID?.toString(),
     );
 
     const isAdmin = currentUserMember
@@ -312,6 +314,99 @@ export const editGroupDetails = async (
     return res.status(500).json({
       code: "editGroup/error",
       message: "Server error during group update.",
+    });
+  }
+};
+
+export const getGroupInviteCandidates = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { query = "", limit = 10, friendIDs = [], groupID } = req.body;
+    const currentUserID = req.userID;
+    const limitNum = Number(limit);
+    const searchQuery = String(query);
+
+    let groupMemberIDs: string[] = [];
+
+    if (groupID) {
+      const group = await Group.findById(groupID).select("members.user");
+      if (group) {
+        groupMemberIDs = group.members.map((m: any) => m.user.toString());
+      }
+    }
+
+    const excludedUserIDs = groupMemberIDs.filter(
+      (id) => id !== currentUserID?.toString(),
+    );
+
+    let userMatchCondition = {};
+
+    if (searchQuery) {
+      const matchingUsers = await User.find({
+        _id: { $ne: currentUserID, $nin: excludedUserIDs },
+        $or: [
+          { username: { $regex: searchQuery, $options: "i" } },
+          { email: { $regex: searchQuery, $options: "i" } },
+        ],
+      }).select("_id");
+
+      const matchedUserIDs = matchingUsers.map((u) => u._id);
+
+      userMatchCondition = {
+        $or: [
+          { requester: { $in: matchedUserIDs } },
+          { recipient: { $in: matchedUserIDs } },
+        ],
+      };
+    }
+
+    const baseFilter: any = {
+      $and: [
+        { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
+        { status: "accepted" },
+        { requester: { $nin: excludedUserIDs } },
+        { recipient: { $nin: excludedUserIDs } },
+      ],
+    };
+
+    if (searchQuery) {
+      baseFilter.$and.push(userMatchCondition);
+    }
+
+    const fetchFilter = {
+      ...baseFilter,
+      _id: { $nin: friendIDs },
+    };
+
+    const [friends, totalCount] = await Promise.all([
+      Friend.find(fetchFilter)
+        .populate("requester", "username email")
+        .populate("recipient", "username email")
+        .limit(limitNum),
+      Friend.countDocuments(baseFilter),
+    ]);
+
+    const formattedFriends = friends.map((record: any) => {
+      const isRequester =
+        record.requester._id.toString() === currentUserID?.toString();
+      return {
+        _id: record._id,
+        user: isRequester ? record.recipient : record.requester,
+      };
+    });
+
+    return res.status(200).json({
+      code: "getAddMembersCandidates/success",
+      message: "Candidates fetched successfully.",
+      friends: formattedFriends,
+      hasMore: friendIDs.length + friends.length < totalCount,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "getAddMembersCandidates/error",
+      message: "Server error during fetching candidates.",
     });
   }
 };

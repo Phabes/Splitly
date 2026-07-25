@@ -16,6 +16,7 @@ export type AppStackParamList = {
   GroupRequests: undefined;
   GroupDetails: { groupID: string };
   EditGroup: GroupDetailsResult;
+  AppendMembers: { groupID: string };
 };
 
 export type AppNavigationProps = NativeStackNavigationProp<AppStackParamList>;

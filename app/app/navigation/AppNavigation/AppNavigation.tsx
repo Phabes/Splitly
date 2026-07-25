@@ -4,6 +4,7 @@ import { TabNavigation } from "../TabNavigation";
 import {
   AddFriend,
   AddMembers,
+  AppendMembers,
   CreateGroup,
   EditGroup,
   FriendRequests,
@@ -50,6 +51,10 @@ export const AppNavigation = () => {
       <Stack.Screen
         name="EditGroup"
         component={EditGroup}
+      />
+      <Stack.Screen
+        name="AppendMembers"
+        component={AppendMembers}
       />
     </Stack.Navigator>
   );

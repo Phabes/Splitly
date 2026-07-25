@@ -11,6 +11,8 @@ export type TranslationKeys =
   | "sentBy"
   | "fieldRequired"
   | "settings"
+  | "searching"
+  | "selected"
   // authentication
   | "signUp"
   | "signIn"
@@ -73,7 +75,8 @@ export type TranslationKeys =
   | "expenses"
   | "balances"
   | "members"
-  | "editGroup";
+  | "editGroup"
+  | "noMembersSelectedYet";
 
 export const translations: Record<
   LanguageKeys,

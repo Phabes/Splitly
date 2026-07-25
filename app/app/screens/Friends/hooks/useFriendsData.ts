@@ -31,8 +31,8 @@ export const useFriendsData = () => {
       try {
         const response = await request(
           getFriendListCall,
-          friendIDs,
           currentSearchValue,
+          friendIDs,
         );
         if (isInitial && currentSearchValue !== latestSearchValueRef.current) {
           return;

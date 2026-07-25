@@ -73,6 +73,11 @@ export type EditGroupDetailsResponse = ResponseMessage & {
   groupDetails: GroupDetailsResult;
 };
 
+export type AppendMembersResponse = ResponseMessage & {
+  friends: FriendResult[];
+  hasMore: boolean;
+};
+
 export default function Index() {
   return null;
 }

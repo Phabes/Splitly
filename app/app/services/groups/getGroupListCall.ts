@@ -2,8 +2,8 @@ import { PAGE_SIZE } from "@/app/constants/pagination";
 
 export const getGroupListCall = (
   token: string,
-  groupIDs: string[] = [],
   query: string = "",
+  groupIDs: string[] = [],
 ) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;

@@ -1,5 +1,6 @@
 export { AddFriend } from "./AddFriend";
 export { AddMembers } from "./AddMembers";
+export { AppendMembers } from "./AppendMembers";
 export { CreateGroup } from "./CreateGroup";
 export { EditGroup } from "./EditGroup";
 export { FriendRequests } from "./FriendRequests";

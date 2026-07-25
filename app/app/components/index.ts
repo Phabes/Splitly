@@ -12,7 +12,6 @@ export * from "./NavBar";
 export * from "./NotificationIndicator";
 export * from "./Scroll";
 export * from "./Select";
-export * from "./TabBar";
 export * from "./TopTabSelector";
 export * from "./TouchableIcon";
 export * from "./Typography";

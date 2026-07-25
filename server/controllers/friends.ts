@@ -68,13 +68,13 @@ export const sendFriendRequest = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const { userToAdd } = req.body;
+    const { userToAddID } = req.body;
     const currentUserID = req.userID;
 
     const existingFriendship = await Friend.findOne({
       $or: [
-        { requester: currentUserID, recipient: userToAdd },
-        { requester: userToAdd, recipient: currentUserID },
+        { requester: currentUserID, recipient: userToAddID },
+        { requester: userToAddID, recipient: currentUserID },
       ],
     });
 
@@ -95,7 +95,7 @@ export const sendFriendRequest = async (
 
       existingFriendship.status = "pending";
       existingFriendship.requester = currentUserID as any;
-      existingFriendship.recipient = userToAdd;
+      existingFriendship.recipient = userToAddID;
       await existingFriendship.save();
 
       return res.status(200).json({
@@ -106,7 +106,7 @@ export const sendFriendRequest = async (
 
     const newFriendship = new Friend({
       requester: currentUserID,
-      recipient: userToAdd,
+      recipient: userToAddID,
       status: "pending",
     });
 
