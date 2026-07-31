@@ -5,14 +5,14 @@ export const TabNavigation = () => {
   return (
     <BottomTabSelector>
       <BottomTabScreen
-        name="Friends"
-        component={Friends}
-        options={{ tabBarAccessibilityLabel: "Friends" }}
-      />
-      <BottomTabScreen
         name="Groups"
         component={Groups}
         options={{ tabBarAccessibilityLabel: "Groups" }}
+      />
+      <BottomTabScreen
+        name="Friends"
+        component={Friends}
+        options={{ tabBarAccessibilityLabel: "Friends" }}
       />
     </BottomTabSelector>
   );
