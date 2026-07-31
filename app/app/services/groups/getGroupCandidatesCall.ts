@@ -2,7 +2,7 @@ export const getGroupCandidatesCall = (
   token: string,
   query: string,
   friendIDs: string[],
-  groupID: string,
+  groupID?: string,
 ) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;

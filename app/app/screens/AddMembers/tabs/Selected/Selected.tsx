@@ -1,10 +1,10 @@
 import { ListItem, Scroll, TouchableIcon, Typography } from "@/app/components";
-import { useAppendMembersContext, useTranslations } from "@/app/hooks";
+import { useAddMembersContext, useTranslations } from "@/app/hooks";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 
 export const Selected: FC = () => {
-  const { selectedUsersData, toggleMember } = useAppendMembersContext();
+  const { selectedUsersData, toggleMember } = useAddMembersContext();
   const translations = useTranslations();
 
   const styles = useStyles();

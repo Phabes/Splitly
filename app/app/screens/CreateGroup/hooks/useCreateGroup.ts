@@ -22,13 +22,15 @@ export const useCreateGroup = () => {
   const descriptionField = useFormData();
   const currencyField = useFormData();
 
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<
+    { _id: string; username: string }[]
+  >([]);
 
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener(
       "onMembersSelected",
-      (ids: string[]) => {
-        setSelectedMembers(ids);
+      (selectedMembers: { _id: string; username: string }[]) => {
+        setSelectedMembers(selectedMembers);
       },
     );
 
@@ -39,7 +41,8 @@ export const useCreateGroup = () => {
 
   const goToAddMembers = () => {
     navigation.navigate("AddMembers", {
-      initialSelectedMembers: selectedMembers,
+      returnEvent: "onMembersSelected",
+      initialSelectedUsers: selectedMembers,
     });
   };
 
@@ -66,6 +69,7 @@ export const useCreateGroup = () => {
 
   const handleCreateGroup = async () => {
     showLoading(translations["creatingGroup"]);
+
     const isError = validateAddGroup();
     if (isError) {
       hideLoading();
@@ -73,12 +77,14 @@ export const useCreateGroup = () => {
     }
 
     try {
+      const members = selectedMembers.map((member) => member._id);
+
       const response = await request(
         createGroupCall,
         nameField.value,
         descriptionField.value,
         currencyField.value,
-        selectedMembers,
+        members,
       );
       if (response.ok) {
         DeviceEventEmitter.emit("refreshGroupList");

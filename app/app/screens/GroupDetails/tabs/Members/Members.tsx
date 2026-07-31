@@ -8,8 +8,8 @@ import { FC, useEffect } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 
 export const Members: FC = () => {
-  const { groupDetails, userRole } = useGroupContext();
   const navigation = useAppNavigation();
+  const { groupDetails, userRole } = useGroupContext();
 
   const styles = useStyles();
 
@@ -74,8 +74,9 @@ export const Members: FC = () => {
       {(userRole === "owner" || userRole === "admin") && (
         <Fab
           onPress={() =>
-            navigation.navigate("AppendMembers", {
+            navigation.navigate("AddMembers", {
               groupID: groupDetails!._id,
+              returnEvent: "onMembersSelected",
             })
           }
         />

@@ -1,4 +1,4 @@
-export * from "./AppendMemberContext";
+export * from "./AddMembersContext";
 export * from "./AuthContext";
 export * from "./GroupContext";
 export * from "./LanguageContext";

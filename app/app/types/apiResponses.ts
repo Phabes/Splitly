@@ -72,7 +72,7 @@ export type EditGroupDetailsResponse = ResponseMessage & {
   groupDetails: Omit<GroupDetailsResult, "members">;
 };
 
-export type AppendMembersResponse = ResponseMessage & {
+export type AddMembersResponse = ResponseMessage & {
   friends: FriendResult[];
   hasMore: boolean;
 };

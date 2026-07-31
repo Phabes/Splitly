@@ -8,17 +8,16 @@ import {
   Typography,
 } from "@/app/components";
 import {
-  useAppendMembersContext,
+  useAddMembersContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
-import { useAppendMembersData } from "./hooks";
+import { useAddMembersData } from "./hooks";
 
 export const Searching: FC = () => {
-  const { groupID, selectedUsersData, toggleMember } =
-    useAppendMembersContext();
+  const { groupID, selectedUsersData, toggleMember } = useAddMembersContext();
 
   const {
     searchQuery,
@@ -29,7 +28,7 @@ export const Searching: FC = () => {
     isLoadingMore,
     loadMoreUsers,
     forceLoadMore,
-  } = useAppendMembersData(groupID);
+  } = useAddMembersData(groupID);
 
   const translations = useTranslations();
   const styles = useStyles();

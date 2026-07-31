@@ -1,4 +1,4 @@
-export { useAppendMembersContext } from "./useAppendMembersContext";
+export { useAddMembersContext } from "./useAddMembersContext";
 export { useAppNavigation } from "./useAppNavigation";
 export { useAuthContext } from "./useAuthContext";
 export { useAuthenticatedApi } from "./useAuthenticatedApi";
