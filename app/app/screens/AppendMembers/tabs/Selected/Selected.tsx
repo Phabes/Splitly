@@ -1,7 +1,7 @@
 import { ListItem, Scroll, TouchableIcon, Typography } from "@/app/components";
+import { useAppendMembersContext, useTranslations } from "@/app/hooks";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
-import { useAppendMembersContext, useTranslations } from "@/app/hooks";
 
 export const Selected: FC = () => {
   const { selectedUsersData, toggleMember } = useAppendMembersContext();
@@ -15,12 +15,7 @@ export const Selected: FC = () => {
       centerContent={selectedUsersData.length === 0}
     >
       {selectedUsersData.length === 0 ? (
-        <View
-          style={[
-            styles.footerContainer,
-            { flex: 1, justifyContent: "center" },
-          ]}
-        >
+        <View style={styles.footerContainer}>
           <Typography text={translations["noMembersSelectedYet"]} />
         </View>
       ) : (
@@ -32,6 +27,7 @@ export const Selected: FC = () => {
           >
             <TouchableIcon
               icon="Minus"
+              color="text-error"
               onPress={() => toggleMember(item)}
             />
           </ListItem>
@@ -45,7 +41,6 @@ const useStyles = () => {
   return StyleSheet.create({
     footerContainer: {
       alignItems: "center",
-      // justifyContent: "center",
     },
   });
 };

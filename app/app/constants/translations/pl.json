@@ -68,5 +68,6 @@
   "balances": "Saldo",
   "members": "Członkowie",
   "editGroup": "Edycja grupy",
-  "noMembersSelectedYet": "Nie wybrano członków"
+  "noMembersSelectedYet": "Nie wybrano członków",
+  "addingMembers": "Dodawanie członków..."
 }

@@ -40,7 +40,7 @@ export const Searching: FC = () => {
     <View style={styles.container}>
       <Input
         text={searchQuery}
-        placeholder={translations["searchFriends"] || "Search friends..."}
+        placeholder={translations["searchFriends"]}
         onChange={setSearchQuery}
         beginIcon="Search"
         allowClear={true}
@@ -48,7 +48,6 @@ export const Searching: FC = () => {
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
           gapSize="small"
-          keyboardPersist="never"
           centerContent={friends.length === 0}
           hasMore={hasMore}
           handleScrollEnd={loadMoreUsers}
@@ -70,10 +69,11 @@ export const Searching: FC = () => {
               <ListItem
                 key={`AddFriend/${i}`}
                 text={item.user.username}
-                onPress={() => {}}
+                onPress={() => toggleMember(item.user)}
               >
                 <TouchableIcon
                   icon={isSelected ? "Minus" : "Plus"}
+                  color={isSelected ? "text-error" : "text-success"}
                   onPress={() => toggleMember(item.user)}
                 />
               </ListItem>

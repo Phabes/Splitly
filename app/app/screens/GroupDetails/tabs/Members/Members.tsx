@@ -1,17 +1,32 @@
-import { Fab, ListItem, Scroll } from "@/app/components";
+import { Fab, Icon, ListItem, Scroll, TouchableIcon } from "@/app/components";
 import {
   useAppNavigation,
   useGroupContext,
   useThemeContext,
 } from "@/app/hooks";
-import { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { FC, useEffect } from "react";
+import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 
 export const Members: FC = () => {
-  const { groupDetails, isAdmin } = useGroupContext();
+  const { groupDetails, userRole } = useGroupContext();
   const navigation = useAppNavigation();
 
   const styles = useStyles();
+
+  const refreshMembers = () => {
+    console.log("REFRESH MEMBERS");
+  };
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "onMembersSelected",
+      refreshMembers,
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return (
     <View style={styles.tabContainer}>
@@ -24,34 +39,44 @@ export const Members: FC = () => {
                   key={`Member/${i}`}
                   text={item.username}
                   onPress={() => {}}
-                />
-              );
-            })}
-            {groupDetails?.members.map((item, i) => {
-              return (
-                <ListItem
-                  key={`Member/${i}`}
-                  text={item.username}
-                  onPress={() => {}}
-                />
-              );
-            })}
-            {groupDetails?.members.map((item, i) => {
-              return (
-                <ListItem
-                  key={`Member/${i}`}
-                  text={item.username}
-                  onPress={() => {}}
-                />
+                >
+                  {item.role === "owner" && (
+                    <Icon
+                      icon="Owner"
+                      color="text-notification"
+                    />
+                  )}
+                  {item.role === "admin" && (
+                    <Icon
+                      icon="Admin"
+                      color="text-notification"
+                    />
+                  )}
+                  {item.status === "pending" && (
+                    <Icon
+                      icon="Pending"
+                      color="text-disabled"
+                    />
+                  )}
+                  <TouchableIcon
+                    icon="EllipsisVertical"
+                    color="text-secondary"
+                    onPress={() => {
+                      console.log("MEMBER MENU");
+                    }}
+                  />
+                </ListItem>
               );
             })}
           </View>
         </View>
       </Scroll>
-      {isAdmin && (
+      {(userRole === "owner" || userRole === "admin") && (
         <Fab
           onPress={() =>
-            navigation.navigate("AppendMembers", { groupID: groupDetails!._id })
+            navigation.navigate("AppendMembers", {
+              groupID: groupDetails!._id,
+            })
           }
         />
       )}

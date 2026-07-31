@@ -1,20 +1,26 @@
-import { FC, useState } from "react";
-import { StyleSheet, View } from "react-native";
 import { Button, NavBar, TopTabScreen, TopTabSelector } from "@/app/components";
+import { AppendMembersContext } from "@/app/contexts";
 import {
   useAppNavigation,
+  useAuthenticatedApi,
+  useLoadingContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
-import { LayoutProvider } from "@/app/providers";
-import { Searching, Selected } from "./tabs";
-import { AppendMembersContext } from "@/app/contexts";
-import { RouteProp, useRoute } from "@react-navigation/native";
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
+import { LayoutProvider } from "@/app/providers";
+import { addMembersCall } from "@/app/services";
+import { ResponseMessage } from "@/app/types";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { FC, useState } from "react";
+import { DeviceEventEmitter, StyleSheet, View } from "react-native";
+import { Searching, Selected } from "./tabs";
 
 export const AppendMembers: FC = () => {
   const translations = useTranslations();
   const navigation = useAppNavigation();
+  const request = useAuthenticatedApi();
+  const { hideLoading, showLoading } = useLoadingContext();
 
   const route = useRoute<RouteProp<AppStackParamList, "AppendMembers">>();
   const { groupID } = route.params;
@@ -33,8 +39,26 @@ export const AppendMembers: FC = () => {
     );
   };
 
-  const handleConfirm = () => {
-    navigation.goBack();
+  const handleConfirm = async () => {
+    const userIDs = selectedUsersData.map((user) => user._id);
+
+    showLoading(translations["addingMembers"]);
+
+    try {
+      const response = await request(addMembersCall, groupID, userIDs);
+      if (response.ok) {
+        DeviceEventEmitter.emit("onMembersSelected");
+        navigation.goBack();
+      } else {
+        const data: ResponseMessage = await response.json();
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      // Creating group error
+      console.error(error);
+    } finally {
+      hideLoading();
+    }
   };
 
   const styles = useStyles();
@@ -45,7 +69,7 @@ export const AppendMembers: FC = () => {
         navbar={
           <NavBar
             text={translations["addMembers"]}
-            onBackPress={handleConfirm}
+            onBackPress={navigation.goBack}
           />
         }
       >

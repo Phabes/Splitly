@@ -36,7 +36,11 @@ const GroupSchema = new mongoose.Schema({
         enum: ["pending", "accepted", "rejected"],
         default: "pending",
       },
-      role: { type: String, enum: ["admin", "member"], default: "member" },
+      role: {
+        type: String,
+        enum: ["owner", "admin", "member"],
+        default: "member",
+      },
     },
   ],
 });

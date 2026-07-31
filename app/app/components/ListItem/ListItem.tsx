@@ -1,7 +1,7 @@
+import { useThemeContext } from "@/app/hooks";
 import { FC, PropsWithChildren } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Typography } from "../Typography";
-import { useThemeContext } from "@/app/hooks";
 
 type ListItemProps = PropsWithChildren<{
   text: string;
@@ -37,7 +37,7 @@ const useStyles = () => {
       minHeight: theme.spacing(16),
       alignItems: "center",
       borderWidth: 1,
-      borderRadius: theme.spacing(2),
+      borderRadius: theme.spacing(3),
       borderColor: theme.colors["text-secondary"],
       paddingHorizontal: theme.spacing(4),
       paddingVertical: theme.spacing(3),

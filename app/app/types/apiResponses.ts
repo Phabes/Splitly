@@ -65,12 +65,11 @@ export type GroupRequestsResponse = ResponseMessage & {
 };
 
 export type GroupDetailsResponse = ResponseMessage & {
-  isAdmin: boolean;
   groupDetails: GroupDetailsResult;
 };
 
 export type EditGroupDetailsResponse = ResponseMessage & {
-  groupDetails: GroupDetailsResult;
+  groupDetails: Omit<GroupDetailsResult, "members">;
 };
 
 export type AppendMembersResponse = ResponseMessage & {

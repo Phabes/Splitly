@@ -18,7 +18,12 @@ export type IconKeys =
   | "ChevronDown"
   | "ChevronUp"
   | "Bell"
-  | "EmptyBell";
+  | "EmptyBell"
+  | "EmptyBell"
+  | "EllipsisVertical"
+  | "Owner"
+  | "Admin"
+  | "Pending";
 
 export default function Index() {
   return null;

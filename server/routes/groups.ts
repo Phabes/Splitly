@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  addGroupMembers,
   createGroup,
   decideGroupRequest,
   editGroupDetails,
@@ -26,5 +27,7 @@ routerGroup.get("/:groupID", protect, getGroupDetails);
 routerGroup.patch("/:groupID", protect, editGroupDetails);
 // GET - group members candidates
 routerGroup.post("/candidates", protect, getGroupInviteCandidates);
+// POST - add group members
+routerGroup.post("/members", protect, addGroupMembers);
 
 export default routerGroup;

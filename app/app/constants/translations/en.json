@@ -68,5 +68,6 @@
   "balances": "Balances",
   "members": "Members",
   "editGroup": "Edit group",
-  "noMembersSelectedYet": "No members selected yet"
+  "noMembersSelectedYet": "No members selected yet",
+  "addingMembers": "Adding members..."
 }

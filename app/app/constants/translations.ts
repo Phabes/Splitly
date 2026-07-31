@@ -76,7 +76,8 @@ export type TranslationKeys =
   | "balances"
   | "members"
   | "editGroup"
-  | "noMembersSelectedYet";
+  | "noMembersSelectedYet"
+  | "addingMembers";
 
 export const translations: Record<
   LanguageKeys,

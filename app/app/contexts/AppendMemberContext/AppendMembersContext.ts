@@ -6,8 +6,7 @@ export interface AppendMembersContextType {
   toggleMember: (userObj: { _id: string; username: string }) => void;
 }
 
-export const AppendMembersContext = createContext<
-  AppendMembersContextType | undefined
->(undefined);
+export const AppendMembersContext =
+  createContext<AppendMembersContextType | null>(null);
 
 export default AppendMembersContext;

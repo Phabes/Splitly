@@ -82,7 +82,7 @@ export const createGroup = async (
       {
         user: currentUserID,
         status: "accepted",
-        role: "admin",
+        role: "owner",
       },
     ];
 
@@ -215,7 +215,6 @@ export const getGroupDetails = async (
 ): Promise<any> => {
   try {
     const { groupID } = req.params;
-    const currentUserID = req.userID;
 
     const group = await Group.findById(groupID)
       .select("name description baseCurrency members")
@@ -228,14 +227,6 @@ export const getGroupDetails = async (
       });
     }
 
-    const currentUserMember = group.members.find(
-      (member) => member.user._id.toString() === currentUserID?.toString(),
-    );
-
-    const isAdmin = currentUserMember
-      ? currentUserMember.role === "admin"
-      : false;
-
     const formattedMembers = group.members.map((member: any) => ({
       _id: member.user._id,
       username: member.user.username,
@@ -247,7 +238,6 @@ export const getGroupDetails = async (
     return res.status(200).json({
       code: "getGroupDetails/success",
       message: "Group details fetched successfully.",
-      isAdmin,
       groupDetails: {
         _id: groupID,
         name: group.name,
@@ -277,7 +267,7 @@ export const editGroupDetails = async (
       {
         _id: groupID,
         members: {
-          $elemMatch: { user: currentUserID, role: "admin" },
+          $elemMatch: { user: currentUserID, role: "owner" },
         },
       },
       {
@@ -407,6 +397,83 @@ export const getGroupInviteCandidates = async (
     return res.status(500).json({
       code: "getAddMembersCandidates/error",
       message: "Server error during fetching candidates.",
+    });
+  }
+};
+
+export const addGroupMembers = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { groupID, members } = req.body;
+    const currentUserID = req.userID;
+
+    const group = await Group.findById(groupID);
+    if (!group) {
+      return res.status(404).json({
+        code: "addMembers/group-not-found",
+        message: "Group not found.",
+      });
+    }
+
+    const currentMember = group.members.find(
+      (m: any) => m.user.toString() === currentUserID?.toString(),
+    );
+
+    if (
+      !currentMember ||
+      (currentMember.role !== "owner" && currentMember.role !== "admin")
+    ) {
+      return res.status(403).json({
+        code: "addMembers/forbidden",
+        message: "Only group owner or admins can send invites.",
+      });
+    }
+
+    let addedOrUpdatedCount = 0;
+
+    members.forEach((userID: string) => {
+      const existingMemberIndex = group.members.findIndex(
+        (m: any) => m.user.toString() === userID,
+      );
+
+      if (existingMemberIndex >= 0) {
+        const currentStatus = group.members[existingMemberIndex].status;
+
+        if (currentStatus === "rejected") {
+          group.members[existingMemberIndex].status = "pending";
+          addedOrUpdatedCount++;
+        }
+      } else {
+        group.members.push({
+          user: userID,
+          status: "pending",
+          role: "member",
+        });
+        addedOrUpdatedCount++;
+      }
+    });
+
+    if (addedOrUpdatedCount === 0) {
+      return res.status(400).json({
+        code: "addMembers/already-invited",
+        message:
+          "All selected users are already members or have pending invites.",
+      });
+    }
+
+    await group.save();
+
+    return res.status(200).json({
+      code: "addMembers/success",
+      message: `Successfully sent invites to ${addedOrUpdatedCount} users.`,
+    });
+  } catch (error) {
+    console.error("Error adding members:", error);
+    return res.status(500).json({
+      code: "addMembers/error",
+      message: "Server error while sending group requests.",
     });
   }
 };

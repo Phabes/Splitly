@@ -4,6 +4,10 @@ export type UserResult = {
   email: string;
 };
 
+export type UserGroupRole = "owner" | "admin" | "member";
+
+export type UserGroupStatus = "accepted" | "pending";
+
 export type FriendResult = {
   _id: string;
   user: UserResult;
@@ -25,8 +29,8 @@ export type GroupRequestResult = GroupResult & {
 };
 
 type GroupMemberResult = UserResult & {
-  role: string;
-  status: string;
+  role: UserGroupRole;
+  status: UserGroupStatus;
 };
 
 export type GroupDetailsResult = {

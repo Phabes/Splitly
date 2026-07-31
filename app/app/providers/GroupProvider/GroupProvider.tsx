@@ -6,11 +6,11 @@ type GroupProviderProps = PropsWithChildren & GroupContextValue;
 export const GroupProvider: FC<GroupProviderProps> = ({
   groupID,
   groupDetails,
-  isAdmin,
+  userRole,
   children,
 }) => {
   return (
-    <GroupContext value={{ groupID, groupDetails, isAdmin }}>
+    <GroupContext value={{ groupID, groupDetails, userRole }}>
       {children}
     </GroupContext>
   );

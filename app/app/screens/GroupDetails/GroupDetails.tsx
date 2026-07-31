@@ -25,7 +25,7 @@ export const GroupDetails: FC = () => {
 
   const route = useRoute<RouteProp<AppStackParamList, "GroupDetails">>();
   const { groupID } = route.params;
-  const { isLoading, isAdmin, groupDetails } = useGroupDetailsData(groupID);
+  const { isLoading, userRole, groupDetails } = useGroupDetailsData(groupID);
 
   const styles = useStyles();
 
@@ -36,7 +36,7 @@ export const GroupDetails: FC = () => {
     <GroupProvider
       groupID={groupID}
       groupDetails={groupDetails}
-      isAdmin={isAdmin}
+      userRole={userRole}
     >
       <LayoutProvider
         navbar={
@@ -54,7 +54,7 @@ export const GroupDetails: FC = () => {
                   text={groupDetails ? groupDetails.name : ""}
                   variant="header-large"
                 />
-                {isAdmin && (
+                {userRole === "owner" && (
                   <View style={styles.editIcon}>
                     <TouchableIcon
                       icon="Cog"
