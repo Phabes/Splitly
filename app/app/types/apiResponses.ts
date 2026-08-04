@@ -65,12 +65,16 @@ export type GroupRequestsResponse = ResponseMessage & {
 };
 
 export type GroupDetailsResponse = ResponseMessage & {
-  isAdmin: boolean;
   groupDetails: GroupDetailsResult;
 };
 
 export type EditGroupDetailsResponse = ResponseMessage & {
-  groupDetails: GroupDetailsResult;
+  groupDetails: Omit<GroupDetailsResult, "members">;
+};
+
+export type AddMembersResponse = ResponseMessage & {
+  friends: FriendResult[];
+  hasMore: boolean;
 };
 
 export default function Index() {

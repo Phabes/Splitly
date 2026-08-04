@@ -36,8 +36,8 @@ export const useGroupsData = () => {
       try {
         const response = await request(
           getGroupListCall,
-          groupIDs,
           currentSearchValue,
+          groupIDs,
         );
         if (isInitial && currentSearchValue !== latestSearchValueRef.current) {
           return;

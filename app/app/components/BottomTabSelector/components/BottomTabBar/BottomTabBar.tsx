@@ -1,13 +1,13 @@
-import { FC } from "react";
+import { IconKeys } from "@/app/constants/iconKeys";
+import { TranslationKeys } from "@/app/constants/translations";
 import { useThemeContext, useTranslations } from "@/app/hooks";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { FC } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Icon } from "../Icon";
-import { IconKeys } from "@/app/constants/iconKeys";
-import { Typography } from "../Typography";
-import { TranslationKeys } from "@/app/constants/translations";
+import { Icon } from "../../../Icon";
+import { Typography } from "../../../Typography";
 
-export const TabBar: FC<BottomTabBarProps> = ({
+export const BottomTabBar: FC<BottomTabBarProps> = ({
   state,
   descriptors,
   navigation,
@@ -91,4 +91,4 @@ const useStyles = () => {
   });
 };
 
-export default TabBar;
+export default BottomTabBar;

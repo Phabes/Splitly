@@ -1,9 +1,11 @@
 import { Router } from "express";
 import {
+  addGroupMembers,
   createGroup,
   decideGroupRequest,
   editGroupDetails,
   getGroupDetails,
+  getGroupInviteCandidates,
   getGroupList,
   searchGroupRequests,
 } from "@/controllers/groups.ts";
@@ -23,5 +25,9 @@ routerGroup.patch("/requests/:groupRequestID", protect, decideGroupRequest);
 routerGroup.get("/:groupID", protect, getGroupDetails);
 // PATCH - edit group details
 routerGroup.patch("/:groupID", protect, editGroupDetails);
+// GET - group members candidates
+routerGroup.post("/candidates", protect, getGroupInviteCandidates);
+// POST - add group members
+routerGroup.post("/members", protect, addGroupMembers);
 
 export default routerGroup;

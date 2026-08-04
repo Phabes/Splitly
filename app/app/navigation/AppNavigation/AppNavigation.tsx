@@ -1,6 +1,3 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AppStackParamList } from "./AppNavigationProps";
-import { TabNavigation } from "../TabNavigation";
 import {
   AddFriend,
   AddMembers,
@@ -10,6 +7,9 @@ import {
   GroupDetails,
   GroupRequests,
 } from "@/app/screens";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { TabNavigation } from "../TabNavigation";
+import { AppStackParamList } from "./AppNavigationProps";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 

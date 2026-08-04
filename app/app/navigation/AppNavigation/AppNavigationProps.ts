@@ -12,7 +12,11 @@ export type AppStackParamList = {
   AddFriend: undefined;
   FriendRequests: undefined;
   CreateGroup: undefined;
-  AddMembers: { initialSelectedMembers?: string[] } | undefined;
+  AddMembers: {
+    groupID?: string;
+    initialSelectedUsers?: { _id: string; username: string }[];
+    returnEvent: string;
+  };
   GroupRequests: undefined;
   GroupDetails: { groupID: string };
   EditGroup: GroupDetailsResult;

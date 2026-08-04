@@ -1,4 +1,4 @@
-export { TabSelector } from "./TabSelector";
+export { Searching } from "./Searching";
 
 export default function Index() {
   return null;

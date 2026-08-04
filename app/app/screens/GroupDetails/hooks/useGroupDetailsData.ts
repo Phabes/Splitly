@@ -1,4 +1,4 @@
-import { useAuthenticatedApi } from "@/app/hooks";
+import { useAuthContext, useAuthenticatedApi } from "@/app/hooks";
 import { getGroupDetailsCall } from "@/app/services";
 import {
   GroupDetailsResponse,
@@ -10,9 +10,9 @@ import { DeviceEventEmitter } from "react-native";
 
 export const useGroupDetailsData = (groupID: string) => {
   const request = useAuthenticatedApi();
+  const { userData } = useAuthContext();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [groupDetails, setGroupDetails] = useState<GroupDetailsResult | null>(
     null,
   );
@@ -20,8 +20,17 @@ export const useGroupDetailsData = (groupID: string) => {
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener(
       "refreshGroupDetails",
-      (groupDetails: GroupDetailsResult) => {
-        setGroupDetails(groupDetails);
+      (updatedDetails: Omit<GroupDetailsResult, "members">) => {
+        setGroupDetails((prev) => {
+          if (!prev) {
+            return prev;
+          }
+
+          return {
+            ...prev,
+            ...updatedDetails,
+          };
+        });
       },
     );
 
@@ -37,7 +46,6 @@ export const useGroupDetailsData = (groupID: string) => {
 
         if (response.ok) {
           const data: GroupDetailsResponse = await response.json();
-          setIsAdmin(data.isAdmin);
           setGroupDetails(data.groupDetails);
         } else {
           const data: ResponseMessage = await response.json();
@@ -54,7 +62,13 @@ export const useGroupDetailsData = (groupID: string) => {
     fetchDetails();
   }, [groupID, request]);
 
-  return { isLoading, isAdmin, groupDetails };
+  const currentMember = groupDetails?.members.find(
+    (member) => member._id === userData?._id || member._id === userData?._id,
+  );
+
+  const userRole = currentMember ? currentMember.role : "member";
+
+  return { isLoading, userRole, groupDetails };
 };
 
 export default useGroupDetailsData;

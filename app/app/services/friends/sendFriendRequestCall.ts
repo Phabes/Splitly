@@ -1,4 +1,4 @@
-export const sendFriendRequestCall = (token: string, userToAdd: string) => {
+export const sendFriendRequestCall = (token: string, userToAddID: string) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
@@ -12,7 +12,7 @@ export const sendFriendRequestCall = (token: string, userToAdd: string) => {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      userToAdd,
+      userToAddID,
     }),
   });
 };

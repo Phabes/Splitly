@@ -4,6 +4,10 @@ export type UserResult = {
   email: string;
 };
 
+export type UserGroupRole = "owner" | "admin" | "member";
+
+export type UserGroupStatus = "accepted" | "pending";
+
 export type FriendResult = {
   _id: string;
   user: UserResult;
@@ -24,11 +28,17 @@ export type GroupRequestResult = GroupResult & {
   creator: UserResult;
 };
 
+type GroupMemberResult = UserResult & {
+  role: UserGroupRole;
+  status: UserGroupStatus;
+};
+
 export type GroupDetailsResult = {
   _id: string;
   name: string;
   description: string;
   baseCurrency: string;
+  members: GroupMemberResult[];
 };
 
 export default function Index() {

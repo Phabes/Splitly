@@ -3,6 +3,8 @@
   "sentBy": "Wysłane przez",
   "fieldRequired": "Wymagane",
   "settings": "Ustawienia",
+  "searching": "Wyszukiwanie",
+  "selected": "Wybrani",
 
   "signUp": "Załóż konto",
   "signIn": "Zaloguj się",
@@ -65,5 +67,7 @@
   "expenses": "Wydatki",
   "balances": "Saldo",
   "members": "Członkowie",
-  "editGroup": "Edycja grupy"
+  "editGroup": "Edycja grupy",
+  "noMembersSelectedYet": "Nie wybrano członków",
+  "addingMembers": "Dodawanie członków..."
 }

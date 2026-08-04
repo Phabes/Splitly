@@ -3,6 +3,8 @@
   "sentBy": "Sent by",
   "fieldRequired": "Required",
   "settings": "Settings",
+  "searching": "Searching",
+  "selected": "Selected",
 
   "signUp": "Sign up",
   "signIn": "Sign in",
@@ -65,5 +67,7 @@
   "expenses": "Expenses",
   "balances": "Balances",
   "members": "Members",
-  "editGroup": "Edit group"
+  "editGroup": "Edit group",
+  "noMembersSelectedYet": "No members selected yet",
+  "addingMembers": "Adding members..."
 }

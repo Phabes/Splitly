@@ -1,26 +1,30 @@
-import { IconKeys } from "../constants/iconKeys";
 import {
-  faBars,
-  faUserFriends,
-  faLayerGroup,
-  IconDefinition,
-  faUser,
-  faUsers,
-  faUserCircle,
-  faSearch,
-  faPlus,
-  faMinus,
-  faCheck,
-  faXmark,
-  faCog,
-  faEye,
-  faEyeSlash,
   faAngleLeft,
-  faRotateRight,
+  faBars,
+  faBell,
+  faCheck,
   faChevronDown,
   faChevronUp,
-  faBell,
+  faCog,
+  faCrown,
+  faEllipsisVertical,
+  faEye,
+  faEyeSlash,
+  faHourglass1,
+  faLayerGroup,
+  faMinus,
+  faPlus,
+  faRotateRight,
+  faSearch,
+  faUser,
+  faUserCircle,
+  faUserFriends,
+  faUserGear,
+  faUsers,
+  faXmark,
+  IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
+import { IconKeys } from "../constants/iconKeys";
 
 import { faBell as faEmptyBell } from "@fortawesome/free-regular-svg-icons";
 
@@ -45,6 +49,10 @@ const Icons: Record<IconKeys, IconDefinition> = {
   ChevronUp: faChevronUp,
   Bell: faBell,
   EmptyBell: faEmptyBell,
+  EllipsisVertical: faEllipsisVertical,
+  Owner: faCrown,
+  Admin: faUserGear,
+  Pending: faHourglass1,
 };
 
 export const getIcon = (name: IconKeys): IconDefinition => {

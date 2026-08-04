@@ -2,8 +2,8 @@ import { PAGE_SIZE } from "@/app/constants/pagination";
 
 export const getFriendListCall = (
   token: string,
-  friendIDs: string[] = [],
   query: string = "",
+  friendIDs: string[] = [],
 ) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;

@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
 import { ADD_MEMBERS_SEARCH_DELAY } from "@/app/constants/pagination";
+import { useCallback, useEffect, useState } from "react";
 import { useFriendsList } from "./useFriendsList";
 
-export const useAddMembersData = () => {
+export const useAddMembersData = (groupID?: string) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const {
@@ -12,7 +12,7 @@ export const useAddMembersData = () => {
     isLoadingMore,
     hasMore,
     fetchFriends,
-  } = useFriendsList(searchQuery);
+  } = useFriendsList(searchQuery, groupID);
 
   useEffect(() => {
     setIsSearching(true);

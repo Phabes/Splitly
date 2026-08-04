@@ -1,7 +1,9 @@
 import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
-import Group from "@/models/group.ts";
 import { validCurrency } from "@/utils/validCurrency.ts";
+import Group from "@/models/group.ts";
+import User from "@/models/user.ts";
+import Friend from "@/models/friend.ts";
 
 export const getGroupList = async (
   req: AuthRequest,
@@ -80,7 +82,7 @@ export const createGroup = async (
       {
         user: currentUserID,
         status: "accepted",
-        role: "admin",
+        role: "owner",
       },
     ];
 
@@ -213,11 +215,10 @@ export const getGroupDetails = async (
 ): Promise<any> => {
   try {
     const { groupID } = req.params;
-    const currentUserID = req.userID;
 
-    const group = await Group.findById(groupID).select(
-      "name description baseCurrency members",
-    );
+    const group = await Group.findById(groupID)
+      .select("name description baseCurrency members")
+      .populate("members.user", "username email");
 
     if (!group) {
       return res.status(404).json({
@@ -226,23 +227,23 @@ export const getGroupDetails = async (
       });
     }
 
-    const currentUserMember = group.members.find(
-      (member) => member.user.toString() === currentUserID?.toString(),
-    );
-
-    const isAdmin = currentUserMember
-      ? currentUserMember.role === "admin"
-      : false;
+    const formattedMembers = group.members.map((member: any) => ({
+      _id: member.user._id,
+      username: member.user.username,
+      email: member.user.email,
+      role: member.role,
+      status: member.status,
+    }));
 
     return res.status(200).json({
       code: "getGroupDetails/success",
       message: "Group details fetched successfully.",
-      isAdmin,
       groupDetails: {
         _id: groupID,
         name: group.name,
         description: group.description,
         baseCurrency: group.baseCurrency,
+        members: formattedMembers,
       },
     });
   } catch (error) {
@@ -266,7 +267,7 @@ export const editGroupDetails = async (
       {
         _id: groupID,
         members: {
-          $elemMatch: { user: currentUserID, role: "admin" },
+          $elemMatch: { user: currentUserID, role: "owner" },
         },
       },
       {
@@ -303,6 +304,176 @@ export const editGroupDetails = async (
     return res.status(500).json({
       code: "editGroup/error",
       message: "Server error during group update.",
+    });
+  }
+};
+
+export const getGroupInviteCandidates = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { query = "", limit = 10, friendIDs = [], groupID } = req.body;
+    const currentUserID = req.userID;
+    const limitNum = Number(limit);
+    const searchQuery = String(query);
+
+    let groupMemberIDs: string[] = [];
+
+    if (groupID) {
+      const group = await Group.findById(groupID).select("members.user");
+      if (group) {
+        groupMemberIDs = group.members.map((m: any) => m.user.toString());
+      }
+    }
+
+    const excludedUserIDs = groupMemberIDs.filter(
+      (id) => id !== currentUserID?.toString(),
+    );
+
+    let userMatchCondition = {};
+
+    if (searchQuery) {
+      const matchingUsers = await User.find({
+        _id: { $ne: currentUserID, $nin: excludedUserIDs },
+        $or: [
+          { username: { $regex: searchQuery, $options: "i" } },
+          { email: { $regex: searchQuery, $options: "i" } },
+        ],
+      }).select("_id");
+
+      const matchedUserIDs = matchingUsers.map((u) => u._id);
+
+      userMatchCondition = {
+        $or: [
+          { requester: { $in: matchedUserIDs } },
+          { recipient: { $in: matchedUserIDs } },
+        ],
+      };
+    }
+
+    const baseFilter: any = {
+      $and: [
+        { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
+        { status: "accepted" },
+        { requester: { $nin: excludedUserIDs } },
+        { recipient: { $nin: excludedUserIDs } },
+      ],
+    };
+
+    if (searchQuery) {
+      baseFilter.$and.push(userMatchCondition);
+    }
+
+    const fetchFilter = {
+      ...baseFilter,
+      _id: { $nin: friendIDs },
+    };
+
+    const [friends, totalCount] = await Promise.all([
+      Friend.find(fetchFilter)
+        .populate("requester", "username email")
+        .populate("recipient", "username email")
+        .limit(limitNum),
+      Friend.countDocuments(baseFilter),
+    ]);
+
+    const formattedFriends = friends.map((record: any) => {
+      const isRequester =
+        record.requester._id.toString() === currentUserID?.toString();
+      return {
+        _id: record._id,
+        user: isRequester ? record.recipient : record.requester,
+      };
+    });
+
+    return res.status(200).json({
+      code: "getAddMembersCandidates/success",
+      message: "Candidates fetched successfully.",
+      friends: formattedFriends,
+      hasMore: friendIDs.length + friends.length < totalCount,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "getAddMembersCandidates/error",
+      message: "Server error during fetching candidates.",
+    });
+  }
+};
+
+export const addGroupMembers = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { groupID, members } = req.body;
+    const currentUserID = req.userID;
+
+    const group = await Group.findById(groupID);
+    if (!group) {
+      return res.status(404).json({
+        code: "addMembers/group-not-found",
+        message: "Group not found.",
+      });
+    }
+
+    const currentMember = group.members.find(
+      (m: any) => m.user.toString() === currentUserID?.toString(),
+    );
+
+    if (
+      !currentMember ||
+      (currentMember.role !== "owner" && currentMember.role !== "admin")
+    ) {
+      return res.status(403).json({
+        code: "addMembers/forbidden",
+        message: "Only group owner or admins can send invites.",
+      });
+    }
+
+    let addedOrUpdatedCount = 0;
+
+    members.forEach((userID: string) => {
+      const existingMemberIndex = group.members.findIndex(
+        (m: any) => m.user.toString() === userID,
+      );
+
+      if (existingMemberIndex >= 0) {
+        const currentStatus = group.members[existingMemberIndex].status;
+
+        if (currentStatus === "rejected") {
+          group.members[existingMemberIndex].status = "pending";
+          addedOrUpdatedCount++;
+        }
+      } else {
+        group.members.push({
+          user: userID,
+          status: "pending",
+          role: "member",
+        });
+        addedOrUpdatedCount++;
+      }
+    });
+
+    if (addedOrUpdatedCount === 0) {
+      return res.status(400).json({
+        code: "addMembers/already-invited",
+        message:
+          "All selected users are already members or have pending invites.",
+      });
+    }
+
+    await group.save();
+
+    return res.status(200).json({
+      code: "addMembers/success",
+      message: `Successfully sent invites to ${addedOrUpdatedCount} users.`,
+    });
+  } catch (error) {
+    console.error("Error adding members:", error);
+    return res.status(500).json({
+      code: "addMembers/error",
+      message: "Server error while sending group requests.",
     });
   }
 };

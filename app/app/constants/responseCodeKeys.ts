@@ -54,7 +54,13 @@ export type ResponseCodeKeys =
   | "getGroupDetails/error"
   | "editGroup/forbidden-or-not-found"
   | "editGroup/success"
-  | "editGroup/error";
+  | "editGroup/error"
+  | "getAddMembersCandidates/success"
+  | "getAddMembersCandidates/error"
+  | "addMembers/forbidden"
+  | "addMembers/already-invited"
+  | "addMembers/success"
+  | "addMembers/error";
 
 export default function Index() {
   return null;

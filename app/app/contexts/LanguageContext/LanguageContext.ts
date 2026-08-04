@@ -1,13 +1,13 @@
 import { LanguageKeys } from "@/app/constants/translations";
 import { createContext } from "react";
 
-type LanguageContextType = {
+interface LanguageContextType {
   language: LanguageKeys;
   setLanguageCode: (lang: LanguageKeys) => Promise<void>;
-};
+}
 
 export const LanguageContext = createContext<LanguageContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export default LanguageContext;

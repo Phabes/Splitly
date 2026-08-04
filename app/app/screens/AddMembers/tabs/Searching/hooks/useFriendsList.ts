@@ -1,9 +1,12 @@
-import { useState, useCallback, useRef, useEffect } from "react";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { FriendResult, ResponseMessage } from "@/app/types";
-import { getFriendListCall } from "@/app/services";
+import { getGroupCandidatesCall } from "@/app/services";
+import { AddMembersResponse, FriendResult, ResponseMessage } from "@/app/types";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-export const useFriendsList = (currentSearchValue: string = "") => {
+export const useFriendsList = (
+  currentSearchValue: string = "",
+  groupID?: string,
+) => {
   const [friends, setFriends] = useState<FriendResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -30,16 +33,17 @@ export const useFriendsList = (currentSearchValue: string = "") => {
 
       try {
         const response = await request(
-          getFriendListCall,
-          friendIDs,
+          getGroupCandidatesCall,
           searchValue,
+          friendIDs,
+          groupID,
         );
         if (isInitial && searchValue !== latestSearchValueRef.current) {
           return;
         }
 
         if (response.ok) {
-          const result = await response.json();
+          const result: AddMembersResponse = await response.json();
 
           if (result.friends && result.friends.length > 0) {
             setFriends((prev) =>
@@ -47,7 +51,9 @@ export const useFriendsList = (currentSearchValue: string = "") => {
             );
             setHasMore(result.hasMore);
           } else {
-            if (isInitial) setFriends([]);
+            if (isInitial) {
+              setFriends([]);
+            }
             setHasMore(false);
           }
         } else {
