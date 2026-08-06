@@ -1,6 +1,7 @@
 export * from "./BottomTabSelector";
 export * from "./Button";
 export * from "./Fab";
+export * from "./FloatingMenu";
 export * from "./FormData";
 export * from "./FormLabel";
 export * from "./Icon";

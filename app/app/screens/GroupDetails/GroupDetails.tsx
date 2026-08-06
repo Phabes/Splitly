@@ -14,8 +14,8 @@ import {
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
 import { GroupProvider, LayoutProvider } from "@/app/providers";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { FC, useEffect } from "react";
+import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 import { useGroupDetailsData } from "./hooks";
 import { Members } from "./tabs";
 
@@ -25,7 +25,24 @@ export const GroupDetails: FC = () => {
 
   const route = useRoute<RouteProp<AppStackParamList, "GroupDetails">>();
   const { groupID } = route.params;
-  const { isLoading, userRole, groupDetails } = useGroupDetailsData(groupID);
+  const {
+    isLoading,
+    userRole,
+    groupDetails,
+    setGroupUpdates,
+    setGroupMembers,
+  } = useGroupDetailsData(groupID);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "refreshGroupDetails",
+      setGroupUpdates,
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const styles = useStyles();
 
@@ -37,6 +54,7 @@ export const GroupDetails: FC = () => {
       groupID={groupID}
       groupDetails={groupDetails}
       userRole={userRole}
+      setGroupMembers={setGroupMembers}
     >
       <LayoutProvider
         navbar={
@@ -89,14 +107,14 @@ export const GroupDetails: FC = () => {
             </View>
 
             <TopTabSelector>
-              <TopTabScreen
+              {/* <TopTabScreen
                 name="Expenses"
                 component={Members}
               />
               <TopTabScreen
                 name="Balances"
                 component={Members}
-              />
+              /> */}
               <TopTabScreen
                 name="Members"
                 component={Members}

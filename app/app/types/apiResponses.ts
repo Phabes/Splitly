@@ -3,6 +3,7 @@ import {
   FriendRequestResult,
   FriendResult,
   GroupDetailsResult,
+  GroupMemberResult,
   GroupRequestResult,
   GroupResult,
   UserResult,
@@ -72,9 +73,13 @@ export type EditGroupDetailsResponse = ResponseMessage & {
   groupDetails: Omit<GroupDetailsResult, "members">;
 };
 
-export type AddMembersResponse = ResponseMessage & {
+export type AddMembersCandidatesResponse = ResponseMessage & {
   friends: FriendResult[];
   hasMore: boolean;
+};
+
+export type AddMembersResponse = ResponseMessage & {
+  members: GroupMemberResult[];
 };
 
 export default function Index() {

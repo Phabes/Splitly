@@ -77,7 +77,12 @@ export type TranslationKeys =
   | "members"
   | "editGroup"
   | "noMembersSelectedYet"
-  | "addingMembers";
+  | "addingMembers"
+  | "viewProfile"
+  | "leaveGroup"
+  | "grantAdmin"
+  | "revokeAdmin"
+  | "removeMember";
 
 export const translations: Record<
   LanguageKeys,

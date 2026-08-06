@@ -10,9 +10,11 @@ export const AddMembersProvider: FC<AddMembersProviderProps> = ({
   children,
 }) => {
   return (
-    <AddMembersContext value={{ groupID, selectedUsersData, toggleMember }}>
+    <AddMembersContext.Provider
+      value={{ groupID, selectedUsersData, toggleMember }}
+    >
       {children}
-    </AddMembersContext>
+    </AddMembersContext.Provider>
   );
 };
 

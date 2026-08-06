@@ -3,10 +3,10 @@ import { getGroupDetailsCall } from "@/app/services";
 import {
   GroupDetailsResponse,
   GroupDetailsResult,
+  GroupMemberResult,
   ResponseMessage,
 } from "@/app/types";
 import { useEffect, useState } from "react";
-import { DeviceEventEmitter } from "react-native";
 
 export const useGroupDetailsData = (groupID: string) => {
   const request = useAuthenticatedApi();
@@ -17,27 +17,33 @@ export const useGroupDetailsData = (groupID: string) => {
     null,
   );
 
-  useEffect(() => {
-    const subscription = DeviceEventEmitter.addListener(
-      "refreshGroupDetails",
-      (updatedDetails: Omit<GroupDetailsResult, "members">) => {
-        setGroupDetails((prev) => {
-          if (!prev) {
-            return prev;
-          }
+  const setGroupUpdates = (
+    updatedDetails: Omit<GroupDetailsResult, "members">,
+  ) => {
+    setGroupDetails((prev) => {
+      if (!prev) {
+        return prev;
+      }
 
-          return {
-            ...prev,
-            ...updatedDetails,
-          };
-        });
-      },
-    );
+      return {
+        ...prev,
+        ...updatedDetails,
+      };
+    });
+  };
 
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+  const setGroupMembers = (newMembers: GroupMemberResult[]) => {
+    setGroupDetails((prev) => {
+      if (!prev) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        members: newMembers,
+      };
+    });
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -68,7 +74,13 @@ export const useGroupDetailsData = (groupID: string) => {
 
   const userRole = currentMember ? currentMember.role : "member";
 
-  return { isLoading, userRole, groupDetails };
+  return {
+    isLoading,
+    userRole,
+    groupDetails,
+    setGroupUpdates,
+    setGroupMembers,
+  };
 };
 
 export default useGroupDetailsData;

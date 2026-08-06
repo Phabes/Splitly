@@ -1,6 +1,10 @@
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
 import { getGroupCandidatesCall } from "@/app/services";
-import { AddMembersResponse, FriendResult, ResponseMessage } from "@/app/types";
+import {
+  AddMembersCandidatesResponse,
+  FriendResult,
+  ResponseMessage,
+} from "@/app/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export const useFriendsList = (
@@ -43,7 +47,7 @@ export const useFriendsList = (
         }
 
         if (response.ok) {
-          const result: AddMembersResponse = await response.json();
+          const result: AddMembersCandidatesResponse = await response.json();
 
           if (result.friends && result.friends.length > 0) {
             setFriends((prev) =>

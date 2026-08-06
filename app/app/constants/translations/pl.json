@@ -69,5 +69,10 @@
   "members": "Członkowie",
   "editGroup": "Edycja grupy",
   "noMembersSelectedYet": "Nie wybrano członków",
-  "addingMembers": "Dodawanie członków..."
+  "addingMembers": "Dodawanie członków...",
+  "viewProfile": "Zobacz profil",
+  "leaveGroup": "Opuść grupę",
+  "grantAdmin": "Nadaj admina",
+  "revokeAdmin": "Odbierz admina",
+  "removeMember": "Usuń członka"
 }
