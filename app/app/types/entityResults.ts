@@ -1,12 +1,15 @@
-export type UserResult = {
-  _id: string;
-  username: string;
-  email: string;
-};
-
 export type UserGroupRole = "owner" | "admin" | "member";
 
 export type UserGroupStatus = "accepted" | "pending";
+
+export type SimpleUser = {
+  _id: string;
+  username: string;
+};
+
+export type UserResult = SimpleUser & {
+  email: string;
+};
 
 export type FriendResult = {
   _id: string;
@@ -28,7 +31,7 @@ export type GroupRequestResult = GroupResult & {
   creator: UserResult;
 };
 
-type GroupMemberResult = UserResult & {
+export type GroupMemberResult = UserResult & {
   role: UserGroupRole;
   status: UserGroupStatus;
 };

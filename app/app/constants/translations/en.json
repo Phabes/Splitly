@@ -69,5 +69,10 @@
   "members": "Members",
   "editGroup": "Edit group",
   "noMembersSelectedYet": "No members selected yet",
-  "addingMembers": "Adding members..."
+  "addingMembers": "Adding members...",
+  "viewProfile": "View profile",
+  "leaveGroup": "Leave group",
+  "grantAdmin": "Grant admin",
+  "revokeAdmin": "Revoke admin",
+  "removeMember": "Remove member"
 }

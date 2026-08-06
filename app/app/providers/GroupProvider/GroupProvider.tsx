@@ -7,12 +7,15 @@ export const GroupProvider: FC<GroupProviderProps> = ({
   groupID,
   groupDetails,
   userRole,
+  setGroupMembers,
   children,
 }) => {
   return (
-    <GroupContext value={{ groupID, groupDetails, userRole }}>
+    <GroupContext.Provider
+      value={{ groupID, groupDetails, userRole, setGroupMembers }}
+    >
       {children}
-    </GroupContext>
+    </GroupContext.Provider>
   );
 };
 

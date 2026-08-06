@@ -1,32 +1,97 @@
-import { Fab, Icon, ListItem, Scroll, TouchableIcon } from "@/app/components";
+import { Fab, FloatingMenu, Icon, ListItem, Scroll } from "@/app/components";
 import {
   useAppNavigation,
+  useAuthContext,
   useGroupContext,
   useThemeContext,
+  useTranslations,
 } from "@/app/hooks";
+import { GroupMemberResult, MenuOption } from "@/app/types";
 import { FC, useEffect } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 
 export const Members: FC = () => {
   const navigation = useAppNavigation();
-  const { groupDetails, userRole } = useGroupContext();
+  const { groupDetails, userRole, setGroupMembers } = useGroupContext();
+  const { userData } = useAuthContext();
+  const translations = useTranslations();
 
   const styles = useStyles();
-
-  const refreshMembers = () => {
-    console.log("REFRESH MEMBERS");
-  };
 
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener(
       "onMembersSelected",
-      refreshMembers,
+      setGroupMembers,
     );
 
     return () => {
       subscription.remove();
     };
   }, []);
+
+  const generateMenuOptions = (item: GroupMemberResult): MenuOption[] => {
+    const options: MenuOption[] = [
+      {
+        label: translations["viewProfile"],
+        onPress: () => console.log("View:", item.username),
+      },
+    ];
+
+    const isMe = item._id === userData?._id;
+    const targetRole = item.role;
+
+    if (isMe) {
+      options.push({
+        label: translations["leaveGroup"],
+        onPress: () => {
+          if (userRole === "owner") {
+            // TODO: Open a modal to select a new owner before API call
+            console.log("Owner leaving: Must designate new owner first");
+          } else {
+            // TODO: Regular leave group API call
+            console.log("Leaving group...");
+          }
+        },
+      });
+      return options;
+    }
+
+    if (userRole === "owner") {
+      if (targetRole === "member") {
+        options.push({
+          label: translations["grantAdmin"],
+          onPress: () => console.log("Grant Admin"),
+        });
+      }
+      if (targetRole === "admin") {
+        options.push({
+          label: translations["revokeAdmin"],
+          onPress: () => console.log("Revoke Admin"),
+        });
+      }
+      if (targetRole !== "owner") {
+        options.push({
+          label: translations["removeMember"],
+          onPress: () => console.log("Remove Member"),
+        });
+      }
+    }
+
+    if (userRole === "admin") {
+      if (targetRole === "member") {
+        options.push({
+          label: translations["grantAdmin"],
+          onPress: () => console.log("Grant Admin"),
+        });
+        options.push({
+          label: translations["removeMember"],
+          onPress: () => console.log("Remove Member"),
+        });
+      }
+    }
+
+    return options;
+  };
 
   return (
     <View style={styles.tabContainer}>
@@ -58,13 +123,8 @@ export const Members: FC = () => {
                       color="text-disabled"
                     />
                   )}
-                  <TouchableIcon
-                    icon="EllipsisVertical"
-                    color="text-secondary"
-                    onPress={() => {
-                      console.log("MEMBER MENU");
-                    }}
-                  />
+
+                  <FloatingMenu options={generateMenuOptions(item)} />
                 </ListItem>
               );
             })}

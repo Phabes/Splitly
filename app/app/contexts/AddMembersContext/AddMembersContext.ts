@@ -1,9 +1,10 @@
+import { SimpleUser } from "@/app/types";
 import { createContext } from "react";
 
 export interface AddMembersContextType {
   groupID?: string;
-  selectedUsersData: { _id: string; username: string }[];
-  toggleMember: (userObj: { _id: string; username: string }) => void;
+  selectedUsersData: SimpleUser[];
+  toggleMember: (userObj: SimpleUser) => void;
 }
 
 export const AddMembersContext = createContext<AddMembersContextType | null>(

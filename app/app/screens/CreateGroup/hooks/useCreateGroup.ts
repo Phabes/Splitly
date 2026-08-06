@@ -6,7 +6,7 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { createGroupCall } from "@/app/services";
-import { ResponseMessage } from "@/app/types";
+import { ResponseMessage, SimpleUser } from "@/app/types";
 
 import { fieldRequiredValidation } from "@/app/utils";
 import { useEffect, useState } from "react";
@@ -22,14 +22,12 @@ export const useCreateGroup = () => {
   const descriptionField = useFormData();
   const currencyField = useFormData();
 
-  const [selectedMembers, setSelectedMembers] = useState<
-    { _id: string; username: string }[]
-  >([]);
+  const [selectedMembers, setSelectedMembers] = useState<SimpleUser[]>([]);
 
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener(
       "onMembersSelected",
-      (selectedMembers: { _id: string; username: string }[]) => {
+      (selectedMembers: SimpleUser[]) => {
         setSelectedMembers(selectedMembers);
       },
     );

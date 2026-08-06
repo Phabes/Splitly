@@ -465,9 +465,20 @@ export const addGroupMembers = async (
 
     await group.save();
 
+    await group.populate("members.user", "username email");
+
+    const formattedMembers = group.members.map((member: any) => ({
+      _id: member.user._id,
+      username: member.user.username,
+      email: member.user.email,
+      role: member.role,
+      status: member.status,
+    }));
+
     return res.status(200).json({
       code: "addMembers/success",
       message: `Successfully sent invites to ${addedOrUpdatedCount} users.`,
+      members: formattedMembers,
     });
   } catch (error) {
     console.error("Error adding members:", error);
