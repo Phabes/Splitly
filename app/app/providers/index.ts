@@ -1,4 +1,6 @@
+export * from "./AddMembersProvider";
 export * from "./AuthProvider";
+export * from "./ConfirmProvider";
 export * from "./GroupProvider";
 export * from "./LanguageProvider";
 export * from "./LayoutProvider";

@@ -1,11 +1,10 @@
 import { Button, NavBar, TopTabScreen, TopTabSelector } from "@/app/components";
-import { AddMembersContext } from "@/app/contexts";
 import {
   useAppNavigation,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
-import { LayoutProvider } from "@/app/providers";
+import { AddMembersProvider, LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { Searching, Selected } from "./tabs";
@@ -21,7 +20,11 @@ export const AddMembers: FC = () => {
   const styles = useStyles();
 
   return (
-    <AddMembersContext value={{ groupID, selectedUsersData, toggleMember }}>
+    <AddMembersProvider
+      groupID={groupID}
+      selectedUsersData={selectedUsersData}
+      toggleMember={toggleMember}
+    >
       <LayoutProvider
         navbar={
           <NavBar
@@ -50,7 +53,7 @@ export const AddMembers: FC = () => {
           </View>
         </View>
       </LayoutProvider>
-    </AddMembersContext>
+    </AddMembersProvider>
   );
 };
 

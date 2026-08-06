@@ -13,6 +13,8 @@ export type TranslationKeys =
   | "settings"
   | "searching"
   | "selected"
+  | "cancel"
+  | "confirm"
   // authentication
   | "signUp"
   | "signIn"
