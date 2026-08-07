@@ -105,7 +105,7 @@ export const useSignUpData = () => {
         throw new Error(data.message);
       }
     } catch (error) {
-      // Sign up error
+      // Error during sign up
       console.error(error);
     } finally {
       setIsLoading(false);

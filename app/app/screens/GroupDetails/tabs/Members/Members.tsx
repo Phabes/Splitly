@@ -9,6 +9,7 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { GroupMemberResult, MenuOption } from "@/app/types";
+import { formatTranslation } from "@/app/utils";
 import { FC, useEffect } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 
@@ -50,7 +51,7 @@ export const Members: FC = () => {
       //   throw new Error(data.message);
       // }
     } catch (error) {
-      // Removing member failed
+      // Error during removing member
       console.error(error);
     } finally {
       hideLoading();
@@ -104,8 +105,9 @@ export const Members: FC = () => {
             console.log("Remove Member");
             showConfirm({
               title: translations["removeMember"],
-              message: `Are you sure you want to remove ${item.username} from the group?`,
-              confirmText: translations["removeMember"],
+              message: formatTranslation(translations["removeMemberQuestion"], {
+                username: item.username,
+              }),
               isDestructive: true,
               onConfirm: () => handleRemoveMember(item._id),
             });

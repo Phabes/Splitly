@@ -92,7 +92,7 @@ export const useCreateGroup = () => {
         throw new Error(data.message);
       }
     } catch (error) {
-      // Creating group error
+      // Error during creating group
       console.error(error);
     } finally {
       hideLoading();

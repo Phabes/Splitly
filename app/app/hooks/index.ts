@@ -5,6 +5,7 @@ export { useAuthenticatedApi } from "./useAuthenticatedApi";
 export { useAuthNavigation } from "./useAuthNavigation";
 export { useConfirmContext } from "./useConfirmContext";
 export { useCurrencies } from "./useCurrencies";
+export { useFloatingMenuContext } from "./useFloatingMenuContext";
 export { useFormData } from "./useFormData";
 export { useGroupContext } from "./useGroupContext";
 export { useLanguageContext } from "./useLanguageContext";

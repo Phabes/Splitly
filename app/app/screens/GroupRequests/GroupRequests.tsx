@@ -11,15 +11,18 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
+  useConfirmContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { useGroupRequests } from "./hooks";
+import { formatTranslation } from "@/app/utils";
 
 export const GroupRequests: FC = () => {
   const translations = useTranslations();
   const navigation = useAppNavigation();
+  const { showConfirm } = useConfirmContext();
 
   const {
     groupRequests,
@@ -76,7 +79,21 @@ export const GroupRequests: FC = () => {
               />
               <TouchableIcon
                 icon="X"
-                onPress={() => handleRejectGroupRequest(item._id)}
+                onPress={() => {
+                  showConfirm({
+                    title: translations["rejectGroupRequest"],
+                    message: formatTranslation(
+                      translations["rejectGroupRequestQuestion"],
+                      {
+                        groupName: item.name,
+                      },
+                    ),
+                    isDestructive: true,
+                    onConfirm: () => {
+                      handleRejectGroupRequest(item._id);
+                    },
+                  });
+                }}
                 color="text-error"
               />
             </ListItem>

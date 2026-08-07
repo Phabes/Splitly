@@ -51,6 +51,7 @@ export const useAddMembers = () => {
           throw new Error(data.message);
         }
       } catch (error) {
+        // Error during adding members
         console.error(error);
       } finally {
         hideLoading();

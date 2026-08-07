@@ -41,7 +41,7 @@ export const useGroupRequestsData = () => {
           throw new Error(data.message);
         }
       } catch (error) {
-        // Group requests search failed
+        // Error during group requests search
         console.error(error);
       } finally {
         if (isInitial) {

@@ -43,7 +43,7 @@ export const useFriendRequestsData = () => {
           throw new Error(data.message);
         }
       } catch (error) {
-        // Friend requests search failed
+        // Error during friend requests search
         console.error(error);
       } finally {
         if (isInitial) {

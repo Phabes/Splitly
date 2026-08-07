@@ -77,7 +77,7 @@ export const useEditGroupForm = (
         throw new Error(data.message);
       }
     } catch (error) {
-      // Editting group error
+      // Error during editting group
       console.error(error);
     } finally {
       hideLoading();

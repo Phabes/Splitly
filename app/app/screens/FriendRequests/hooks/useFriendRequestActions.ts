@@ -37,7 +37,7 @@ export const useFriendRequestActions = (
         throw new Error(data.message);
       }
     } catch (error) {
-      // Accepting friend request failed
+      // Error during accepting friend request
       console.error(error);
     } finally {
       hideLoading();
@@ -67,7 +67,7 @@ export const useFriendRequestActions = (
         throw new Error(data.message);
       }
     } catch (error) {
-      // Rejecting friend request failed
+      // Error during rejecting friend request
       console.error(error);
     } finally {
       hideLoading();

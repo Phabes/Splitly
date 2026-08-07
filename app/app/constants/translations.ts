@@ -48,6 +48,8 @@ export type TranslationKeys =
   | "loadingMoreFriendRequests"
   | "noMoreFriendRequests"
   | "noFriendRequestsFound"
+  | "rejectFriendRequest"
+  | "rejectFriendRequestQuestion"
   | "acceptingFriendRequest"
   | "rejectingFriendRequest"
   | "loadingMoreFriends"
@@ -70,6 +72,8 @@ export type TranslationKeys =
   | "loadingMoreGroupRequests"
   | "noMoreGroupRequests"
   | "noGroupRequestsFound"
+  | "rejectGroupRequest"
+  | "rejectGroupRequestQuestion"
   | "acceptingGroupRequest"
   | "rejectingGroupRequest"
   | "groupDetails"
@@ -84,7 +88,8 @@ export type TranslationKeys =
   | "leaveGroup"
   | "grantAdmin"
   | "revokeAdmin"
-  | "removeMember";
+  | "removeMember"
+  | "removeMemberQuestion";
 
 export const translations: Record<
   LanguageKeys,

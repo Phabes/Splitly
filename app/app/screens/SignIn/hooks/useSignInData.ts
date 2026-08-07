@@ -77,7 +77,7 @@ export const useSignInData = () => {
         throw new Error(data.message);
       }
     } catch (error) {
-      // Sign in error
+      // Error during sign in
       console.error(error);
     } finally {
       setIsLoading(false);

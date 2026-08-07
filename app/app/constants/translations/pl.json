@@ -40,6 +40,8 @@
   "loadingMoreFriendRequests": "Ładowanie zaproszeń...",
   "noMoreFriendRequests": "Nie znaleziono więcej zaproszeń.",
   "noFriendRequestsFound": "Nie znaleziono zaproszeń.",
+  "rejectFriendRequest": "Odrzuć zaproszenie do znajomych",
+  "rejectFriendRequestQuestion": "Czy jesteś pewny, że chcesz odrzucić zaproszenie do znajomych od '${username}'?",
   "acceptingFriendRequest": "Akceptowanie zaproszenia...",
   "rejectingFriendRequest": "Odrzucanie zaproszenia...",
   "loadingMoreFriends": "Ładowanie znajomych...",
@@ -62,6 +64,8 @@
   "loadingMoreGroupRequests": "Ładowanie zaproszeń...",
   "noMoreGroupRequests": "Nie znaleziono więcej zaproszeń.",
   "noGroupRequestsFound": "Nie znaleziono zaproszeń.",
+  "rejectGroupRequest": "Odrzuć zaproszenie do grupy",
+  "rejectGroupRequestQuestion": "Czy jesteś pewny, że chcesz odrzucić zaproszenie do grupy '${groupName}'?",
   "acceptingGroupRequest": "Akceptowanie zaproszenia...",
   "rejectingGroupRequest": "Odrzucanie zaproszenia...",
   "groupDetails": "Detale grupy",
@@ -76,5 +80,6 @@
   "leaveGroup": "Opuść grupę",
   "grantAdmin": "Nadaj admina",
   "revokeAdmin": "Odbierz admina",
-  "removeMember": "Usuń członka"
+  "removeMember": "Usuń członka",
+  "removeMemberQuestion": "Czy jesteś pewny, że chcesz usunąć '${username}' z grupy?"
 }

@@ -1,4 +1,5 @@
 export { fieldRequiredValidation } from "./fieldRequiredValidation";
+export { formatTranslation } from "./formatTranslation";
 export { getIcon } from "./getIcon";
 export {
   validateEmail,

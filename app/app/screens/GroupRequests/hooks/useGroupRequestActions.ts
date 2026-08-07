@@ -37,7 +37,7 @@ export const useGroupRequestActions = (
         throw new Error(data.message);
       }
     } catch (error) {
-      // Accepting group request failed
+      // Error during accepting group request
       console.error(error);
     } finally {
       hideLoading();
@@ -67,7 +67,7 @@ export const useGroupRequestActions = (
         throw new Error(data.message);
       }
     } catch (error) {
-      // Rejecting group request failed
+      // Error during rejecting group request
       console.error(error);
     } finally {
       hideLoading();
