@@ -1,18 +1,38 @@
-import { GroupContext, GroupContextValue } from "@/app/contexts";
-import { FC, PropsWithChildren } from "react";
+import { GroupContext } from "@/app/contexts";
+import { FC, PropsWithChildren, useEffect } from "react";
+import { DeviceEventEmitter } from "react-native";
+import { useGroupDetailsData } from "./hooks";
 
-type GroupProviderProps = PropsWithChildren & GroupContextValue;
+type GroupProviderProps = PropsWithChildren & {
+  groupID: string;
+};
 
 export const GroupProvider: FC<GroupProviderProps> = ({
   groupID,
-  groupDetails,
-  userRole,
-  setGroupMembers,
   children,
 }) => {
+  const {
+    isLoading,
+    userRole,
+    groupDetails,
+    setGroupUpdates,
+    setGroupMembers,
+  } = useGroupDetailsData(groupID);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "refreshGroupDetails",
+      setGroupUpdates,
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, [setGroupUpdates]);
+
   return (
     <GroupContext.Provider
-      value={{ groupID, groupDetails, userRole, setGroupMembers }}
+      value={{ groupID, isLoading, groupDetails, userRole, setGroupMembers }}
     >
       {children}
     </GroupContext.Provider>

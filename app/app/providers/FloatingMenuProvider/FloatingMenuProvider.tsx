@@ -14,13 +14,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const FloatingMenuProvider: FC<PropsWithChildren> = ({ children }) => {
   const insets = useSafeAreaInsets();
-  const [config, setConfig] = useState<FloatingMenuConfig | null>(null);
 
-  // State to hold the exact measured height of the menu
+  const [config, setConfig] = useState<FloatingMenuConfig | null>(null);
   const [menuHeight, setMenuHeight] = useState<number>(0);
 
   const showMenu = (newConfig: FloatingMenuConfig) => {
-    setMenuHeight(0); // Reset height for the new menu
+    setMenuHeight(0);
     setConfig(newConfig);
   };
 
@@ -29,7 +28,6 @@ export const FloatingMenuProvider: FC<PropsWithChildren> = ({ children }) => {
     setMenuHeight(0);
   };
 
-  // --- Smart Positioning Logic ---
   let finalTop: number | undefined;
   let finalBottom: number | undefined;
   let finalRight: number | undefined;
@@ -42,12 +40,9 @@ export const FloatingMenuProvider: FC<PropsWithChildren> = ({ children }) => {
     const spaceBelow = screenHeight - pageY - height;
     finalRight = screenWidth - pageX - width;
 
-    // Compare exact measured height against available space
     if (spaceBelow < menuHeight + insets.bottom) {
-      // Draw UP
       finalBottom = screenHeight - pageY;
     } else {
-      // Draw DOWN
       finalTop = pageY + height;
     }
   }
@@ -66,7 +61,6 @@ export const FloatingMenuProvider: FC<PropsWithChildren> = ({ children }) => {
                   onLayout={(e) => setMenuHeight(e.nativeEvent.layout.height)}
                   style={[
                     styles.menuContainer,
-                    // 2. Keep invisible until height is measured, then apply position!
                     menuHeight === 0
                       ? { opacity: 0 }
                       : {

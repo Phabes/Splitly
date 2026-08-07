@@ -1,4 +1,4 @@
-export { AddMembersContext, AddMembersContextType } from "./AddMembersContext";
+export { AddMembersContext } from "./AddMembersContext";
 
 export default function Index() {
   return null;

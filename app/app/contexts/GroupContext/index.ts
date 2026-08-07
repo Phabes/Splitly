@@ -1,4 +1,4 @@
-export { GroupContext, GroupContextValue } from "./GroupContext";
+export { GroupContext } from "./GroupContext";
 
 export default function Index() {
   return null;
