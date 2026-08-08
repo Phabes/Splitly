@@ -5,7 +5,7 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { addMembersCall } from "@/app/services";
-import { AddMembersResponse, ResponseMessage, SimpleUser } from "@/app/types";
+import { GroupMembersResponse, ResponseMessage, SimpleUser } from "@/app/types";
 import { useState } from "react";
 import { DeviceEventEmitter } from "react-native";
 
@@ -39,8 +39,10 @@ export const useAddMembers = (
       try {
         const response = await request(addMembersCall, groupID, userIDs);
         if (response.ok) {
-          const data: AddMembersResponse = await response.json();
-          if (returnEvent) DeviceEventEmitter.emit(returnEvent, data.members);
+          const data: GroupMembersResponse = await response.json();
+          if (returnEvent) {
+            DeviceEventEmitter.emit(returnEvent, data.members);
+          }
 
           navigation.goBack();
         } else {
@@ -53,7 +55,9 @@ export const useAddMembers = (
         hideLoading();
       }
     } else {
-      if (returnEvent) DeviceEventEmitter.emit(returnEvent, selectedUsersData);
+      if (returnEvent) {
+        DeviceEventEmitter.emit(returnEvent, selectedUsersData);
+      }
       navigation.goBack();
     }
   };

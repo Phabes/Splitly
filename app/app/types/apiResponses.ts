@@ -78,7 +78,7 @@ export type AddMembersCandidatesResponse = ResponseMessage & {
   hasMore: boolean;
 };
 
-export type AddMembersResponse = ResponseMessage & {
+export type GroupMembersResponse = ResponseMessage & {
   members: GroupMemberResult[];
 };
 

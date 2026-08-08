@@ -5,6 +5,7 @@ export { getGroupCandidatesCall } from "./getGroupCandidatesCall";
 export { getGroupDetailsCall } from "./getGroupDetailsCall";
 export { getGroupListCall } from "./getGroupListCall";
 export { getGroupRequestsCall } from "./getGroupRequestsCall";
+export { removeGroupMemberCall } from "./removeGroupMemberCall";
 export { respondToGroupRequestCall } from "./respondToGroupRequestCall";
 
 export default function Index() {

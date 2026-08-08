@@ -481,10 +481,126 @@ export const addGroupMembers = async (
       members: formattedMembers,
     });
   } catch (error) {
-    console.error("Error adding members:", error);
     return res.status(500).json({
       code: "addMembers/error",
       message: "Server error while sending group requests.",
+    });
+  }
+};
+
+export const removeGroupMember = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { groupID, memberID } = req.params;
+    const currentUserID = req.userID;
+
+    const group = await Group.findById(groupID);
+    if (!group) {
+      return res.status(404).json({
+        code: "removeMember/group-not-found",
+        message: "Group not found.",
+      });
+    }
+
+    const currentMember = group.members.find(
+      (m: any) => m.user.toString() === currentUserID?.toString(),
+    );
+
+    const targetMember = group.members.find(
+      (m: any) => m.user.toString() === memberID?.toString(),
+    );
+
+    if (!currentMember) {
+      return res.status(403).json({
+        code: "removeMember/user-not-found",
+        message: "You are not a member of this group.",
+      });
+    }
+
+    if (!targetMember) {
+      await group.populate("members.user", "username email");
+
+      const formattedMembers = group.members.map((member: any) => ({
+        _id: member.user._id,
+        username: member.user.username,
+        email: member.user.email,
+        role: member.role,
+        status: member.status,
+      }));
+
+      return res.status(404).json({
+        code: "removeMember/member-not-found",
+        message: "User is no longer a member of this group.",
+        members: formattedMembers,
+      });
+    }
+
+    const isSelfLeave = currentUserID?.toString() === memberID?.toString();
+    const requesterRole = currentMember.role;
+    const targetRole = targetMember.role;
+
+    if (isSelfLeave) {
+      if (requesterRole === "owner") {
+        return res.status(403).json({
+          code: "removeMember/owner-cannot-leave",
+          message:
+            "Owner cannot leave the group. You must designate a new owner first.",
+        });
+      }
+    } else {
+      if (requesterRole === "member") {
+        return res.status(403).json({
+          code: "removeMember/member-forbidden",
+          message: "Members do not have permission to remove users.",
+        });
+      }
+
+      if (requesterRole === "admin" && targetRole !== "member") {
+        return res.status(403).json({
+          code: "removeMember/admin-forbidden",
+          message: "Admins can only remove regular members.",
+        });
+      }
+    }
+
+    // --- TODO: Future Validations (e.g., unpaid bills) ---
+    /*
+    const hasUnpaidBills = false; // Replace with actual check
+    if (hasUnpaidBills) {
+      return res.status(400).json({
+        code: "removeMember/unpaid-bills",
+        message: "Cannot remove member. They have unsettled balances in this group.",
+      });
+    }
+    */
+
+    group.members.pull(targetMember._id);
+
+    await group.save();
+
+    await group.populate("members.user", "username email");
+
+    const formattedMembers = group.members.map((member: any) => ({
+      _id: member.user._id,
+      username: member.user.username,
+      email: member.user.email,
+      role: member.role,
+      status: member.status,
+    }));
+
+    return res.status(200).json({
+      code: "removeMember/success",
+      message: isSelfLeave
+        ? "Successfully left the group."
+        : "Successfully removed the member.",
+      members: formattedMembers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "removeMember/error",
+      message: "Server error while removing group member.",
     });
   }
 };

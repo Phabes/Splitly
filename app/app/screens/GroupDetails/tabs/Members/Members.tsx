@@ -4,7 +4,6 @@ import {
   useAuthContext,
   useConfirmContext,
   useGroupContext,
-  useLoadingContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -12,14 +11,15 @@ import { GroupMemberResult, MenuOption } from "@/app/types";
 import { formatTranslation } from "@/app/utils";
 import { FC, useEffect } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
+import { useRemoveMember } from "./hooks";
 
 export const Members: FC = () => {
   const navigation = useAppNavigation();
   const { groupDetails, userRole, setGroupMembers } = useGroupContext();
   const { showConfirm } = useConfirmContext();
-  const { showLoading, hideLoading } = useLoadingContext();
   const { userData } = useAuthContext();
   const translations = useTranslations();
+  const { handleRemoveMember } = useRemoveMember();
 
   const styles = useStyles();
 
@@ -33,30 +33,6 @@ export const Members: FC = () => {
       subscription.remove();
     };
   }, []);
-
-  const handleRemoveMember = async (memberID: string) => {
-    showLoading(translations["removeMember"]);
-    try {
-      // const response = await request(
-      //   removeMemberCall,
-      //   groupDetails!._id,
-      //   memberID
-      // );
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   // Instantly update UI with the new member list from backend
-      //   setGroupMembers(data.members);
-      // } else {
-      //   const data = await response.json();
-      //   throw new Error(data.message);
-      // }
-    } catch (error) {
-      // Error during removing member
-      console.error(error);
-    } finally {
-      hideLoading();
-    }
-  };
 
   const generateMenuOptions = (item: GroupMemberResult): MenuOption[] => {
     const options: MenuOption[] = [
