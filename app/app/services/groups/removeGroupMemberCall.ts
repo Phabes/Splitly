@@ -1,24 +1,21 @@
-import { PAGE_SIZE } from "@/app/constants/pagination";
-
-export const getGroupListCall = (
+export const removeGroupMemberCall = (
   token: string,
-  query: string = "",
-  groupIDs: string[] = [],
-) => {
+  groupID: string,
+  memberID: string,
+): Promise<Response> => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
   const baseUrl = `http://${apiUrl}:${apiPort}`;
 
-  const url = `${baseUrl}/groups/list`;
+  const url = `${baseUrl}/groups/${groupID}/members/${memberID}`;
 
   return fetch(url, {
-    method: "POST",
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ query, limit: PAGE_SIZE, groupIDs }),
   });
 };
 
-export default getGroupListCall;
+export default removeGroupMemberCall;

@@ -60,7 +60,15 @@ export type ResponseCodeKeys =
   | "addMembers/forbidden"
   | "addMembers/already-invited"
   | "addMembers/success"
-  | "addMembers/error";
+  | "addMembers/error"
+  | "removeMember/group-not-found"
+  | "removeMember/user-not-found"
+  | "removeMember/member-not-found"
+  | "removeMember/owner-cannot-leave"
+  | "removeMember/member-forbidden"
+  | "removeMember/admin-forbidden"
+  | "removeMember/success"
+  | "removeMember/error";
 
 export default function Index() {
   return null;

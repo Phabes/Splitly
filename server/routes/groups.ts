@@ -7,6 +7,7 @@ import {
   getGroupDetails,
   getGroupInviteCandidates,
   getGroupList,
+  removeGroupMember,
   searchGroupRequests,
 } from "@/controllers/groups.ts";
 import { protect } from "@/middleware/authMiddleware.ts";
@@ -29,5 +30,7 @@ routerGroup.patch("/:groupID", protect, editGroupDetails);
 routerGroup.post("/candidates", protect, getGroupInviteCandidates);
 // POST - add group members
 routerGroup.post("/members", protect, addGroupMembers);
+// DELETE - remove group member
+routerGroup.delete("/:groupID/members/:memberID", protect, removeGroupMember);
 
 export default routerGroup;
