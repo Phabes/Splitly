@@ -1,68 +1,22 @@
-import { Button, NavBar, TopTabScreen, TopTabSelector } from "@/app/components";
-import { AddMembersContext } from "@/app/contexts";
-import {
-  useAppNavigation,
-  useThemeContext,
-  useTranslations,
-} from "@/app/hooks";
-import { LayoutProvider } from "@/app/providers";
+import { AddMembersProvider } from "@/app/providers";
 import { FC } from "react";
-import { StyleSheet, View } from "react-native";
-import { Searching, Selected } from "./tabs";
-import { useAddMembers } from "./hooks";
+import { AddMembersContent } from "./AddMembersContent";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
 
 export const AddMembers: FC = () => {
-  const translations = useTranslations();
-  const navigation = useAppNavigation();
-
-  const { groupID, selectedUsersData, toggleMember, handleConfirm } =
-    useAddMembers();
-
-  const styles = useStyles();
+  const route = useRoute<RouteProp<AppStackParamList, "AddMembers">>();
+  const { groupID, initialSelectedUsers, returnEvent } = route.params;
 
   return (
-    <AddMembersContext value={{ groupID, selectedUsersData, toggleMember }}>
-      <LayoutProvider
-        navbar={
-          <NavBar
-            text={translations["addMembers"]}
-            onBackPress={navigation.goBack}
-          />
-        }
-      >
-        <View style={styles.container}>
-          <TopTabSelector>
-            <TopTabScreen
-              name="Searching"
-              component={Searching}
-            />
-            <TopTabScreen
-              name="Selected"
-              component={Selected}
-            />
-          </TopTabSelector>
-
-          <View style={styles.buttons}>
-            <Button
-              text={`${translations["addMembers"]} (${selectedUsersData.length})`}
-              onPress={handleConfirm}
-            />
-          </View>
-        </View>
-      </LayoutProvider>
-    </AddMembersContext>
+    <AddMembersProvider
+      groupID={groupID}
+      initialSelectedUsers={initialSelectedUsers}
+      returnEvent={returnEvent}
+    >
+      <AddMembersContent />
+    </AddMembersProvider>
   );
-};
-
-const useStyles = () => {
-  const theme = useThemeContext();
-
-  return StyleSheet.create({
-    container: { flex: 1, gap: theme.spacing(3) },
-    buttons: {
-      gap: theme.spacing(3),
-    },
-  });
 };
 
 export default AddMembers;

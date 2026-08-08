@@ -63,7 +63,7 @@ export const useGroupsData = () => {
           throw new Error(data.message);
         }
       } catch (error) {
-        // Groups fetch failed
+        // Error during fetching groups
         console.error(error);
       } finally {
         if (isInitial) {

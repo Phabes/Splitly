@@ -7,15 +7,21 @@ import {
   TouchableIcon,
   Typography,
 } from "@/app/components";
-import { useAppNavigation, useTranslations } from "@/app/hooks";
+import {
+  useAppNavigation,
+  useConfirmContext,
+  useTranslations,
+} from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 import { useFriendRequests } from "./hooks";
+import { formatTranslation } from "@/app/utils";
 
 export const FriendRequests: FC = () => {
   const translations = useTranslations();
   const navigation = useAppNavigation();
+  const { showConfirm } = useConfirmContext();
 
   const {
     friendRequests,
@@ -74,7 +80,21 @@ export const FriendRequests: FC = () => {
                 />
                 <TouchableIcon
                   icon="X"
-                  onPress={() => handleRejectFriendRequest(item._id)}
+                  onPress={() => {
+                    showConfirm({
+                      title: translations["rejectFriendRequest"],
+                      message: formatTranslation(
+                        translations["rejectFriendRequestQuestion"],
+                        {
+                          username: item.requester.username,
+                        },
+                      ),
+                      isDestructive: true,
+                      onConfirm: () => {
+                        handleRejectFriendRequest(item._id);
+                      },
+                    });
+                  }}
                   color="text-error"
                 />
               </ListItem>

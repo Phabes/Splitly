@@ -65,6 +65,7 @@ export const useFriendsList = (
           throw new Error(data.message);
         }
       } catch (error) {
+        // Error during fetching group candidates
         console.error(error);
       } finally {
         if (isInitial) {

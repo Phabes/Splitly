@@ -35,7 +35,7 @@ export const useFriendActions = (
         throw new Error(data.message);
       }
     } catch (error) {
-      // Sending friend request failed
+      // Error during sending friend request
       console.error(error);
     } finally {
       hideLoading();

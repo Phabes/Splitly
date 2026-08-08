@@ -58,7 +58,7 @@ export const useFriendsData = () => {
           throw new Error(data.message);
         }
       } catch (error) {
-        // Friends fetch failed
+        // Error during fetching friends
         console.error(error);
       } finally {
         if (isInitial) {

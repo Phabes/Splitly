@@ -58,7 +58,7 @@ export const useGroupDetailsData = (groupID: string) => {
           throw new Error(data.message);
         }
       } catch (error) {
-        // Group details fetch failed
+        // Error during fetching group details
         console.error(error);
       } finally {
         setIsLoading(false);

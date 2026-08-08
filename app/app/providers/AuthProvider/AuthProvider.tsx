@@ -47,7 +47,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
       return data.userToken;
     } catch (error) {
-      // Refresh token error
+      // Error during token refresh
       console.error(error);
       await clearSession();
       return null;
@@ -80,7 +80,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
           }
         }
       } catch (error) {
-        // Auth bootstrap failed
+        // Error during auth bootstrap
         console.error(error);
         await clearSession();
       } finally {

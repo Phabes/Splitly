@@ -2,17 +2,22 @@ import { Fab, FloatingMenu, Icon, ListItem, Scroll } from "@/app/components";
 import {
   useAppNavigation,
   useAuthContext,
+  useConfirmContext,
   useGroupContext,
+  useLoadingContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
 import { GroupMemberResult, MenuOption } from "@/app/types";
+import { formatTranslation } from "@/app/utils";
 import { FC, useEffect } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 
 export const Members: FC = () => {
   const navigation = useAppNavigation();
   const { groupDetails, userRole, setGroupMembers } = useGroupContext();
+  const { showConfirm } = useConfirmContext();
+  const { showLoading, hideLoading } = useLoadingContext();
   const { userData } = useAuthContext();
   const translations = useTranslations();
 
@@ -28,6 +33,30 @@ export const Members: FC = () => {
       subscription.remove();
     };
   }, []);
+
+  const handleRemoveMember = async (memberID: string) => {
+    showLoading(translations["removeMember"]);
+    try {
+      // const response = await request(
+      //   removeMemberCall,
+      //   groupDetails!._id,
+      //   memberID
+      // );
+      // if (response.ok) {
+      //   const data = await response.json();
+      //   // Instantly update UI with the new member list from backend
+      //   setGroupMembers(data.members);
+      // } else {
+      //   const data = await response.json();
+      //   throw new Error(data.message);
+      // }
+    } catch (error) {
+      // Error during removing member
+      console.error(error);
+    } finally {
+      hideLoading();
+    }
+  };
 
   const generateMenuOptions = (item: GroupMemberResult): MenuOption[] => {
     const options: MenuOption[] = [
@@ -72,7 +101,17 @@ export const Members: FC = () => {
       if (targetRole !== "owner") {
         options.push({
           label: translations["removeMember"],
-          onPress: () => console.log("Remove Member"),
+          onPress: () => {
+            console.log("Remove Member");
+            showConfirm({
+              title: translations["removeMember"],
+              message: formatTranslation(translations["removeMemberQuestion"], {
+                username: item.username,
+              }),
+              isDestructive: true,
+              onConfirm: () => handleRemoveMember(item._id),
+            });
+          },
         });
       }
     }

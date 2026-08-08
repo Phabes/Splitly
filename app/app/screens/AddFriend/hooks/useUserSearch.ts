@@ -59,6 +59,7 @@ export const useUserSearch = () => {
           throw new Error(data.message);
         }
       } catch (error) {
+        // Error during loading add friend list
         console.error(error);
       } finally {
         if (isInitial) {

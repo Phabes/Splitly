@@ -23,6 +23,7 @@ export const useCurrencies = (selectedValue?: string) => {
 
         setCurrencies(data.currencies);
       } catch (error) {
+        // Error during fetching currencies
         console.error(error);
       } finally {
         setIsLoading(false);
