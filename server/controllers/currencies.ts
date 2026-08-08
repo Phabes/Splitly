@@ -1,12 +1,13 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import {
   getCachedCurrencies,
   fetchExchangeRate,
   initCurrencies,
 } from "../services/currencies.ts";
+import { AuthRequest } from "@/middleware/authMiddleware.ts";
 
 export const getCurrencyList = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
 ): Promise<any> => {
   let currencies = getCachedCurrencies();
@@ -31,7 +32,10 @@ export const getCurrencyList = async (
   });
 };
 
-export const getRate = async (req: Request, res: Response): Promise<any> => {
+export const getRate = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<any> => {
   try {
     const { from, to } = req.query;
 

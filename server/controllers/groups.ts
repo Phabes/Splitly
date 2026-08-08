@@ -4,6 +4,7 @@ import { validCurrency } from "@/utils/validCurrency.ts";
 import Group from "@/models/group.ts";
 import User from "@/models/user.ts";
 import Friend from "@/models/friend.ts";
+import { GroupRequest } from "@/middleware/groupMiddleware.ts";
 
 export const getGroupList = async (
   req: AuthRequest,
@@ -210,22 +211,13 @@ export const decideGroupRequest = async (
 };
 
 export const getGroupDetails = async (
-  req: AuthRequest,
+  req: GroupRequest,
   res: Response,
 ): Promise<any> => {
   try {
-    const { groupID } = req.params;
+    const group = req.group!;
 
-    const group = await Group.findById(groupID)
-      .select("name description baseCurrency members")
-      .populate("members.user", "username email");
-
-    if (!group) {
-      return res.status(404).json({
-        code: "getGroupDetails/not-found",
-        message: "Group not found.",
-      });
-    }
+    await group.populate("members.user", "username email");
 
     const formattedMembers = group.members.map((member: any) => ({
       _id: member.user._id,
@@ -239,7 +231,7 @@ export const getGroupDetails = async (
       code: "getGroupDetails/success",
       message: "Group details fetched successfully.",
       groupDetails: {
-        _id: groupID,
+        _id: group._id,
         name: group.name,
         description: group.description,
         baseCurrency: group.baseCurrency,
@@ -255,49 +247,45 @@ export const getGroupDetails = async (
 };
 
 export const editGroupDetails = async (
-  req: AuthRequest,
+  req: GroupRequest,
   res: Response,
 ): Promise<any> => {
   try {
-    const { groupID } = req.params;
-    const currentUserID = req.userID;
     const { name, description, currency } = req.body;
+    const currentUserID = req.userID;
+    const group = req.group!;
 
-    const updatedGroup = await Group.findOneAndUpdate(
-      {
-        _id: groupID,
-        members: {
-          $elemMatch: { user: currentUserID, role: "owner" },
-        },
-      },
-      {
-        $set: {
-          name,
-          description,
-          baseCurrency: currency,
-        },
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
-    ).select("name description baseCurrency");
+    const currentMember = group.members.find(
+      (m: any) => m.user.toString() === currentUserID?.toString(),
+    )!;
 
-    if (!updatedGroup) {
+    if (currentMember.role !== "owner") {
       return res.status(403).json({
-        code: "editGroup/forbidden-or-not-found",
-        message: "Group not found or you do not have permission to edit it.",
+        code: "editGroup/forbidden",
+        message: "Only the group owner can edit group details.",
       });
     }
+
+    if (name !== undefined) {
+      group.name = name;
+    }
+    if (description !== undefined) {
+      group.description = description;
+    }
+    if (currency !== undefined) {
+      group.baseCurrency = currency;
+    }
+
+    await group.save();
 
     return res.status(200).json({
       code: "editGroup/success",
       message: "Group updated successfully.",
       groupDetails: {
-        _id: groupID,
-        name: updatedGroup.name,
-        description: updatedGroup.description,
-        baseCurrency: updatedGroup.baseCurrency,
+        _id: group._id,
+        name: group.name,
+        description: group.description,
+        baseCurrency: group.baseCurrency,
       },
     });
   } catch (error) {
@@ -321,8 +309,21 @@ export const getGroupInviteCandidates = async (
     let groupMemberIDs: string[] = [];
 
     if (groupID) {
-      const group = await Group.findById(groupID).select("members.user");
+      const group = await Group.findById(groupID).select("members");
+
       if (group) {
+        const isMember = group.members.some(
+          (m: any) => m.user.toString() === currentUserID?.toString(),
+        );
+
+        if (!isMember) {
+          // return same message as in "groupMiddleware"
+          return res.status(403).json({
+            code: "groupAuthentication/access-denied",
+            message: "You do not have permission to view this group's data.",
+          });
+        }
+
         groupMemberIDs = group.members.map((m: any) => m.user.toString());
       }
     }
@@ -402,29 +403,20 @@ export const getGroupInviteCandidates = async (
 };
 
 export const addGroupMembers = async (
-  req: AuthRequest,
+  req: GroupRequest,
   res: Response,
 ): Promise<any> => {
   try {
-    const { groupID, members } = req.body;
+    const { members } = req.body;
     const currentUserID = req.userID;
 
-    const group = await Group.findById(groupID);
-    if (!group) {
-      return res.status(404).json({
-        code: "addMembers/group-not-found",
-        message: "Group not found.",
-      });
-    }
+    const group = req.group!;
 
     const currentMember = group.members.find(
       (m: any) => m.user.toString() === currentUserID?.toString(),
-    );
+    )!;
 
-    if (
-      !currentMember ||
-      (currentMember.role !== "owner" && currentMember.role !== "admin")
-    ) {
+    if (currentMember.role !== "owner" && currentMember.role !== "admin") {
       return res.status(403).json({
         code: "addMembers/forbidden",
         message: "Only group owner or admins can send invites.",
@@ -489,20 +481,13 @@ export const addGroupMembers = async (
 };
 
 export const removeGroupMember = async (
-  req: AuthRequest,
+  req: GroupRequest,
   res: Response,
 ): Promise<any> => {
   try {
-    const { groupID, memberID } = req.params;
+    const { memberID } = req.params;
     const currentUserID = req.userID;
-
-    const group = await Group.findById(groupID);
-    if (!group) {
-      return res.status(404).json({
-        code: "removeMember/group-not-found",
-        message: "Group not found.",
-      });
-    }
+    const group = req.group!;
 
     const currentMember = group.members.find(
       (m: any) => m.user.toString() === currentUserID?.toString(),
