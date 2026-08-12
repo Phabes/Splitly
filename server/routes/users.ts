@@ -5,12 +5,12 @@ import {
   signUp,
   verifyUser,
 } from "@/controllers/users.ts";
-import { protect } from "@/middleware/authMiddleware.ts";
+import { authMiddleware } from "@/middleware/authMiddleware.ts";
 
 const routerUser = Router();
 
 // GET - verify user
-routerUser.get("/verification", protect, verifyUser);
+routerUser.get("/verification", authMiddleware, verifyUser);
 // POST - refresh tokens
 routerUser.post("/tokens/renewal", refreshTokens);
 // POST - sign up
