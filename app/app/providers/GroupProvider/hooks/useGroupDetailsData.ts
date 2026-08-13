@@ -1,8 +1,4 @@
-import {
-  useAppNavigation,
-  useAuthContext,
-  useAuthenticatedApi,
-} from "@/app/hooks";
+import { useAuthContext, useAuthenticatedApi } from "@/app/hooks";
 import { getGroupDetailsCall } from "@/app/services";
 import {
   GroupDetailsResponse,
@@ -14,7 +10,6 @@ import { useEffect, useState } from "react";
 
 export const useGroupDetailsData = (groupID: string) => {
   const request = useAuthenticatedApi();
-  const navigation = useAppNavigation();
   const { userData } = useAuthContext();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -58,14 +53,6 @@ export const useGroupDetailsData = (groupID: string) => {
         if (response.ok) {
           const data: GroupDetailsResponse = await response.json();
           setGroupDetails(data.groupDetails);
-        } else if (response.status === 403) {
-          const data = await response.json();
-          if (data.code === "group/access-denied") {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "MainTabs" }],
-            });
-          }
         } else {
           const data: ResponseMessage = await response.json();
           throw new Error(data.message);

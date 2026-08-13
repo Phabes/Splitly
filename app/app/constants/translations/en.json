@@ -78,6 +78,7 @@
   "addingMembers": "Adding members...",
   "viewProfile": "View profile",
   "leaveGroup": "Leave group",
+  "leaveGroupQuestion": "Are you sure you want to leave '${groupName}' group?",
   "grantAdmin": "Grant admin",
   "revokeAdmin": "Revoke admin",
   "removeMember": "Remove member",

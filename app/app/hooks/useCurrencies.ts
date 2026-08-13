@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import { ResponseMessage, SelectData } from "@/app/types";
+import { Currency, CurrencyListResponse, ResponseMessage } from "@/app/types";
 import useAuthenticatedApi from "./useAuthenticatedApi";
 import { getCurrencyListCall } from "../services/currencies";
 
 export const useCurrencies = (selectedValue?: string) => {
-  const [currencies, setCurrencies] = useState<Array<SelectData>>([]);
+  const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const request = useAuthenticatedApi();
 
@@ -19,7 +19,7 @@ export const useCurrencies = (selectedValue?: string) => {
           throw new Error(data.message);
         }
 
-        const data = await response.json();
+        const data: CurrencyListResponse = await response.json();
 
         setCurrencies(data.currencies);
       } catch (error) {

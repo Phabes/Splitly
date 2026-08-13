@@ -28,6 +28,7 @@ export const getCurrencyList = async (
 
   return res.status(200).json({
     code: "getCurrencies/success",
+    message: "Currency list retrieved.",
     currencies,
   });
 };
@@ -50,6 +51,7 @@ export const getRate = async (
 
     return res.status(200).json({
       code: "getCurrencyRate/success",
+      message: "Currency rate retrieved.",
       from: from.toUpperCase(),
       to: to.toUpperCase(),
       rate,
