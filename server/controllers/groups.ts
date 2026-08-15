@@ -587,6 +587,7 @@ export const updateMemberRole = async (
 
     if (!targetMember) {
       await group.populate("members.user", "username email");
+
       const formattedMembers = group.members.map((member: any) => ({
         _id: member.user._id,
         username: member.user.username,
@@ -638,14 +639,83 @@ export const updateMemberRole = async (
 
     return res.status(200).json({
       code: "updateRole/success",
-      message: `Successfully changed role to ${newRole}.`,
+      message: `Successfully changed role to '${newRole}'.`,
       members: formattedMembers,
     });
   } catch (error) {
-    console.error("Error updating member role:", error);
     return res.status(500).json({
       code: "updateRole/error",
       message: "Server error while updating role.",
+    });
+  }
+};
+
+export const transferOwnership = async (
+  req: GroupRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { memberID } = req.params;
+    const currentUserID = req.userID;
+    const group = req.group!;
+
+    const currentOwner = group.members.find(
+      (m: any) => m.user.toString() === currentUserID?.toString(),
+    )!;
+
+    const targetMember = group.members.find(
+      (m: any) => m.user.toString() === memberID?.toString(),
+    );
+
+    if (!targetMember) {
+      await group.populate("members.user", "username email");
+
+      const formattedMembers = group.members.map((member: any) => ({
+        _id: member.user._id,
+        username: member.user.username,
+        email: member.user.email,
+        role: member.role,
+        status: member.status,
+      }));
+
+      return res.status(404).json({
+        code: "transferOwnership/member-not-found",
+        message: "User is no longer a member of this group.",
+        members: formattedMembers,
+      });
+    }
+
+    if (currentOwner.user.toString() === targetMember.user.toString()) {
+      return res.status(400).json({
+        code: "transferOwnership/already-owner",
+        message: "You are already the owner of this group.",
+      });
+    }
+
+    currentOwner.role = "admin";
+    targetMember.role = "owner";
+
+    await group.save();
+
+    await group.populate("members.user", "username email");
+
+    const formattedMembers = group.members.map((member: any) => ({
+      _id: member.user._id,
+      username: member.user.username,
+      email: member.user.email,
+      role: member.role,
+      status: member.status,
+    }));
+
+    return res.status(200).json({
+      code: "transferOwnership/success",
+      message: "Ownership successfully transferred.",
+      members: formattedMembers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "transferOwnership/error",
+      message: "Server error while transferring ownership.",
     });
   }
 };

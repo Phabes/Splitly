@@ -9,6 +9,7 @@ import {
   getGroupList,
   removeGroupMember,
   searchGroupRequests,
+  transferOwnership,
   updateMemberRole,
 } from "@/controllers/groups.ts";
 import { authMiddleware } from "@/middleware/authMiddleware.ts";
@@ -63,6 +64,14 @@ routerGroup.patch(
   groupMiddleware,
   roleMiddleware(["owner", "admin"]),
   updateMemberRole,
+);
+// PATCH - change group owner
+routerGroup.patch(
+  "/:groupID/members/:memberID/transfer-ownership",
+  authMiddleware,
+  groupMiddleware,
+  roleMiddleware(["owner"]),
+  transferOwnership,
 );
 
 export default routerGroup;

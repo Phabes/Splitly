@@ -6,6 +6,7 @@ export const fieldRequiredValidation = (field: string): ValidationResult => {
   if (!field) {
     return "fieldRequired";
   }
+
   return undefined;
 };
 
