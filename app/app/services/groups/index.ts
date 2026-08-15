@@ -7,6 +7,8 @@ export { getGroupListCall } from "./getGroupListCall";
 export { getGroupRequestsCall } from "./getGroupRequestsCall";
 export { removeGroupMemberCall } from "./removeGroupMemberCall";
 export { respondToGroupRequestCall } from "./respondToGroupRequestCall";
+export { transferOwnershipCall } from "./transferOwnershipCall";
+export { updateMemberRoleCall } from "./updateMemberRoleCall";
 
 export default function Index() {
   return null;

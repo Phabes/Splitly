@@ -77,10 +77,16 @@
   "noMembersSelectedYet": "Nie wybrano członków",
   "addingMembers": "Dodawanie członków...",
   "viewProfile": "Zobacz profil",
-  "leaveGroup": "Opuść grupę",
-  "leaveGroupQuestion": "Czy jesteś pewny, że chcesz opuścić grupę '${groupName}'?",
   "grantAdmin": "Nadaj admina",
   "revokeAdmin": "Odbierz admina",
+  "updatingRole": "Aktualizacja roli...",
   "removeMember": "Usuń członka",
-  "removeMemberQuestion": "Czy jesteś pewny, że chcesz usunąć '${username}' z grupy?"
+  "removeMemberQuestion": "Czy jesteś pewny, że chcesz usunąć '${username}' z grupy?",
+  "removingMember": "Usuwanie członka...",
+  "leaveGroup": "Opuść grupę",
+  "leaveGroupQuestion": "Czy jesteś pewny, że chcesz opuścić grupę '${groupName}'?",
+  "leavingTheGroup": "Opuszczanie grupy...",
+  "makeOwner": "Mianuj właścicielem",
+  "changeOwnerQuestion": "Czy jesteś pewny, że chcesz mianować '${username}' właścicielem? Twoją nową rolą będzie admin.",
+  "changingOwner": "Zmienianie właściciela..."
 }

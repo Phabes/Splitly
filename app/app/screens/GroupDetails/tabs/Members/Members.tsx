@@ -11,7 +11,11 @@ import { GroupMemberResult, MenuOption } from "@/app/types";
 import { formatTranslation } from "@/app/utils";
 import { FC, useEffect } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
-import { useRemoveMember } from "./hooks";
+import {
+  useRemoveMember,
+  useTransferOwnership,
+  useUpdateMemberRole,
+} from "./hooks";
 
 export const Members: FC = () => {
   const navigation = useAppNavigation();
@@ -20,6 +24,8 @@ export const Members: FC = () => {
   const { userData } = useAuthContext();
   const translations = useTranslations();
   const { handleRemoveMember } = useRemoveMember();
+  const { handleTransferOwnership } = useTransferOwnership();
+  const { handleUpdateMemberRole } = useUpdateMemberRole();
 
   const styles = useStyles();
 
@@ -42,45 +48,35 @@ export const Members: FC = () => {
       },
     ];
 
-    const isMe = item._id === userData?._id;
     const targetRole = item.role;
-
-    if (isMe) {
-      options.push({
-        label: translations["leaveGroup"],
-        onPress: () => {
-          if (userRole === "owner") {
-            // TODO: Open a modal to select a new owner before API call
-            console.log("Owner leaving: Must designate new owner first");
-          } else {
-            showConfirm({
-              title: translations["leaveGroup"],
-              message: formatTranslation(translations["leaveGroupQuestion"], {
-                groupName: groupDetails!.name,
-              }),
-              isDestructive: true,
-              onConfirm: () => handleRemoveMember(item._id),
-            });
-          }
-        },
-      });
-      return options;
-    }
 
     if (userRole === "owner") {
       if (targetRole === "member") {
         options.push({
           label: translations["grantAdmin"],
-          onPress: () => console.log("Grant Admin"),
+          onPress: () => handleUpdateMemberRole(item._id, "admin"),
         });
       }
       if (targetRole === "admin") {
         options.push({
           label: translations["revokeAdmin"],
-          onPress: () => console.log("Revoke Admin"),
+          onPress: () => handleUpdateMemberRole(item._id, "member"),
         });
       }
       if (targetRole !== "owner") {
+        options.push({
+          label: translations["makeOwner"],
+          onPress: () => {
+            showConfirm({
+              title: translations["makeOwner"],
+              message: formatTranslation(translations["changeOwnerQuestion"], {
+                username: item.username,
+              }),
+              isDestructive: true,
+              onConfirm: () => handleTransferOwnership(item._id),
+            });
+          },
+        });
         options.push({
           label: translations["removeMember"],
           onPress: () => {
@@ -90,33 +86,50 @@ export const Members: FC = () => {
                 username: item.username,
               }),
               isDestructive: true,
-              onConfirm: () => handleRemoveMember(item._id),
+              onConfirm: () => handleRemoveMember(item._id, false),
+            });
+          },
+        });
+      }
+    } else if (userRole === "admin") {
+      if (targetRole === "member") {
+        options.push({
+          label: translations["grantAdmin"],
+          onPress: () => handleUpdateMemberRole(item._id, "admin"),
+        });
+        options.push({
+          label: translations["removeMember"],
+          onPress: () => {
+            showConfirm({
+              title: translations["removeMember"],
+              message: formatTranslation(translations["removeMemberQuestion"], {
+                username: item.username,
+              }),
+              isDestructive: true,
+              onConfirm: () => handleRemoveMember(item._id, false),
             });
           },
         });
       }
     }
 
-    if (userRole === "admin") {
-      if (targetRole === "member") {
-        options.push({
-          label: translations["grantAdmin"],
-          onPress: () => console.log("Grant Admin"),
-        });
-        options.push({
-          label: translations["removeMember"],
-          onPress: () => {
-            showConfirm({
-              title: translations["removeMember"],
-              message: formatTranslation(translations["removeMemberQuestion"], {
-                username: item.username,
-              }),
-              isDestructive: true,
-              onConfirm: () => handleRemoveMember(item._id),
-            });
-          },
-        });
-      }
+    const isMe = item._id === userData?._id;
+
+    if (isMe) {
+      options.push({
+        label: translations["leaveGroup"],
+        onPress: () => {
+          showConfirm({
+            title: translations["leaveGroup"],
+            message: formatTranslation(translations["leaveGroupQuestion"], {
+              groupName: groupDetails!.name,
+            }),
+            isDestructive: true,
+            onConfirm: () => handleRemoveMember(item._id, true),
+          });
+        },
+      });
+      return options;
     }
 
     return options;

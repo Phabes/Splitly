@@ -1,5 +1,5 @@
-import en from "./translations/en.json";
-import pl from "./translations/pl.json";
+import en from "./languages/en.json";
+import pl from "./languages/pl.json";
 
 export const SUPPORTED_LANGUAGES = ["en", "pl"] as const;
 
@@ -85,12 +85,18 @@ export type TranslationKeys =
   | "noMembersSelectedYet"
   | "addingMembers"
   | "viewProfile"
-  | "leaveGroup"
-  | "leaveGroupQuestion"
   | "grantAdmin"
   | "revokeAdmin"
+  | "updatingRole"
   | "removeMember"
-  | "removeMemberQuestion";
+  | "removeMemberQuestion"
+  | "removingMember"
+  | "leaveGroup"
+  | "leaveGroupQuestion"
+  | "leavingTheGroup"
+  | "makeOwner"
+  | "changeOwnerQuestion"
+  | "changingOwner";
 
 export const translations: Record<
   LanguageKeys,

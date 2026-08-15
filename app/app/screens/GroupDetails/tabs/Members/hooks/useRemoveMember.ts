@@ -20,8 +20,9 @@ export const useRemoveMember = () => {
 
   const { groupID, setGroupMembers } = useGroupContext();
 
-  const handleRemoveMember = async (memberID: string) => {
-    showLoading(translations["removeMember"]);
+  const handleRemoveMember = async (memberID: string, isMe: boolean) => {
+    const loadingTitle = isMe ? "leavingTheGroup" : "removingMember";
+    showLoading(translations[loadingTitle]);
 
     try {
       const response = await request(removeGroupMemberCall, groupID, memberID);
