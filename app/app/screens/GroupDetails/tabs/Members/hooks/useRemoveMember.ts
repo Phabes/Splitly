@@ -1,16 +1,22 @@
 import {
+  useAppNavigation,
   useAuthenticatedApi,
   useGroupContext,
   useLoadingContext,
   useTranslations,
 } from "@/app/hooks";
 import { removeGroupMemberCall } from "@/app/services";
-import { GroupMembersResponse, ResponseMessage } from "@/app/types";
+import {
+  GroupMembersResponse,
+  RemoveMemberResponse,
+  ResponseMessage,
+} from "@/app/types";
 
 export const useRemoveMember = () => {
   const translations = useTranslations();
   const { showLoading, hideLoading } = useLoadingContext();
   const request = useAuthenticatedApi();
+  const navigation = useAppNavigation();
 
   const { groupID, setGroupMembers } = useGroupContext();
 
@@ -21,7 +27,14 @@ export const useRemoveMember = () => {
       const response = await request(removeGroupMemberCall, groupID, memberID);
 
       if (response.ok) {
-        const data: GroupMembersResponse = await response.json();
+        const data: RemoveMemberResponse = await response.json();
+
+        if (data.isSelfLeave) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "MainTabs" }],
+          });
+        }
 
         setGroupMembers(data.members);
       } else if (response.status === 404) {

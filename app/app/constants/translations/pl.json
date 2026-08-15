@@ -78,6 +78,7 @@
   "addingMembers": "Dodawanie członków...",
   "viewProfile": "Zobacz profil",
   "leaveGroup": "Opuść grupę",
+  "leaveGroupQuestion": "Czy jesteś pewny, że chcesz opuścić grupę '${groupName}'?",
   "grantAdmin": "Nadaj admina",
   "revokeAdmin": "Odbierz admina",
   "removeMember": "Usuń członka",

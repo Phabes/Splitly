@@ -53,8 +53,14 @@ export const Members: FC = () => {
             // TODO: Open a modal to select a new owner before API call
             console.log("Owner leaving: Must designate new owner first");
           } else {
-            // TODO: Regular leave group API call
-            console.log("Leaving group...");
+            showConfirm({
+              title: translations["leaveGroup"],
+              message: formatTranslation(translations["leaveGroupQuestion"], {
+                groupName: groupDetails!.name,
+              }),
+              isDestructive: true,
+              onConfirm: () => handleRemoveMember(item._id),
+            });
           }
         },
       });
@@ -78,7 +84,6 @@ export const Members: FC = () => {
         options.push({
           label: translations["removeMember"],
           onPress: () => {
-            console.log("Remove Member");
             showConfirm({
               title: translations["removeMember"],
               message: formatTranslation(translations["removeMemberQuestion"], {
@@ -100,7 +105,16 @@ export const Members: FC = () => {
         });
         options.push({
           label: translations["removeMember"],
-          onPress: () => console.log("Remove Member"),
+          onPress: () => {
+            showConfirm({
+              title: translations["removeMember"],
+              message: formatTranslation(translations["removeMemberQuestion"], {
+                username: item.username,
+              }),
+              isDestructive: true,
+              onConfirm: () => handleRemoveMember(item._id),
+            });
+          },
         });
       }
     }

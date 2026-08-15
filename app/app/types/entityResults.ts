@@ -2,6 +2,11 @@ export type UserGroupRole = "owner" | "admin" | "member";
 
 export type UserGroupStatus = "accepted" | "pending";
 
+export type Currency = {
+  label: string;
+  value: string;
+};
+
 export type SimpleUser = {
   _id: string;
   username: string;

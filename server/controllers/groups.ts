@@ -252,19 +252,7 @@ export const editGroupDetails = async (
 ): Promise<any> => {
   try {
     const { name, description, currency } = req.body;
-    const currentUserID = req.userID;
     const group = req.group!;
-
-    const currentMember = group.members.find(
-      (m: any) => m.user.toString() === currentUserID?.toString(),
-    )!;
-
-    if (currentMember.role !== "owner") {
-      return res.status(403).json({
-        code: "editGroup/forbidden",
-        message: "Only the group owner can edit group details.",
-      });
-    }
 
     if (name !== undefined) {
       group.name = name;
@@ -408,20 +396,8 @@ export const addGroupMembers = async (
 ): Promise<any> => {
   try {
     const { members } = req.body;
-    const currentUserID = req.userID;
 
     const group = req.group!;
-
-    const currentMember = group.members.find(
-      (m: any) => m.user.toString() === currentUserID?.toString(),
-    )!;
-
-    if (currentMember.role !== "owner" && currentMember.role !== "admin") {
-      return res.status(403).json({
-        code: "addMembers/forbidden",
-        message: "Only group owner or admins can send invites.",
-      });
-    }
 
     let addedOrUpdatedCount = 0;
 
@@ -491,18 +467,11 @@ export const removeGroupMember = async (
 
     const currentMember = group.members.find(
       (m: any) => m.user.toString() === currentUserID?.toString(),
-    );
+    )!;
 
     const targetMember = group.members.find(
       (m: any) => m.user.toString() === memberID?.toString(),
     );
-
-    if (!currentMember) {
-      return res.status(403).json({
-        code: "removeMember/user-not-found",
-        message: "You are not a member of this group.",
-      });
-    }
 
     if (!targetMember) {
       await group.populate("members.user", "username email");
@@ -527,7 +496,7 @@ export const removeGroupMember = async (
     const targetRole = targetMember.role;
 
     if (isSelfLeave) {
-      if (requesterRole === "owner") {
+      if (requesterRole === "owner" && group.members.length > 1) {
         return res.status(403).json({
           code: "removeMember/owner-cannot-leave",
           message:
@@ -581,6 +550,7 @@ export const removeGroupMember = async (
         ? "Successfully left the group."
         : "Successfully removed the member.",
       members: formattedMembers,
+      isSelfLeave,
     });
   } catch (error) {
     return res.status(500).json({

@@ -12,6 +12,7 @@ import {
 } from "@/controllers/groups.ts";
 import { authMiddleware } from "@/middleware/authMiddleware.ts";
 import { groupMiddleware } from "@/middleware/groupMiddleware.ts";
+import { roleMiddleware } from "@/middleware/roleMiddleware.ts";
 
 const routerGroup = Router();
 
@@ -34,12 +35,19 @@ routerGroup.patch(
   "/:groupID",
   authMiddleware,
   groupMiddleware,
+  roleMiddleware(["owner"]),
   editGroupDetails,
 );
 // GET - group members candidates
 routerGroup.post("/candidates", authMiddleware, getGroupInviteCandidates);
 // POST - add group members
-routerGroup.post("/members", authMiddleware, groupMiddleware, addGroupMembers);
+routerGroup.post(
+  "/members",
+  authMiddleware,
+  groupMiddleware,
+  roleMiddleware(["owner", "admin"]),
+  addGroupMembers,
+);
 // DELETE - remove group member
 routerGroup.delete(
   "/:groupID/members/:memberID",

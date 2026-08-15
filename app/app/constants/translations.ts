@@ -86,6 +86,7 @@ export type TranslationKeys =
   | "addingMembers"
   | "viewProfile"
   | "leaveGroup"
+  | "leaveGroupQuestion"
   | "grantAdmin"
   | "revokeAdmin"
   | "removeMember"

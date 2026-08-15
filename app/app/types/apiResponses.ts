@@ -1,5 +1,6 @@
 import { ResponseCodeKeys } from "@/app/constants/responseCodeKeys";
 import {
+  Currency,
   FriendRequestResult,
   FriendResult,
   GroupDetailsResult,
@@ -36,6 +37,10 @@ export type SignInFailResponse = ResponseMessage & {
     code: "userNotFound" | "invalidPassword";
     message: string;
   }>;
+};
+
+export type CurrencyListResponse = ResponseMessage & {
+  currencies: Currency[];
 };
 
 export type AddFriendResponse = ResponseMessage & {
@@ -80,6 +85,10 @@ export type AddMembersCandidatesResponse = ResponseMessage & {
 
 export type GroupMembersResponse = ResponseMessage & {
   members: GroupMemberResult[];
+};
+
+export type RemoveMemberResponse = GroupMembersResponse & {
+  isSelfLeave: boolean;
 };
 
 export default function Index() {
