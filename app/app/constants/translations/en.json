@@ -82,5 +82,6 @@
   "grantAdmin": "Grant admin",
   "revokeAdmin": "Revoke admin",
   "removeMember": "Remove member",
-  "removeMemberQuestion": "Are you sure you want to remove '${username}' from the group?"
+  "removeMemberQuestion": "Are you sure you want to remove '${username}' from the group?",
+  "updatingRole": "Updating role..."
 }

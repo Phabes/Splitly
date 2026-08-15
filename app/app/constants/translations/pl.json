@@ -82,5 +82,6 @@
   "grantAdmin": "Nadaj admina",
   "revokeAdmin": "Odbierz admina",
   "removeMember": "Usuń członka",
-  "removeMemberQuestion": "Czy jesteś pewny, że chcesz usunąć '${username}' z grupy?"
+  "removeMemberQuestion": "Czy jesteś pewny, że chcesz usunąć '${username}' z grupy?",
+  "updatingRole": "Aktualizacja roli..."
 }

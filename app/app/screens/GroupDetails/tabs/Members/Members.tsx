@@ -11,7 +11,7 @@ import { GroupMemberResult, MenuOption } from "@/app/types";
 import { formatTranslation } from "@/app/utils";
 import { FC, useEffect } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
-import { useRemoveMember } from "./hooks";
+import { useRemoveMember, useUpdateMemberRole } from "./hooks";
 
 export const Members: FC = () => {
   const navigation = useAppNavigation();
@@ -20,6 +20,7 @@ export const Members: FC = () => {
   const { userData } = useAuthContext();
   const translations = useTranslations();
   const { handleRemoveMember } = useRemoveMember();
+  const { handleUpdateMemberRole } = useUpdateMemberRole();
 
   const styles = useStyles();
 
@@ -71,13 +72,13 @@ export const Members: FC = () => {
       if (targetRole === "member") {
         options.push({
           label: translations["grantAdmin"],
-          onPress: () => console.log("Grant Admin"),
+          onPress: () => handleUpdateMemberRole(item._id, "admin"),
         });
       }
       if (targetRole === "admin") {
         options.push({
           label: translations["revokeAdmin"],
-          onPress: () => console.log("Revoke Admin"),
+          onPress: () => handleUpdateMemberRole(item._id, "member"),
         });
       }
       if (targetRole !== "owner") {
@@ -101,7 +102,7 @@ export const Members: FC = () => {
       if (targetRole === "member") {
         options.push({
           label: translations["grantAdmin"],
-          onPress: () => console.log("Grant Admin"),
+          onPress: () => handleUpdateMemberRole(item._id, "admin"),
         });
         options.push({
           label: translations["removeMember"],

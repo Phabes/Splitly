@@ -9,6 +9,7 @@ import {
   getGroupList,
   removeGroupMember,
   searchGroupRequests,
+  updateMemberRole,
 } from "@/controllers/groups.ts";
 import { authMiddleware } from "@/middleware/authMiddleware.ts";
 import { groupMiddleware } from "@/middleware/groupMiddleware.ts";
@@ -54,6 +55,14 @@ routerGroup.delete(
   authMiddleware,
   groupMiddleware,
   removeGroupMember,
+);
+// PATCH - update member role
+routerGroup.patch(
+  "/:groupID/members/:memberID/role",
+  authMiddleware,
+  groupMiddleware,
+  roleMiddleware(["owner", "admin"]),
+  updateMemberRole,
 );
 
 export default routerGroup;

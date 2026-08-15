@@ -90,7 +90,8 @@ export type TranslationKeys =
   | "grantAdmin"
   | "revokeAdmin"
   | "removeMember"
-  | "removeMemberQuestion";
+  | "removeMemberQuestion"
+  | "updatingRole";
 
 export const translations: Record<
   LanguageKeys,
