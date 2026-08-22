@@ -72,7 +72,17 @@ export type ResponseCodeKeys =
   | "removeMember/member-forbidden"
   | "removeMember/admin-forbidden"
   | "removeMember/success"
-  | "removeMember/error";
+  | "removeMember/error"
+  | "updateRole/invalid-role"
+  | "updateRole/member-not-found"
+  | "updateRole/owner-protected"
+  | "updateRole/admin-forbidden"
+  | "updateRole/success"
+  | "updateRole/error"
+  | "transferOwnership/member-not-found"
+  | "transferOwnership/already-owner"
+  | "transferOwnership/success"
+  | "transferOwnership/error";
 
 export default function Index() {
   return null;

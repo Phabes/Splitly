@@ -559,3 +559,163 @@ export const removeGroupMember = async (
     });
   }
 };
+
+export const updateMemberRole = async (
+  req: GroupRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { memberID } = req.params;
+    const { newRole } = req.body;
+    const currentUserID = req.userID;
+    const group = req.group!;
+
+    if (!["admin", "member"].includes(newRole)) {
+      return res.status(400).json({
+        code: "updateRole/invalid-role",
+        message: "Invalid role specified.",
+      });
+    }
+
+    const currentMember = group.members.find(
+      (m: any) => m.user.toString() === currentUserID?.toString(),
+    )!;
+
+    const targetMember = group.members.find(
+      (m: any) => m.user.toString() === memberID?.toString(),
+    );
+
+    if (!targetMember) {
+      await group.populate("members.user", "username email");
+
+      const formattedMembers = group.members.map((member: any) => ({
+        _id: member.user._id,
+        username: member.user.username,
+        email: member.user.email,
+        role: member.role,
+        status: member.status,
+      }));
+
+      return res.status(404).json({
+        code: "updateRole/member-not-found",
+        message: "User is no longer a member of this group.",
+        members: formattedMembers,
+      });
+    }
+
+    const requesterRole = currentMember.role;
+    const targetRole = targetMember.role;
+
+    if (targetRole === "owner" || newRole === "owner") {
+      return res.status(403).json({
+        code: "updateRole/owner-protected",
+        message:
+          "Owner role cannot be modified through this action. Use 'Transfer Ownership' instead.",
+      });
+    }
+
+    if (requesterRole === "admin") {
+      if (targetRole === "admin" || newRole !== "admin") {
+        return res.status(403).json({
+          code: "updateRole/admin-forbidden",
+          message:
+            "Admins can only promote members to admins. Only the Owner can revoke admin rights.",
+        });
+      }
+    }
+
+    targetMember.role = newRole;
+    await group.save();
+
+    await group.populate("members.user", "username email");
+
+    const formattedMembers = group.members.map((member: any) => ({
+      _id: member.user._id,
+      username: member.user.username,
+      email: member.user.email,
+      role: member.role,
+      status: member.status,
+    }));
+
+    return res.status(200).json({
+      code: "updateRole/success",
+      message: `Successfully changed role to '${newRole}'.`,
+      members: formattedMembers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "updateRole/error",
+      message: "Server error while updating role.",
+    });
+  }
+};
+
+export const transferOwnership = async (
+  req: GroupRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+    const { memberID } = req.params;
+    const currentUserID = req.userID;
+    const group = req.group!;
+
+    const currentOwner = group.members.find(
+      (m: any) => m.user.toString() === currentUserID?.toString(),
+    )!;
+
+    const targetMember = group.members.find(
+      (m: any) => m.user.toString() === memberID?.toString(),
+    );
+
+    if (!targetMember) {
+      await group.populate("members.user", "username email");
+
+      const formattedMembers = group.members.map((member: any) => ({
+        _id: member.user._id,
+        username: member.user.username,
+        email: member.user.email,
+        role: member.role,
+        status: member.status,
+      }));
+
+      return res.status(404).json({
+        code: "transferOwnership/member-not-found",
+        message: "User is no longer a member of this group.",
+        members: formattedMembers,
+      });
+    }
+
+    if (currentOwner.user.toString() === targetMember.user.toString()) {
+      return res.status(400).json({
+        code: "transferOwnership/already-owner",
+        message: "You are already the owner of this group.",
+      });
+    }
+
+    currentOwner.role = "admin";
+    targetMember.role = "owner";
+
+    await group.save();
+
+    await group.populate("members.user", "username email");
+
+    const formattedMembers = group.members.map((member: any) => ({
+      _id: member.user._id,
+      username: member.user.username,
+      email: member.user.email,
+      role: member.role,
+      status: member.status,
+    }));
+
+    return res.status(200).json({
+      code: "transferOwnership/success",
+      message: "Ownership successfully transferred.",
+      members: formattedMembers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "transferOwnership/error",
+      message: "Server error while transferring ownership.",
+    });
+  }
+};

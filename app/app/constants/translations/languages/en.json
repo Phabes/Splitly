@@ -77,10 +77,16 @@
   "noMembersSelectedYet": "No members selected yet",
   "addingMembers": "Adding members...",
   "viewProfile": "View profile",
-  "leaveGroup": "Leave group",
-  "leaveGroupQuestion": "Are you sure you want to leave '${groupName}' group?",
   "grantAdmin": "Grant admin",
   "revokeAdmin": "Revoke admin",
+  "updatingRole": "Updating role...",
   "removeMember": "Remove member",
-  "removeMemberQuestion": "Are you sure you want to remove '${username}' from the group?"
+  "removeMemberQuestion": "Are you sure you want to remove '${username}' from the group?",
+  "removingMember": "Removing member...",
+  "leaveGroup": "Leave group",
+  "leaveGroupQuestion": "Are you sure you want to leave '${groupName}' group?",
+  "leavingTheGroup": "Leaving the group...",
+  "makeOwner": "Make owner",
+  "changeOwnerQuestion": "Are you sure you want to make '${username}' the owner? You will be demoted to an admin.",
+  "changingOwner": "Changing owner..."
 }
