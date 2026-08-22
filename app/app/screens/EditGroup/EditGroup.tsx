@@ -9,7 +9,9 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
+  useCountries,
   useCurrencies,
+  useSortedSelectData,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -25,17 +27,22 @@ export const EditGroup: FC = () => {
   const navigation = useAppNavigation();
 
   const route = useRoute<RouteProp<AppStackParamList, "EditGroup">>();
-  const { _id: groupID, name, description, baseCurrency } = route.params;
+  const { _id: groupID, name, description, baseCurrency, icon } = route.params;
 
   const {
     nameField,
     descriptionField,
     currencyField,
+    iconField,
     editGroupButtonDisabled,
     handleEditGroup,
-  } = useEditGroupForm(groupID, name, description, baseCurrency);
+  } = useEditGroupForm(groupID, name, description, baseCurrency, icon);
 
-  const { currencies, isLoading } = useCurrencies(currencyField.value);
+  const { currencies, isLoading } = useCurrencies();
+  const sortedCurrencies = useSortedSelectData(currencies, currencyField.value);
+
+  const translatedCountries = useCountries();
+  const sortedCountries = useSortedSelectData(translatedCountries, icon);
 
   const styles = useStyles();
 
@@ -80,13 +87,29 @@ export const EditGroup: FC = () => {
               messageText={currencyField.error}
             >
               <Select
-                selectData={currencies}
+                selectData={sortedCurrencies}
                 value={currencyField.value}
                 onSelect={currencyField.setValue}
                 placeholder={translations["defaultGroupCurrency"] + "..."}
                 activeSearch={true}
                 searchPlaceholder={translations["searchCurrency"]}
                 variant={currencyField.error ? "error" : "default"}
+              />
+            </FormData>
+
+            <FormData
+              labelText={translations["groupIcon"]}
+              messageText={iconField.error}
+            >
+              <Select
+                selectData={sortedCountries}
+                value={iconField.value}
+                onSelect={iconField.setValue}
+                placeholder={translations["groupIcon"] + "..."}
+                activeSearch={true}
+                searchPlaceholder={translations["searchGroupIcon"]}
+                variant={iconField.error ? "error" : "default"}
+                showFlag={true}
               />
             </FormData>
           </View>

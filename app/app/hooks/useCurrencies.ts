@@ -3,7 +3,7 @@ import { Currency, CurrencyListResponse, ResponseMessage } from "@/app/types";
 import useAuthenticatedApi from "./useAuthenticatedApi";
 import { getCurrencyListCall } from "../services/currencies";
 
-export const useCurrencies = (selectedValue?: string) => {
+export const useCurrencies = () => {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const request = useAuthenticatedApi();
@@ -33,23 +33,7 @@ export const useCurrencies = (selectedValue?: string) => {
     fetchCurrencies();
   }, []);
 
-  const sortedCurrencies = useMemo(() => {
-    if (!currencies.length) return [];
-
-    return [...currencies].sort((a, b) => {
-      if (a.value === selectedValue) {
-        return -1;
-      }
-
-      if (b.value === selectedValue) {
-        return 1;
-      }
-
-      return a.label.localeCompare(b.label);
-    });
-  }, [currencies, selectedValue]);
-
-  return { currencies: sortedCurrencies, isLoading };
+  return { currencies, isLoading };
 };
 
 export default useCurrencies;

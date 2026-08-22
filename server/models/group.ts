@@ -24,6 +24,14 @@ const GroupSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 3,
   },
+  icon: {
+    type: String,
+    required: true,
+    uppercase: true,
+    trim: true,
+    minlength: 2,
+    maxlength: 2,
+  },
   members: [
     {
       user: {

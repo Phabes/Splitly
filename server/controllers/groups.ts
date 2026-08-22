@@ -66,7 +66,7 @@ export const createGroup = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const { name, description, currency, members } = req.body;
+    const { name, description, currency, icon, members } = req.body;
     const currentUserID = req.userID;
 
     if (
@@ -79,6 +79,14 @@ export const createGroup = async (
         message: "A valid 3-letter currency code is required.",
       });
     }
+
+    if (!icon || typeof icon !== "string" || icon.trim().length !== 2) {
+      return res.status(400).json({
+        code: "postGroup/invalid-icon",
+        message: "A valid 2-letter country code icon is required.",
+      });
+    }
+
     const groupMembers = [
       {
         user: currentUserID,
@@ -102,8 +110,9 @@ export const createGroup = async (
     const newGroup = new Group({
       name: name.trim(),
       description: description ? description.trim() : "",
-      baseCurrency: currency.toUpperCase(),
       creator: currentUserID,
+      baseCurrency: currency.toUpperCase(),
+      icon: icon.toUpperCase(),
       members: groupMembers,
     });
 
@@ -235,6 +244,7 @@ export const getGroupDetails = async (
         name: group.name,
         description: group.description,
         baseCurrency: group.baseCurrency,
+        icon: group.icon,
         members: formattedMembers,
       },
     });
@@ -251,17 +261,40 @@ export const editGroupDetails = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const { name, description, currency } = req.body;
+    const { name, description, currency, icon } = req.body;
     const group = req.group!;
 
     if (name !== undefined) {
-      group.name = name;
+      group.name = name.trim();
     }
+
     if (description !== undefined) {
-      group.description = description;
+      group.description = description.trim();
     }
+
     if (currency !== undefined) {
-      group.baseCurrency = currency;
+      if (
+        currency.trim().length !== 3 ||
+        !validCurrency(currency.toUpperCase())
+      ) {
+        return res.status(400).json({
+          code: "editGroup/invalid-currency",
+          message: "A valid 3-letter currency code is required.",
+        });
+      }
+
+      group.baseCurrency = currency.toUpperCase();
+    }
+
+    if (icon !== undefined) {
+      if (typeof icon !== "string" || icon.trim().length !== 2) {
+        return res.status(400).json({
+          code: "editGroup/invalid-icon",
+          message: "A valid 2-letter country code icon is required.",
+        });
+      }
+
+      group.icon = icon.toUpperCase();
     }
 
     await group.save();
@@ -274,6 +307,7 @@ export const editGroupDetails = async (
         name: group.name,
         description: group.description,
         baseCurrency: group.baseCurrency,
+        icon: group.icon,
       },
     });
   } catch (error) {

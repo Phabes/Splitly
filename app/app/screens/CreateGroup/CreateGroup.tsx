@@ -9,7 +9,9 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
+  useCountries,
   useCurrencies,
+  useSortedSelectData,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -26,11 +28,20 @@ export const CreateGroup: FC = () => {
     nameField,
     descriptionField,
     currencyField,
+    iconField,
     selectedMembers,
     handleCreateGroup,
     goToAddMembers,
   } = useCreateGroup();
-  const { currencies, isLoading } = useCurrencies(currencyField.value);
+
+  const { currencies, isLoading } = useCurrencies();
+  const sortedCurrencies = useSortedSelectData(currencies, currencyField.value);
+
+  const translatedCountries = useCountries();
+  const sortedCountries = useSortedSelectData(
+    translatedCountries,
+    iconField.value,
+  );
 
   const styles = useStyles();
 
@@ -75,13 +86,28 @@ export const CreateGroup: FC = () => {
               messageText={currencyField.error}
             >
               <Select
-                selectData={currencies}
+                selectData={sortedCurrencies}
                 value={currencyField.value}
                 onSelect={currencyField.setValue}
                 placeholder={translations["defaultGroupCurrency"] + "..."}
                 activeSearch={true}
                 searchPlaceholder={translations["searchCurrency"]}
                 variant={currencyField.error ? "error" : "default"}
+              />
+            </FormData>
+            <FormData
+              labelText={translations["groupIcon"]}
+              messageText={iconField.error}
+            >
+              <Select
+                selectData={sortedCountries}
+                value={iconField.value}
+                onSelect={iconField.setValue}
+                placeholder={translations["groupIcon"] + "..."}
+                activeSearch={true}
+                searchPlaceholder={translations["searchGroupIcon"]}
+                variant={iconField.error ? "error" : "default"}
+                showFlag={true}
               />
             </FormData>
           </View>

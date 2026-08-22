@@ -21,6 +21,7 @@ export const useCreateGroup = () => {
   const nameField = useFormData();
   const descriptionField = useFormData();
   const currencyField = useFormData();
+  const iconField = useFormData();
 
   const [selectedMembers, setSelectedMembers] = useState<SimpleUser[]>([]);
 
@@ -48,6 +49,7 @@ export const useCreateGroup = () => {
     const nameError = fieldRequiredValidation(nameField.value);
     const descriptionError = fieldRequiredValidation(descriptionField.value);
     const currencyError = fieldRequiredValidation(currencyField.value);
+    const iconError = fieldRequiredValidation(iconField.value);
 
     nameField.setError(nameError ? translations[nameError] : undefined);
     descriptionField.setError(
@@ -56,11 +58,13 @@ export const useCreateGroup = () => {
     currencyField.setError(
       currencyError ? translations[currencyError] : undefined,
     );
+    iconField.setError(iconError ? translations[iconError] : undefined);
 
     const isError =
       nameError !== undefined ||
       descriptionError !== undefined ||
-      currencyError !== undefined;
+      currencyError !== undefined ||
+      iconError !== undefined;
 
     return isError;
   };
@@ -82,6 +86,7 @@ export const useCreateGroup = () => {
         nameField.value,
         descriptionField.value,
         currencyField.value,
+        iconField.value,
         members,
       );
       if (response.ok) {
@@ -103,6 +108,7 @@ export const useCreateGroup = () => {
     nameField,
     descriptionField,
     currencyField,
+    iconField,
     selectedMembers,
     handleCreateGroup,
     goToAddMembers,
