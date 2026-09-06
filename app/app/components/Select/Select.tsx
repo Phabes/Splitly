@@ -1,7 +1,8 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Typography } from "../Typography/Typography";
 import { Dropdown } from "react-native-element-dropdown";
+import CountryFlag from "react-native-country-flag";
 import { useThemeContext } from "@/app/hooks";
 import { Icon } from "../Icon";
 import { AppTheme } from "@/app/constants/theme";
@@ -17,6 +18,7 @@ export type SelectProps = {
   searchPlaceholder?: string;
   variant?: "default" | "error";
   activeSearch?: boolean;
+  showFlag?: boolean;
 };
 
 export const Select: FC<SelectProps> = ({
@@ -28,6 +30,8 @@ export const Select: FC<SelectProps> = ({
   searchPlaceholder = "",
   variant = "default",
   activeSearch = false,
+
+  showFlag = false,
 }) => {
   const theme = useThemeContext();
   const [type, setType] = useState<SelectProps["variant"] | "active">(variant);
@@ -64,6 +68,16 @@ export const Select: FC<SelectProps> = ({
         onSelect(item.value);
         onBlurInput();
       }}
+      autoScroll={false}
+      renderLeftIcon={() =>
+        showFlag && value ? (
+          <CountryFlag
+            isoCode={value}
+            size={18}
+            style={styles.selectedFlag}
+          />
+        ) : null
+      }
       renderItem={(item: SelectData) => {
         const background =
           value !== item.value ? "background-primary" : "text-success";
@@ -75,6 +89,13 @@ export const Select: FC<SelectProps> = ({
               { backgroundColor: theme.colors[background] },
             ]}
           >
+            {showFlag && (
+              <CountryFlag
+                isoCode={item.value}
+                size={18}
+                style={styles.listFlag}
+              />
+            )}
             <Typography
               variant="body-large"
               text={item.label}
@@ -147,6 +168,9 @@ const useStyles = (
       backgroundColor: theme.colors["background-secondary"],
     },
     option: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(3),
       marginTop: 1,
       padding: theme.spacing(2),
       borderRadius: theme.spacing(2),
@@ -156,6 +180,13 @@ const useStyles = (
     },
     search: {
       marginBottom: theme.spacing(2),
+    },
+    selectedFlag: {
+      marginRight: theme.spacing(2),
+      borderRadius: theme.spacing(1),
+    },
+    listFlag: {
+      borderRadius: theme.spacing(1),
     },
   });
 };

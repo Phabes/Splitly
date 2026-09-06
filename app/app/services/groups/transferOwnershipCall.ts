@@ -1,4 +1,4 @@
-export const transferOwnershipCall = async (
+export const transferOwnershipCall = (
   token: string,
   groupID: string,
   memberID: string,

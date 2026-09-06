@@ -15,6 +15,8 @@ import {
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
+import CountryFlag from "react-native-country-flag";
+import { COUNTRY_CODES } from "@/app/constants/countries";
 
 export const GroupDetailsContent = () => {
   const translations = useTranslations();
@@ -25,6 +27,8 @@ export const GroupDetailsContent = () => {
 
   const mockTotalSpend = "1,250.00 PLN";
   const mockPersonalBalance = "🟢 You are owed 150.00 PLN";
+
+  const isValidFlag = groupDetails && COUNTRY_CODES.includes(groupDetails.icon);
 
   return (
     <LayoutProvider
@@ -39,6 +43,13 @@ export const GroupDetailsContent = () => {
         <View style={styles.container}>
           <View style={styles.heroSection}>
             <View style={styles.titleWrapper}>
+              {isValidFlag && (
+                <CountryFlag
+                  isoCode={groupDetails.icon}
+                  size={18}
+                  style={styles.selectedFlag}
+                />
+              )}
               <Typography
                 text={groupDetails ? groupDetails.name : ""}
                 variant="header-large"
@@ -110,11 +121,15 @@ const useStyles = () => {
       gap: theme.spacing(2),
     },
     titleWrapper: {
+      width: "100%",
       flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
+      gap: theme.spacing(3),
       marginBottom: theme.spacing(2),
-      width: "100%",
+    },
+    selectedFlag: {
+      borderRadius: theme.spacing(1),
     },
     editIcon: {
       position: "absolute",

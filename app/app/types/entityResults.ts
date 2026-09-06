@@ -1,3 +1,5 @@
+import { CountryKeys } from "../constants/countries";
+
 export type UserGroupRole = "owner" | "admin" | "member";
 
 export type UserGroupStatus = "accepted" | "pending";
@@ -46,6 +48,7 @@ export type GroupDetailsResult = {
   name: string;
   description: string;
   baseCurrency: string;
+  icon: CountryKeys;
   members: GroupMemberResult[];
 };
 

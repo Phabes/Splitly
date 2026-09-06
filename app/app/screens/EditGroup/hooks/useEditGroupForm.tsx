@@ -1,3 +1,4 @@
+import { CountryKeys } from "@/app/constants/countries";
 import {
   useAppNavigation,
   useAuthenticatedApi,
@@ -15,6 +16,7 @@ export const useEditGroupForm = (
   name: string,
   description: string,
   baseCurrency: string,
+  icon: CountryKeys,
 ) => {
   const translations = useTranslations();
   const navigation = useAppNavigation();
@@ -24,16 +26,19 @@ export const useEditGroupForm = (
   const nameField = useFormData(name);
   const descriptionField = useFormData(description);
   const currencyField = useFormData(baseCurrency);
+  const iconField = useFormData(icon);
 
   const editGroupButtonDisabled =
     name === nameField.value &&
     description === descriptionField.value &&
-    baseCurrency === currencyField.value;
+    baseCurrency === currencyField.value &&
+    icon === iconField.value;
 
   const validateEditGroup = () => {
     const nameError = fieldRequiredValidation(nameField.value);
     const descriptionError = fieldRequiredValidation(descriptionField.value);
     const currencyError = fieldRequiredValidation(currencyField.value);
+    const iconError = fieldRequiredValidation(iconField.value);
 
     nameField.setError(nameError ? translations[nameError] : undefined);
     descriptionField.setError(
@@ -42,11 +47,13 @@ export const useEditGroupForm = (
     currencyField.setError(
       currencyError ? translations[currencyError] : undefined,
     );
+    iconField.setError(iconError ? translations[iconError] : undefined);
 
     const isError =
       nameError !== undefined ||
       descriptionError !== undefined ||
-      currencyError !== undefined;
+      currencyError !== undefined ||
+      iconError !== undefined;
 
     return isError;
   };
@@ -66,6 +73,7 @@ export const useEditGroupForm = (
         nameField.value,
         descriptionField.value,
         currencyField.value,
+        iconField.value,
       );
       if (response.ok) {
         const result: EditGroupDetailsResponse = await response.json();
@@ -88,6 +96,7 @@ export const useEditGroupForm = (
     nameField,
     descriptionField,
     currencyField,
+    iconField,
     editGroupButtonDisabled,
     handleEditGroup,
   };

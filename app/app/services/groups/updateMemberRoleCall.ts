@@ -1,6 +1,6 @@
 import { UserGroupRole } from "@/app/types";
 
-export const updateMemberRoleCall = async (
+export const updateMemberRoleCall = (
   token: string,
   groupID: string,
   memberID: string,

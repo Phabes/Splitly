@@ -1,6 +1,6 @@
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
 import { GroupProvider } from "@/app/providers";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute } from "expo-router/react-navigation";
 import { FC } from "react";
 import { GroupDetailsContent } from "./GroupDetailsContent";
 
