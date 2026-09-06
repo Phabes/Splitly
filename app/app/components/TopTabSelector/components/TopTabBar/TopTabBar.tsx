@@ -1,6 +1,6 @@
 import { TranslationKeys } from "@/app/constants/translations";
 import { useThemeContext, useTranslations } from "@/app/hooks";
-import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
+import { MaterialTopTabBarProps } from "expo-router/js-top-tabs";
 import { FC } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Typography } from "../../../Typography";
@@ -15,7 +15,7 @@ export const TopTabBar: FC<MaterialTopTabBarProps> = ({
 
   return (
     <View style={styles.tabsRow}>
-      {state.routes.map((route, index) => {
+      {state.routes.map((route: any, index: any) => {
         const isFocused = state.index === index;
 
         const tabKey = route.name.toLowerCase() as TranslationKeys;

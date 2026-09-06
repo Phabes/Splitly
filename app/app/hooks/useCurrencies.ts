@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Currency, CurrencyListResponse, ResponseMessage } from "@/app/types";
 import useAuthenticatedApi from "./useAuthenticatedApi";
 import { getCurrencyListCall } from "../services/currencies";

@@ -1,8 +1,8 @@
 import { useThemeContext } from "@/app/hooks";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { FC, ReactNode } from "react";
 import { TopTabBar } from "./components/TopTabBar";
 import { StyleSheet } from "react-native";
+import { createMaterialTopTabNavigator } from "expo-router/js-top-tabs";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -17,7 +17,7 @@ export const TopTabSelector: FC<TopTabSelectorProps> = ({ children }) => {
 
   return (
     <Tab.Navigator
-      tabBar={(props) => <TopTabBar {...props} />}
+      tabBar={(props: any) => <TopTabBar {...props} />}
       style={styles.tabs}
       screenOptions={{
         sceneStyle: styles.tabContent,

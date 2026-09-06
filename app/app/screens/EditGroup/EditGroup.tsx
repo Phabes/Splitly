@@ -19,8 +19,8 @@ import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useEditGroupForm } from "./hooks";
-import { RouteProp, useRoute } from "@react-navigation/native";
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
+import { RouteProp, useRoute } from "expo-router/react-navigation";
 
 export const EditGroup: FC = () => {
   const translations = useTranslations();

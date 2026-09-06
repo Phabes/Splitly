@@ -1,6 +1,6 @@
 import { GroupDetailsResult, SimpleUser } from "@/app/types";
-import { NavigatorScreenParams } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "expo-router";
+import { NavigatorScreenParams } from "expo-router/react-navigation";
 
 export type TabParamList = {
   Friends: undefined;

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Typography } from "../Typography/Typography";
 import { Dropdown } from "react-native-element-dropdown";

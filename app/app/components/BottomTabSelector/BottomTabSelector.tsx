@@ -1,6 +1,6 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FC, ReactNode } from "react";
 import { BottomTabBar } from "./components/BottomTabBar";
+import { createBottomTabNavigator } from "expo-router/js-tabs";
 
 const Tab = createBottomTabNavigator();
 

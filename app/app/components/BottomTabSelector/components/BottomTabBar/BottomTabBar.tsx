@@ -1,7 +1,7 @@
 import { IconKeys } from "@/app/constants/iconKeys";
 import { TranslationKeys } from "@/app/constants/translations";
 import { useThemeContext, useTranslations } from "@/app/hooks";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { BottomTabBarProps } from "expo-router/js-tabs";
 import { FC } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "../../../Icon";
