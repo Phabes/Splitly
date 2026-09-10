@@ -1,5 +1,9 @@
 import { ListItem, Scroll, TouchableIcon, Typography } from "@/app/components";
-import { useAddMembersContext, useTranslations } from "@/app/hooks";
+import {
+  useAddMembersContext,
+  useThemeContext,
+  useTranslations,
+} from "@/app/hooks";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -22,14 +26,22 @@ export const Selected: FC = () => {
         selectedUsersData.map((item, i) => (
           <ListItem
             key={`Selected/${i}`}
-            text={item.username}
             onPress={() => {}}
           >
-            <TouchableIcon
-              icon="Minus"
-              color="text-error"
-              onPress={() => toggleMember(item)}
-            />
+            <View style={styles.listItemText}>
+              <Typography
+                text={item.username}
+                variant="body-small"
+              />
+            </View>
+
+            <View style={styles.listItemButtons}>
+              <TouchableIcon
+                icon="Minus"
+                color="text-error"
+                onPress={() => toggleMember(item)}
+              />
+            </View>
           </ListItem>
         ))
       )}
@@ -38,9 +50,17 @@ export const Selected: FC = () => {
 };
 
 const useStyles = () => {
+  const theme = useThemeContext();
+
   return StyleSheet.create({
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

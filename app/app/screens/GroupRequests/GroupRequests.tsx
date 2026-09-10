@@ -70,32 +70,41 @@ export const GroupRequests: FC = () => {
           {groupRequests.map((item, i) => (
             <ListItem
               key={`GroupRequest/${i}`}
-              text={`${item.name} - ${item.description}\n${translations["sentBy"]}: ${item.creator.username}`}
               onPress={() => {}}
             >
-              <TouchableIcon
-                icon="Check"
-                onPress={() => handleAcceptGroupRequest(item._id)}
-              />
-              <TouchableIcon
-                icon="X"
-                onPress={() => {
-                  showConfirm({
-                    title: translations["rejectGroupRequest"],
-                    message: formatTranslation(
-                      translations["rejectGroupRequestQuestion"],
-                      {
-                        groupName: item.name,
+              <View style={styles.listItemText}>
+                <Typography
+                  text={`${item.name} - ${item.description}\n${translations["sentBy"]}: ${item.creator.username}`}
+                  variant="body-small"
+                />
+              </View>
+
+              <View style={styles.listItemButtons}>
+                <TouchableIcon
+                  icon="Check"
+                  onPress={() => handleAcceptGroupRequest(item._id)}
+                />
+
+                <TouchableIcon
+                  icon="X"
+                  onPress={() => {
+                    showConfirm({
+                      title: translations["rejectGroupRequest"],
+                      message: formatTranslation(
+                        translations["rejectGroupRequestQuestion"],
+                        {
+                          groupName: item.name,
+                        },
+                      ),
+                      isDestructive: true,
+                      onConfirm: () => {
+                        handleRejectGroupRequest(item._id);
                       },
-                    ),
-                    isDestructive: true,
-                    onConfirm: () => {
-                      handleRejectGroupRequest(item._id);
-                    },
-                  });
-                }}
-                color="text-error"
-              />
+                    });
+                  }}
+                  color="text-error"
+                />
+              </View>
             </ListItem>
           ))}
 
@@ -133,6 +142,12 @@ const useStyles = () => {
     footerContainer: {
       alignItems: "center",
       paddingVertical: theme.spacing(2),
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

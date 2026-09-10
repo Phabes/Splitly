@@ -61,6 +61,7 @@ export const AddFriend: FC = () => {
           placeholder={translations["searchFriends"]}
           beginIcon="Search"
         />
+
         <LoadingWrapper isLoading={isSearching}>
           <Scroll
             gapSize="small"
@@ -81,13 +82,21 @@ export const AddFriend: FC = () => {
               return (
                 <ListItem
                   key={`AddFriend/${i}`}
-                  text={item.username}
                   onPress={() => handleShowUserProfile(item._id)}
                 >
-                  <TouchableIcon
-                    icon="Plus"
-                    onPress={() => handleAddFriend(item._id)}
-                  />
+                  <View style={styles.listItemText}>
+                    <Typography
+                      text={item.username}
+                      variant="body-small"
+                    />
+                  </View>
+
+                  <View style={styles.listItemButtons}>
+                    <TouchableIcon
+                      icon="Plus"
+                      onPress={() => handleAddFriend(item._id)}
+                    />
+                  </View>
                 </ListItem>
               );
             })}
@@ -131,6 +140,12 @@ const useStyles = () => {
     container: { flex: 1, gap: theme.spacing(2) },
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };
