@@ -1,4 +1,11 @@
-import { Fab, FloatingMenu, Icon, ListItem, Scroll } from "@/app/components";
+import {
+  Fab,
+  FloatingMenu,
+  Icon,
+  ListItem,
+  Scroll,
+  Typography,
+} from "@/app/components";
 import {
   useAppNavigation,
   useAuthContext,
@@ -137,6 +144,11 @@ export const Members: FC = () => {
 
   return (
     <View style={styles.tabContainer}>
+      <Typography
+        text="Members"
+        variant="header-small"
+      />
+
       <Scroll>
         <View style={styles.scrollContent}>
           <View style={styles.members}>
@@ -191,11 +203,10 @@ const useStyles = () => {
   const theme = useThemeContext();
 
   return StyleSheet.create({
-    tabContainer: { flex: 1 },
+    tabContainer: { flex: 1, gap: theme.spacing(2) },
     scrollContent: {
       flex: 1,
       gap: theme.spacing(3),
-      paddingHorizontal: theme.spacing(3),
     },
     members: {
       gap: theme.spacing(2),

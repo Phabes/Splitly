@@ -3,7 +3,10 @@ import { Friends, Groups } from "@/app/screens";
 
 export const TabNavigation = () => {
   return (
-    <BottomTabSelector>
+    <BottomTabSelector
+      initialRouteName="Groups"
+      showTitle={true}
+    >
       <BottomTabScreen
         name="Groups"
         component={Groups}

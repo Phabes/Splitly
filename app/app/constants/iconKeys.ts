@@ -23,7 +23,10 @@ export type IconKeys =
   | "EllipsisVertical"
   | "Owner"
   | "Admin"
-  | "Pending";
+  | "Pending"
+  | "Expences"
+  | "Balances"
+  | "Statistics";
 
 export default function Index() {
   return null;
