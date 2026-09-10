@@ -2,6 +2,7 @@ import {
   faAngleLeft,
   faBars,
   faBell,
+  faChartPie,
   faCheck,
   faChevronDown,
   faChevronUp,
@@ -14,6 +15,8 @@ import {
   faLayerGroup,
   faMinus,
   faPlus,
+  faReceipt,
+  faRightLeft,
   faRotateRight,
   faSearch,
   faUser,
@@ -53,6 +56,9 @@ const Icons: Record<IconKeys, IconDefinition> = {
   Owner: faCrown,
   Admin: faUserGear,
   Pending: faHourglass1,
+  Expences: faReceipt,
+  Balances: faRightLeft,
+  Statistics: faChartPie,
 };
 
 export const getIcon = (name: IconKeys): IconDefinition => {

@@ -1,32 +1,30 @@
 import {
   LoadingWrapper,
   NavBar,
-  TopTabScreen,
-  TopTabSelector,
   TouchableIcon,
   Typography,
 } from "@/app/components";
-import { LayoutProvider } from "@/app/providers";
-import { StyleSheet, View } from "react-native";
-import { Members } from "./tabs";
+import { COUNTRY_CODES } from "@/app/constants/countries";
 import {
   useAppNavigation,
   useGroupContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
+import { LayoutProvider } from "@/app/providers";
+import { FC } from "react";
+import { StyleSheet, View } from "react-native";
 import CountryFlag from "react-native-country-flag";
-import { COUNTRY_CODES } from "@/app/constants/countries";
+import { Members } from "./components";
+import { useParentGoBack } from "../hooks";
 
-export const GroupDetailsContent = () => {
+export const Information: FC = () => {
   const translations = useTranslations();
   const navigation = useAppNavigation();
-  const { groupDetails, isLoading, userRole } = useGroupContext();
+  const handleBackPress = useParentGoBack();
+  const { groupDetails, userRole, isLoading } = useGroupContext();
 
   const styles = useStyles();
-
-  const mockTotalSpend = "1,250.00 PLN";
-  const mockPersonalBalance = "🟢 You are owed 150.00 PLN";
 
   const isValidFlag = groupDetails && COUNTRY_CODES.includes(groupDetails.icon);
 
@@ -35,7 +33,7 @@ export const GroupDetailsContent = () => {
       navbar={
         <NavBar
           text={translations["groupDetails"]}
-          onBackPress={navigation.goBack}
+          onBackPress={handleBackPress}
         />
       }
     >
@@ -67,41 +65,9 @@ export const GroupDetailsContent = () => {
                 </View>
               )}
             </View>
-
-            <View style={styles.totalSpend}>
-              <Typography
-                text={translations["totalGroupSpend"]}
-                color="text-secondary"
-                variant="body-small"
-              />
-              <Typography
-                text={mockTotalSpend}
-                variant="header-medium"
-              />
-            </View>
-
-            <View style={styles.balanceBadge}>
-              <Typography
-                text={mockPersonalBalance}
-                variant="body-large"
-              />
-            </View>
           </View>
 
-          <TopTabSelector>
-            {/* <TopTabScreen
-              name="Expenses"
-              component={Members}
-            />
-            <TopTabScreen
-              name="Balances"
-              component={Members}
-            /> */}
-            <TopTabScreen
-              name="Members"
-              component={Members}
-            />
-          </TopTabSelector>
+          <Members />
         </View>
       </LoadingWrapper>
     </LayoutProvider>
@@ -144,7 +110,16 @@ const useStyles = () => {
       paddingHorizontal: theme.spacing(3),
       borderRadius: theme.spacing(3),
     },
+    tabContainer: { flex: 1 },
+    scrollContent: {
+      flex: 1,
+      gap: theme.spacing(3),
+      paddingHorizontal: theme.spacing(3),
+    },
+    members: {
+      gap: theme.spacing(2),
+    },
   });
 };
 
-export default GroupDetailsContent;
+export default Information;
