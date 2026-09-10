@@ -1,14 +1,12 @@
 import { useThemeContext } from "@/app/hooks";
 import { FC, PropsWithChildren } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Typography } from "../Typography";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 type ListItemProps = PropsWithChildren<{
-  text: string;
   onPress: () => void;
 }>;
 
-export const ListItem: FC<ListItemProps> = ({ text, onPress, children }) => {
+export const ListItem: FC<ListItemProps> = ({ onPress, children }) => {
   const styles = useStyles();
 
   return (
@@ -17,13 +15,7 @@ export const ListItem: FC<ListItemProps> = ({ text, onPress, children }) => {
       activeOpacity={0.8}
       style={styles.container}
     >
-      <View style={styles.text}>
-        <Typography
-          text={text}
-          variant="body-small"
-        />
-      </View>
-      {children && <View style={styles.buttons}>{children}</View>}
+      {children}
     </TouchableOpacity>
   );
 };
@@ -42,11 +34,6 @@ const useStyles = () => {
       paddingHorizontal: theme.spacing(4),
       paddingVertical: theme.spacing(3),
       backgroundColor: theme.colors["background-primary"],
-    },
-    text: { flex: 1 },
-    buttons: {
-      flexDirection: "row",
-      alignItems: "center",
       gap: theme.spacing(1),
     },
   });

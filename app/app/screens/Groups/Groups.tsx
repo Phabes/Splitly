@@ -9,7 +9,11 @@ import {
   TouchableIcon,
   Typography,
 } from "@/app/components";
-import { useAppNavigation, useTranslations } from "@/app/hooks";
+import {
+  useAppNavigation,
+  useThemeContext,
+  useTranslations,
+} from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
@@ -65,17 +69,25 @@ export const Groups: FC = () => {
             return (
               <ListItem
                 key={`Groups/${i}`}
-                text={`${item.name} - ${item.description}`}
                 onPress={() =>
                   navigation.navigate("GroupDetails", { groupID: item._id })
                 }
               >
-                <TouchableIcon
-                  icon="Users"
-                  onPress={() =>
-                    navigation.navigate("GroupDetails", { groupID: item._id })
-                  }
-                />
+                <View style={styles.listItemText}>
+                  <Typography
+                    text={`${item.name} - ${item.description}`}
+                    variant="body-small"
+                  />
+                </View>
+
+                <View style={styles.listItemButtons}>
+                  <TouchableIcon
+                    icon="Users"
+                    onPress={() =>
+                      navigation.navigate("GroupDetails", { groupID: item._id })
+                    }
+                  />
+                </View>
               </ListItem>
             );
           })}
@@ -110,9 +122,17 @@ export const Groups: FC = () => {
 };
 
 const useStyles = () => {
+  const theme = useThemeContext();
+
   return StyleSheet.create({
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

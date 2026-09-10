@@ -67,14 +67,22 @@ export const Searching: FC = () => {
             return (
               <ListItem
                 key={`AddFriend/${i}`}
-                text={item.user.username}
                 onPress={() => toggleMember(item.user)}
               >
-                <TouchableIcon
-                  icon={isSelected ? "Minus" : "Plus"}
-                  color={isSelected ? "text-error" : "text-success"}
-                  onPress={() => toggleMember(item.user)}
-                />
+                <View style={styles.listItemText}>
+                  <Typography
+                    text={item.user.username}
+                    variant="body-small"
+                  />
+                </View>
+
+                <View style={styles.listItemButtons}>
+                  <TouchableIcon
+                    icon={isSelected ? "Minus" : "Plus"}
+                    color={isSelected ? "text-error" : "text-success"}
+                    onPress={() => toggleMember(item.user)}
+                  />
+                </View>
               </ListItem>
             );
           })}
@@ -112,6 +120,12 @@ const useStyles = () => {
     container: { flex: 1, gap: theme.spacing(3) },
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

@@ -10,6 +10,7 @@ import {
 import {
   useAppNavigation,
   useConfirmContext,
+  useThemeContext,
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
@@ -71,32 +72,41 @@ export const FriendRequests: FC = () => {
             return (
               <ListItem
                 key={`FriendRequest/${i}`}
-                text={item.requester.username}
                 onPress={() => handleShowUserProfile(item.requester._id)}
               >
-                <TouchableIcon
-                  icon="Check"
-                  onPress={() => handleAcceptFriendRequest(item._id)}
-                />
-                <TouchableIcon
-                  icon="X"
-                  onPress={() => {
-                    showConfirm({
-                      title: translations["rejectFriendRequest"],
-                      message: formatTranslation(
-                        translations["rejectFriendRequestQuestion"],
-                        {
-                          username: item.requester.username,
+                <View style={styles.listItemText}>
+                  <Typography
+                    text={item.requester.username}
+                    variant="body-small"
+                  />
+                </View>
+
+                <View style={styles.listItemButtons}>
+                  <TouchableIcon
+                    icon="Check"
+                    onPress={() => handleAcceptFriendRequest(item._id)}
+                  />
+
+                  <TouchableIcon
+                    icon="X"
+                    onPress={() => {
+                      showConfirm({
+                        title: translations["rejectFriendRequest"],
+                        message: formatTranslation(
+                          translations["rejectFriendRequestQuestion"],
+                          {
+                            username: item.requester.username,
+                          },
+                        ),
+                        isDestructive: true,
+                        onConfirm: () => {
+                          handleRejectFriendRequest(item._id);
                         },
-                      ),
-                      isDestructive: true,
-                      onConfirm: () => {
-                        handleRejectFriendRequest(item._id);
-                      },
-                    });
-                  }}
-                  color="text-error"
-                />
+                      });
+                    }}
+                    color="text-error"
+                  />
+                </View>
               </ListItem>
             );
           })}
@@ -130,9 +140,17 @@ export const FriendRequests: FC = () => {
 };
 
 const useStyles = () => {
+  const theme = useThemeContext();
+
   return StyleSheet.create({
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

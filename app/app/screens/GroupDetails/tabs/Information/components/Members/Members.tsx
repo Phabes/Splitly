@@ -156,29 +156,37 @@ export const Members: FC = () => {
               return (
                 <ListItem
                   key={`Member/${i}`}
-                  text={item.username}
                   onPress={() => {}}
                 >
-                  {item.role === "owner" && (
-                    <Icon
-                      icon="Owner"
-                      color="text-notification"
+                  <View style={styles.listItemText}>
+                    <Typography
+                      text={item.username}
+                      variant="body-small"
                     />
-                  )}
-                  {item.role === "admin" && (
-                    <Icon
-                      icon="Admin"
-                      color="text-notification"
-                    />
-                  )}
-                  {item.status === "pending" && (
-                    <Icon
-                      icon="Pending"
-                      color="text-disabled"
-                    />
-                  )}
+                  </View>
 
-                  <FloatingMenu options={generateMenuOptions(item)} />
+                  <View style={styles.listItemIcons}>
+                    {item.role === "owner" && (
+                      <Icon
+                        icon="Owner"
+                        color="text-notification"
+                      />
+                    )}
+                    {item.role === "admin" && (
+                      <Icon
+                        icon="Admin"
+                        color="text-notification"
+                      />
+                    )}
+                    {item.status === "pending" && (
+                      <Icon
+                        icon="Pending"
+                        color="text-disabled"
+                      />
+                    )}
+
+                    <FloatingMenu options={generateMenuOptions(item)} />
+                  </View>
                 </ListItem>
               );
             })}
@@ -210,6 +218,12 @@ const useStyles = () => {
     },
     members: {
       gap: theme.spacing(2),
+    },
+    listItemText: { flex: 1 },
+    listItemIcons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

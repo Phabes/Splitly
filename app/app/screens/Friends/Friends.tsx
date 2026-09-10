@@ -9,7 +9,11 @@ import {
   TouchableIcon,
   Typography,
 } from "@/app/components";
-import { useAppNavigation, useTranslations } from "@/app/hooks";
+import {
+  useAppNavigation,
+  useThemeContext,
+  useTranslations,
+} from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
@@ -67,13 +71,21 @@ export const Friends: FC = () => {
             return (
               <ListItem
                 key={`Friends/${i}`}
-                text={item.user.username}
                 onPress={() => handleShowUserProfile(item.user._id)}
               >
-                <TouchableIcon
-                  icon="User"
-                  onPress={() => handleShowUserProfile(item.user._id)}
-                />
+                <View style={styles.listItemText}>
+                  <Typography
+                    text={item.user.username}
+                    variant="body-small"
+                  />
+                </View>
+
+                <View style={styles.listItemButtons}>
+                  <TouchableIcon
+                    icon="User"
+                    onPress={() => handleShowUserProfile(item.user._id)}
+                  />
+                </View>
               </ListItem>
             );
           })}
@@ -108,9 +120,17 @@ export const Friends: FC = () => {
 };
 
 const useStyles = () => {
+  const theme = useThemeContext();
+
   return StyleSheet.create({
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };
