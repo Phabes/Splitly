@@ -14,3 +14,5 @@ export const useParentGoBack = () => {
 
   return handleBackPress;
 };
+
+export default useParentGoBack;
