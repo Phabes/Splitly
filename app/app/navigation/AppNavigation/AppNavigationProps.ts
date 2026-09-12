@@ -20,6 +20,7 @@ export type AppStackParamList = {
   GroupRequests: undefined;
   GroupDetails: { groupID: string };
   EditGroup: GroupDetailsResult;
+  CreateBill: { groupID: string };
 };
 
 export type AppNavigationProps = NativeStackNavigationProp<AppStackParamList>;

@@ -1,4 +1,4 @@
-import { createNativeStackNavigator } from "expo-router/build/react-navigation/native-stack";
+import { createNativeStackNavigator } from "expo-router/native-stack";
 import { AuthStackParamList } from "./AuthNavigationProps";
 import { SignIn, SignUp } from "@/app/screens";
 
