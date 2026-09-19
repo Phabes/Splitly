@@ -11,6 +11,7 @@ import {
   useAppNavigation,
   useCountries,
   useCurrencies,
+  useCurrencySelectData,
   useSortedSelectData,
   useThemeContext,
   useTranslations,
@@ -38,8 +39,12 @@ export const EditGroup: FC = () => {
     handleEditGroup,
   } = useEditGroupForm(groupID, name, description, baseCurrency, icon);
 
-  const { currencies, isLoading } = useCurrencies();
-  const sortedCurrencies = useSortedSelectData(currencies, currencyField.value);
+  const { currencies } = useCurrencies();
+  const currencySelectData = useCurrencySelectData(currencies);
+  const sortedCurrencies = useSortedSelectData(
+    currencySelectData,
+    currencyField.value,
+  );
 
   const translatedCountries = useCountries();
   const sortedCountries = useSortedSelectData(translatedCountries, icon);
@@ -55,73 +60,71 @@ export const EditGroup: FC = () => {
         />
       }
     >
-      <LoadingWrapper isLoading={isLoading}>
-        <Scroll>
-          <View style={styles.inputs}>
-            <FormData
-              labelText={translations["groupName"]}
-              messageText={nameField.error}
-            >
-              <Input
-                text={nameField.value}
-                placeholder={translations["groupName"] + "..."}
-                onChange={nameField.setValue}
-                variant={nameField.error ? "error" : "default"}
-                allowClear={true}
-              />
-            </FormData>
-            <FormData
-              labelText={translations["groupDescription"]}
-              messageText={descriptionField.error}
-            >
-              <Input
-                text={descriptionField.value}
-                placeholder={translations["groupDescription"] + "..."}
-                onChange={descriptionField.setValue}
-                variant={descriptionField.error ? "error" : "default"}
-                allowClear={true}
-              />
-            </FormData>
-            <FormData
-              labelText={translations["defaultGroupCurrency"]}
-              messageText={currencyField.error}
-            >
-              <Select
-                selectData={sortedCurrencies}
-                value={currencyField.value}
-                onSelect={currencyField.setValue}
-                placeholder={translations["defaultGroupCurrency"] + "..."}
-                activeSearch={true}
-                searchPlaceholder={translations["searchCurrency"]}
-                variant={currencyField.error ? "error" : "default"}
-              />
-            </FormData>
-
-            <FormData
-              labelText={translations["groupIcon"]}
-              messageText={iconField.error}
-            >
-              <Select
-                selectData={sortedCountries}
-                value={iconField.value}
-                onSelect={iconField.setValue}
-                placeholder={translations["groupIcon"] + "..."}
-                activeSearch={true}
-                searchPlaceholder={translations["searchGroupIcon"]}
-                variant={iconField.error ? "error" : "default"}
-                showFlag={true}
-              />
-            </FormData>
-          </View>
-          <View style={styles.buttons}>
-            <Button
-              text={translations["editGroup"]}
-              disabled={editGroupButtonDisabled}
-              onPress={handleEditGroup}
+      <Scroll>
+        <View style={styles.inputs}>
+          <FormData
+            labelText={translations["groupName"]}
+            messageText={nameField.error}
+          >
+            <Input
+              text={nameField.value}
+              placeholder={translations["groupName"] + "..."}
+              onChange={nameField.setValue}
+              variant={nameField.error ? "error" : "default"}
+              allowClear={true}
             />
-          </View>
-        </Scroll>
-      </LoadingWrapper>
+          </FormData>
+          <FormData
+            labelText={translations["groupDescription"]}
+            messageText={descriptionField.error}
+          >
+            <Input
+              text={descriptionField.value}
+              placeholder={translations["groupDescription"] + "..."}
+              onChange={descriptionField.setValue}
+              variant={descriptionField.error ? "error" : "default"}
+              allowClear={true}
+            />
+          </FormData>
+          <FormData
+            labelText={translations["defaultGroupCurrency"]}
+            messageText={currencyField.error}
+          >
+            <Select
+              selectData={sortedCurrencies}
+              value={currencyField.value}
+              onSelect={currencyField.setValue}
+              placeholder={translations["defaultGroupCurrency"] + "..."}
+              activeSearch={true}
+              searchPlaceholder={translations["searchCurrency"]}
+              variant={currencyField.error ? "error" : "default"}
+            />
+          </FormData>
+
+          <FormData
+            labelText={translations["groupIcon"]}
+            messageText={iconField.error}
+          >
+            <Select
+              selectData={sortedCountries}
+              value={iconField.value}
+              onSelect={iconField.setValue}
+              placeholder={translations["groupIcon"] + "..."}
+              activeSearch={true}
+              searchPlaceholder={translations["searchGroupIcon"]}
+              variant={iconField.error ? "error" : "default"}
+              showFlag={true}
+            />
+          </FormData>
+        </View>
+        <View style={styles.buttons}>
+          <Button
+            text={translations["editGroup"]}
+            disabled={editGroupButtonDisabled}
+            onPress={handleEditGroup}
+          />
+        </View>
+      </Scroll>
     </LayoutProvider>
   );
 };

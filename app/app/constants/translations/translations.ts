@@ -99,6 +99,11 @@ export type TranslationKeys =
   | "makeOwner"
   | "changeOwnerQuestion"
   | "changingOwner"
+  // bills
+  | "billWizard"
+  | "billName"
+  | "totalAmount"
+  | "billCurrency"
   // countries
   | "country_AD"
   | "country_AE"

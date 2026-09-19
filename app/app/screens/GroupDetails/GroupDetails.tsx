@@ -32,6 +32,7 @@ export const GroupDetails: FC = () => {
             options={{
               tabBarAccessibilityLabel: "Plus",
             }}
+            initialParams={{ groupID }}
           />
           <BottomTabScreen
             name="Statistics"

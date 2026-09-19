@@ -1,10 +1,12 @@
 import { useRoute } from "expo-router/react-navigation";
 import { CreateBillParamList } from "../navigation/CreateBillNavigation/CreateBillNavigationProps";
 import { useCreateBillNavigation } from "./useCreateBillNavigation";
+import { useTranslations } from "./useTranslations";
 
 export const useBillWizard = () => {
   const route = useRoute();
   const navigation = useCreateBillNavigation();
+  const translations = useTranslations();
 
   const state = navigation.getState();
 
@@ -18,7 +20,7 @@ export const useBillWizard = () => {
   const stepNumber = currentIndex + 1;
   const totalSteps = dynamicFlow.length;
 
-  const headerTitle = `${stepNumber}/${totalSteps}`;
+  const headerTitle = `${translations["billWizard"]} (${stepNumber}/${totalSteps})`;
 
   const goNext = () => {
     if (currentIndex < totalSteps - 1) {

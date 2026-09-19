@@ -6,6 +6,7 @@ import { FC } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "../../../Icon";
 import { Typography } from "../../../Typography";
+import { Currency } from "@/app/types";
 
 type TabProps = BottomTabBarProps & {
   showTitle?: boolean;
@@ -26,7 +27,12 @@ export const BottomTabBar: FC<TabProps> = ({
         const isFocused = state.index === index;
 
         const handlePlusPress = () => {
-          navigation.navigate("CreateBill");
+          const { groupID, currency } = route.params as {
+            groupID: string;
+            currency: Currency["code"];
+          };
+          console.log(groupID, currency);
+          navigation.navigate("CreateBill", { groupID, currency });
         };
 
         const handleStandardPress = () => {

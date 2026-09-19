@@ -160,7 +160,6 @@ const useStyles = (
       borderRadius: theme.spacing(2),
     },
     placeholder: {
-      textTransform: "capitalize",
       color: theme.colors[placeholderText],
     },
     optionsContainer: {

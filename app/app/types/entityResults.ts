@@ -5,8 +5,9 @@ export type UserGroupRole = "owner" | "admin" | "member";
 export type UserGroupStatus = "accepted" | "pending";
 
 export type Currency = {
-  label: string;
-  value: string;
+  code: string;
+  name: string;
+  symbol: string;
 };
 
 export type SimpleUser = {
@@ -50,6 +51,26 @@ export type GroupDetailsResult = {
   baseCurrency: string;
   icon: CountryKeys;
   members: GroupMemberResult[];
+};
+
+export type CreateBillBasicInfo = {
+  name: string;
+  totalAmount: number;
+  currency: Currency["code"];
+  payerID: string;
+};
+
+export type CreateBillData = CreateBillBasicInfo & {
+  involvedMembers: Array<{
+    userID: string;
+    status: string;
+  }>;
+  positions: Array<{
+    name: string;
+    unitPrice: number;
+    quantity: number;
+    isSharedByAll: boolean;
+  }>;
 };
 
 export default function Index() {

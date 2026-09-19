@@ -92,6 +92,11 @@
   "changeOwnerQuestion": "Are you sure you want to make '${username}' the owner? You will be demoted to an admin.",
   "changingOwner": "Changing owner...",
 
+  "billWizard": "Bill wizard",
+  "billName": "Bill name",
+  "totalAmount": "Total amount",
+  "billCurrency": "Bill currency",
+
   "country_AD": "Andorra",
   "country_AE": "United Arab Emirates",
   "country_AF": "Afghanistan",

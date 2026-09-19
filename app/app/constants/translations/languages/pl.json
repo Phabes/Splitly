@@ -92,6 +92,11 @@
   "changeOwnerQuestion": "Czy jesteś pewny, że chcesz mianować '${username}' właścicielem? Twoją nową rolą będzie admin.",
   "changingOwner": "Zmienianie właściciela...",
 
+  "billWizard": "Kreator rachunku",
+  "billName": "Nazwa rachunku",
+  "totalAmount": "Sumaryczna kwota",
+  "billCurrency": "Waluta rachunku",
+
   "country_AD": "Andora",
   "country_AE": "Zjednoczone Emiraty Arabskie",
   "country_AF": "Afganistan",
