@@ -91,6 +91,11 @@ export type RemoveMemberResponse = GroupMembersResponse & {
   isSelfLeave: boolean;
 };
 
+export type GroupBillDetailsResponse = {
+  baseCurrency: string;
+  members: UserResult[];
+};
+
 export default function Index() {
   return null;
 }

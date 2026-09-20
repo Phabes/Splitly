@@ -4,6 +4,7 @@ import {
   createGroup,
   decideGroupRequest,
   editGroupDetails,
+  getCreateBillDetails,
   getGroupDetails,
   getGroupInviteCandidates,
   getGroupList,
@@ -72,6 +73,13 @@ routerGroup.patch(
   groupMiddleware,
   roleMiddleware(["owner"]),
   transferOwnership,
+);
+// GET - create bill details
+routerGroup.get(
+  "/:groupID}/bill-details",
+  authMiddleware,
+  groupMiddleware,
+  getCreateBillDetails,
 );
 
 export default routerGroup;

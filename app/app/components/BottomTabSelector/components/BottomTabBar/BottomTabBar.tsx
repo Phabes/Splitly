@@ -27,12 +27,10 @@ export const BottomTabBar: FC<TabProps> = ({
         const isFocused = state.index === index;
 
         const handlePlusPress = () => {
-          const { groupID, currency } = route.params as {
+          const { groupID } = route.params as {
             groupID: string;
-            currency: Currency["code"];
           };
-          console.log(groupID, currency);
-          navigation.navigate("CreateBill", { groupID, currency });
+          navigation.navigate("CreateBill", { groupID });
         };
 
         const handleStandardPress = () => {

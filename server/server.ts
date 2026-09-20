@@ -7,6 +7,9 @@ import routerFriend from "./routes/friends.ts";
 import routerGroup from "./routes/groups.ts";
 import routerCurrency from "./routes/currencies.ts";
 import { initCurrencies } from "./services/currencies.ts";
+import { setServers } from "node:dns/promises";
+
+setServers(["1.1.1.1", "8.8.8.8"]);
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/App";
 const PORT = process.env.PORT || 5000;

@@ -753,3 +753,24 @@ export const transferOwnership = async (
     });
   }
 };
+
+export const getCreateBillDetails = async (
+  req: GroupRequest,
+  res: Response,
+) => {
+  try {
+    const group = req.group!;
+
+    await group.populate("members", "id username email");
+
+    return res.status(200).json({
+      baseCurrency: group.baseCurrency,
+      members: group.members,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "getCreateBillDetails/error",
+      message: "Server error while getting create bill details.",
+    });
+  }
+};
