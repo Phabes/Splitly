@@ -3,12 +3,7 @@ import {
   getSupportedCurrencies,
   formatCurrency,
 } from "react-native-format-currency";
-
-export interface Currency {
-  code: string;
-  name: string;
-  symbol: string;
-}
+import { Currency } from "../types";
 
 export const useCurrencies = () => {
   const currencies = useMemo<Currency[]>(() => {

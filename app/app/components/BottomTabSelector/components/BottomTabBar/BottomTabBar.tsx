@@ -6,7 +6,6 @@ import { FC } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "../../../Icon";
 import { Typography } from "../../../Typography";
-import { Currency } from "@/app/types";
 
 type TabProps = BottomTabBarProps & {
   showTitle?: boolean;

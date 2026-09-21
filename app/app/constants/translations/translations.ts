@@ -104,6 +104,8 @@ export type TranslationKeys =
   | "billName"
   | "totalAmount"
   | "billCurrency"
+  | "nextStep"
+  | "createBill"
   // countries
   | "country_AD"
   | "country_AE"

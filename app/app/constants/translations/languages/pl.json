@@ -96,6 +96,8 @@
   "billName": "Nazwa rachunku",
   "totalAmount": "Sumaryczna kwota",
   "billCurrency": "Waluta rachunku",
+  "nextStep": "Następny krok",
+  "createBill": "Stwórz rachunek",
 
   "country_AD": "Andora",
   "country_AE": "Zjednoczone Emiraty Arabskie",

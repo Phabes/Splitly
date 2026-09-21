@@ -97,7 +97,7 @@ export const Select: FC<SelectProps> = ({
               />
             )}
             <Typography
-              variant="body-large"
+              variant="body-small"
               text={item.label}
               color={disabled ? "background-disabled" : "text-primary"}
             />

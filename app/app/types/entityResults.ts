@@ -53,14 +53,11 @@ export type GroupDetailsResult = {
   members: GroupMemberResult[];
 };
 
-export type CreateBillBasicInfo = {
+export type CreateBillData = {
   name: string;
   totalAmount: number;
   currency: Currency["code"];
   payerID: string;
-};
-
-export type CreateBillData = CreateBillBasicInfo & {
   involvedMembers: Array<{
     userID: string;
     status: string;

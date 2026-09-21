@@ -10,7 +10,7 @@ import {
 import { createNativeStackNavigator } from "expo-router/native-stack";
 import { AppStackParamList } from "./AppNavigationProps";
 import { MainTabNavigation } from "../MainTabNavigation";
-import { CreateBillNavigation } from "../CreateBillNavigation";
+import CreateBill from "@/app/screens/CreateBill/CreateBill";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -54,7 +54,7 @@ export const AppNavigation = () => {
       />
       <Stack.Screen
         name="CreateBill"
-        component={CreateBillNavigation}
+        component={CreateBill}
       />
     </Stack.Navigator>
   );

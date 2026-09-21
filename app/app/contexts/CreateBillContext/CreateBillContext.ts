@@ -1,9 +1,15 @@
-import { CreateBillBasicInfo, CreateBillData } from "@/app/types";
+import { useFormData } from "@/app/hooks";
 import { createContext } from "react";
 
+type FormField = ReturnType<typeof useFormData>;
+
 export interface CreateBillContextValue {
-  billData: CreateBillData;
-  setBasicInfo: (basicInfo: CreateBillBasicInfo) => void;
+  billForm: {
+    billNameField: FormField;
+    totalAmountField: FormField;
+    currencyField: FormField;
+    payerIDField: FormField;
+  };
   isLoading: boolean;
 }
 

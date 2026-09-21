@@ -1,7 +1,6 @@
-import { useAuthenticatedApi } from "@/app/hooks";
+import { useAuthContext, useAuthenticatedApi, useFormData } from "@/app/hooks";
 import { getGroupBillDetailsCall } from "@/app/services";
 import {
-  CreateBillBasicInfo,
   CreateBillData,
   GroupBillDetailsResponse,
   ResponseMessage,
@@ -10,6 +9,7 @@ import { useState, useEffect } from "react";
 
 export const useCreateBillDetails = (groupID: string) => {
   const request = useAuthenticatedApi();
+  const { userData } = useAuthContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [billData, setBillData] = useState<CreateBillData>({
     name: "",
@@ -19,6 +19,18 @@ export const useCreateBillDetails = (groupID: string) => {
     involvedMembers: [],
     positions: [],
   });
+
+  const billNameField = useFormData(billData.name);
+  const totalAmountField = useFormData("");
+  const currencyField = useFormData(billData.currency);
+  const payerIDField = useFormData(userData?._id || "");
+
+  const billForm = {
+    billNameField,
+    totalAmountField,
+    currencyField,
+    payerIDField,
+  };
 
   useEffect(() => {
     const fetchGroupBillDetails = async () => {
@@ -32,9 +44,10 @@ export const useCreateBillDetails = (groupID: string) => {
         }
 
         const data: GroupBillDetailsResponse = await response.json();
+        currencyField.setValue(data.baseCurrency);
+
         setBillData((prevData) => ({
           ...prevData,
-          currency: data.baseCurrency,
           involvedMembers: data.members.map((member) => ({
             userID: member._id,
             status: "picking",
@@ -51,14 +64,7 @@ export const useCreateBillDetails = (groupID: string) => {
     fetchGroupBillDetails();
   }, [groupID]);
 
-  const setBasicInfo = (basicInfo: CreateBillBasicInfo) => {
-    setBillData((prevData) => ({
-      ...prevData,
-      ...basicInfo,
-    }));
-  };
-
-  return { billData, setBasicInfo, isLoading };
+  return { billForm, isLoading };
 };
 
 export default useCreateBillDetails;
