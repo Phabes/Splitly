@@ -12,22 +12,17 @@ export interface Currency {
 
 export const useCurrencies = () => {
   const currencies = useMemo<Currency[]>(() => {
-    try {
-      const supportedCurrencies = getSupportedCurrencies();
+    const supportedCurrencies = getSupportedCurrencies();
 
-      return supportedCurrencies.map((currency) => {
-        const [, , symbol] = formatCurrency({ amount: 0, code: currency.code });
+    return supportedCurrencies.map((currency) => {
+      const [, , symbol] = formatCurrency({ amount: 0, code: currency.code });
 
-        return {
-          code: currency.code,
-          name: currency.name,
-          symbol: symbol,
-        };
-      });
-    } catch (error) {
-      console.error("Error loading local currencies", error);
-      return [];
-    }
+      return {
+        code: currency.code,
+        name: currency.name,
+        symbol: symbol,
+      };
+    });
   }, []);
 
   return { currencies };

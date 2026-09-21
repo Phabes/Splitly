@@ -4,6 +4,7 @@ import { createContext } from "react";
 export interface CreateBillContextValue {
   billData: CreateBillData;
   setBasicInfo: (basicInfo: CreateBillBasicInfo) => void;
+  isLoading: boolean;
 }
 
 export const CreateBillContext = createContext<

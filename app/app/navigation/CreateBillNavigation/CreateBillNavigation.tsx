@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from "expo-router/native-stack";
 import { BasicInfo } from "@/app/screens/CreateBill/BasicInfo";
-import { Step2 } from "@/app/screens/CreateBill/step2";
-import { Step3 } from "@/app/screens/CreateBill/step3";
 import { CreateBillParamList } from "./CreateBillNavigationProps";
 import { CreateBillProvider } from "@/app/providers";
 import { useRoute } from "expo-router";
 import { RouteProp } from "expo-router/react-navigation";
 import { AppStackParamList } from "../AppNavigation/AppNavigationProps";
+import Step2 from "@/app/screens/CreateBill/forms/step2";
+import Step3 from "@/app/screens/CreateBill/forms/step3";
 
 const Stack = createNativeStackNavigator<CreateBillParamList>();
 

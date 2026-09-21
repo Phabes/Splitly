@@ -76,7 +76,7 @@ routerGroup.patch(
 );
 // GET - create bill details
 routerGroup.get(
-  "/:groupID}/bill-details",
+  "/:groupID/bill-details",
   authMiddleware,
   groupMiddleware,
   getCreateBillDetails,
