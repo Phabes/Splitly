@@ -761,11 +761,17 @@ export const getCreateBillDetails = async (
   try {
     const group = req.group!;
 
-    await group.populate("members", "id username email");
+    await group.populate("members.user", "username email");
+
+    const cleanMembers = group.members.map((member: any) => ({
+      _id: member.user._id,
+      username: member.user.username,
+      email: member.user.email,
+    }));
 
     return res.status(200).json({
       baseCurrency: group.baseCurrency,
-      members: group.members,
+      members: cleanMembers,
     });
   } catch (error) {
     return res.status(500).json({

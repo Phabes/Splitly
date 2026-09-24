@@ -4,6 +4,7 @@ import {
   CreateBillData,
   GroupBillDetailsResponse,
   ResponseMessage,
+  UserResult,
 } from "@/app/types";
 import { useState, useEffect } from "react";
 
@@ -11,6 +12,7 @@ export const useCreateBillDetails = (groupID: string) => {
   const request = useAuthenticatedApi();
   const { userData } = useAuthContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [members, setMember] = useState<UserResult[]>([]);
   const [billData, setBillData] = useState<CreateBillData>({
     name: "",
     totalAmount: 0,
@@ -46,6 +48,8 @@ export const useCreateBillDetails = (groupID: string) => {
         const data: GroupBillDetailsResponse = await response.json();
         currencyField.setValue(data.baseCurrency);
 
+        setMember(data.members);
+
         setBillData((prevData) => ({
           ...prevData,
           involvedMembers: data.members.map((member) => ({
@@ -64,7 +68,7 @@ export const useCreateBillDetails = (groupID: string) => {
     fetchGroupBillDetails();
   }, [groupID]);
 
-  return { billForm, isLoading };
+  return { billForm, members, isLoading };
 };
 
 export default useCreateBillDetails;

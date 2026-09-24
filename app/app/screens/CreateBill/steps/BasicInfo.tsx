@@ -20,10 +20,11 @@ import {
   Typography,
 } from "@/app/components";
 import { formatDecimalInput } from "@/app/utils";
+import { useMemo } from "react";
 
 export const BasicInfo = () => {
   const translations = useTranslations();
-  const { billForm, isLoading } = useCreateBillContext();
+  const { billForm, members, isLoading } = useCreateBillContext();
 
   const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
     useBillWizard();
@@ -34,6 +35,13 @@ export const BasicInfo = () => {
     currencySelectData,
     billForm.currencyField.value,
   );
+
+  const payerSelectData = useMemo(() => {
+    return members.map((member) => ({
+      label: member.username,
+      value: member._id,
+    }));
+  }, [members]);
 
   const getCurrencySymbol = () => {
     const selectedCurrency = currencies.find(
@@ -98,6 +106,15 @@ export const BasicInfo = () => {
                 onSelect={billForm.currencyField.setValue}
                 activeSearch={true}
                 searchPlaceholder={translations["searchCurrency"]}
+              />
+            </FormData>
+
+            <FormData labelText={translations["paidBy"]}>
+              <Select
+                selectData={payerSelectData}
+                value={billForm.payerIDField.value}
+                onSelect={billForm.payerIDField.setValue}
+                activeSearch={false}
               />
             </FormData>
           </View>

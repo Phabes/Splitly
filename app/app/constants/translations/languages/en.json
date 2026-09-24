@@ -96,8 +96,9 @@
   "billName": "Bill name",
   "totalAmount": "Total amount",
   "billCurrency": "Bill currency",
-  "nextStep": "Next Step",
-  "createBill": "Create Bill",
+  "nextStep": "Next step",
+  "createBill": "Create bill",
+  "paidBy": "Paid by",
 
   "country_AD": "Andorra",
   "country_AE": "United Arab Emirates",
