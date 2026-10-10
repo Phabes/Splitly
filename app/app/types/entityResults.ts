@@ -53,21 +53,23 @@ export type GroupDetailsResult = {
   members: GroupMemberResult[];
 };
 
+export type InvolvedMember = {
+  userID: string;
+  status: "picking" | "pending" | "completed";
+};
+
 export type CreateBillData = {
   name: string;
   totalAmount: number;
   currency: Currency["code"];
   payerID: string;
-  involvedMembers: Array<{
-    userID: string;
-    status: string;
-  }>;
-  positions: Array<{
+  involvedMembers: InvolvedMember[];
+  positions: {
     name: string;
     unitPrice: number;
     quantity: number;
     isSharedByAll: boolean;
-  }>;
+  }[];
 };
 
 export default function Index() {

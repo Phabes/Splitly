@@ -1,5 +1,6 @@
 export * from "./AddMembersProvider";
 export * from "./AuthProvider";
+export * from "./BackgroundProvider";
 export * from "./ConfirmProvider";
 export * from "./CreateBillProvider";
 export * from "./FloatingMenuProvider";

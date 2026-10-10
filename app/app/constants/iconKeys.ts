@@ -26,7 +26,9 @@ export type IconKeys =
   | "Pending"
   | "Expences"
   | "Balances"
-  | "Statistics";
+  | "Statistics"
+  | "CheckboxChecked"
+  | "CheckboxUnchecked";
 
 export default function Index() {
   return null;

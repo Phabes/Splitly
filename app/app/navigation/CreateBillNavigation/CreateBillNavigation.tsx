@@ -3,6 +3,7 @@ import { CreateBillParamList } from "./CreateBillNavigationProps";
 import Step2 from "@/app/screens/CreateBill/steps/step2";
 import Step3 from "@/app/screens/CreateBill/steps/step3";
 import { BasicInfo } from "@/app/screens/CreateBill/steps";
+import Squad from "@/app/screens/CreateBill/steps/Squad";
 
 const Stack = createNativeStackNavigator<CreateBillParamList>();
 
@@ -18,6 +19,10 @@ export const CreateBillNavigation = () => {
       <Stack.Screen
         name="BasicInfo"
         component={BasicInfo}
+      />
+      <Stack.Screen
+        name="Squad"
+        component={Squad}
       />
       <Stack.Screen
         name="Step2"

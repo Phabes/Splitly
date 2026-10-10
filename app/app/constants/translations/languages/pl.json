@@ -99,6 +99,10 @@
   "nextStep": "Następny krok",
   "createBill": "Stwórz rachunek",
   "paidBy": "Zapłacone przez",
+  "whoWasInvolved": "Kto brał udział?",
+  "selectAll": "Zaznacz wszystkich",
+  "deselectAll": "Odznacz wszystkich",
+  "payer": "Płacący",
 
   "country_AD": "Andora",
   "country_AE": "Zjednoczone Emiraty Arabskie",

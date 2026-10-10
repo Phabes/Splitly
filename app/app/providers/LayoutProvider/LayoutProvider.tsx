@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { BackgroundProvider } from "../BackgroundProvider";
 
 type LayoutProviderProps = PropsWithChildren<{
   navbar?: JSX.Element;
@@ -22,11 +23,11 @@ export const LayoutProvider: FC<LayoutProviderProps> = ({
       onPress={Keyboard.dismiss}
       accessible={false}
     >
-      <View style={styles.container}>
+      <BackgroundProvider>
         {navbar}
 
         <View style={styles.content}>{children}</View>
-      </View>
+      </BackgroundProvider>
     </TouchableWithoutFeedback>
   );
 };

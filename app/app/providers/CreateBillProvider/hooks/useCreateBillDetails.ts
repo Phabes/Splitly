@@ -3,6 +3,7 @@ import { getGroupBillDetailsCall } from "@/app/services";
 import {
   CreateBillData,
   GroupBillDetailsResponse,
+  InvolvedMember,
   ResponseMessage,
   UserResult,
 } from "@/app/types";
@@ -25,13 +26,20 @@ export const useCreateBillDetails = (groupID: string) => {
   const billNameField = useFormData(billData.name);
   const totalAmountField = useFormData("");
   const currencyField = useFormData(billData.currency);
-  const payerIDField = useFormData(userData?._id || "");
+  const payerIDField = useFormData(userData?._id);
 
   const billForm = {
     billNameField,
     totalAmountField,
     currencyField,
     payerIDField,
+  };
+
+  const setInvolvedMembers = (newInvolvedMembers: InvolvedMember[]) => {
+    setBillData((prevData) => ({
+      ...prevData,
+      involvedMembers: newInvolvedMembers,
+    }));
   };
 
   useEffect(() => {
@@ -50,13 +58,13 @@ export const useCreateBillDetails = (groupID: string) => {
 
         setMember(data.members);
 
-        setBillData((prevData) => ({
-          ...prevData,
-          involvedMembers: data.members.map((member) => ({
-            userID: member._id,
-            status: "picking",
-          })),
-        }));
+        // setBillData((prevData) => ({
+        //   ...prevData,
+        //   involvedMembers: data.members.map((member) => ({
+        //     userID: member._id,
+        //     status: "picking",
+        //   })),
+        // }));
       } catch (error) {
         // Error during fetching create bill details
         console.error(error);
@@ -68,7 +76,12 @@ export const useCreateBillDetails = (groupID: string) => {
     fetchGroupBillDetails();
   }, [groupID]);
 
-  return { billForm, members, isLoading };
+  return {
+    billForm,
+    members,
+    setInvolvedMembers,
+    isLoading,
+  };
 };
 
 export default useCreateBillDetails;

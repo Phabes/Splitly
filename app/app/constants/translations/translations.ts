@@ -107,6 +107,10 @@ export type TranslationKeys =
   | "nextStep"
   | "createBill"
   | "paidBy"
+  | "whoWasInvolved"
+  | "selectAll"
+  | "deselectAll"
+  | "payer"
   // countries
   | "country_AD"
   | "country_AE"

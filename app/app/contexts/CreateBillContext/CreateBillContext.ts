@@ -1,5 +1,5 @@
 import { useFormData } from "@/app/hooks";
-import { UserResult } from "@/app/types";
+import { InvolvedMember, UserResult } from "@/app/types";
 import { createContext } from "react";
 
 type FormField = ReturnType<typeof useFormData>;
@@ -11,6 +11,7 @@ export interface CreateBillContextValue {
     currencyField: FormField;
     payerIDField: FormField;
   };
+  setInvolvedMembers: (newInvolvedMembers: InvolvedMember[]) => void;
   members: UserResult[];
   isLoading: boolean;
 }

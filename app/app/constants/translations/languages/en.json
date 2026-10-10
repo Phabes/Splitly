@@ -99,6 +99,10 @@
   "nextStep": "Next step",
   "createBill": "Create bill",
   "paidBy": "Paid by",
+  "whoWasInvolved": "Who was involved?",
+  "selectAll": "Select all",
+  "deselectAll": "Deselect all",
+  "payer": "Payer",
 
   "country_AD": "Andorra",
   "country_AE": "United Arab Emirates",

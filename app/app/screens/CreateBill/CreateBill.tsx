@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { CreateBillProvider } from "@/app/providers";
+import { BackgroundProvider, CreateBillProvider } from "@/app/providers";
 import { useRoute } from "expo-router";
 import { RouteProp } from "expo-router/react-navigation";
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
@@ -10,9 +10,11 @@ export const CreateBill: FC = () => {
   const { groupID } = route.params;
 
   return (
-    <CreateBillProvider groupID={groupID}>
-      <CreateBillNavigation />
-    </CreateBillProvider>
+    <BackgroundProvider>
+      <CreateBillProvider groupID={groupID}>
+        <CreateBillNavigation />
+      </CreateBillProvider>
+    </BackgroundProvider>
   );
 };
 
