@@ -8,38 +8,38 @@ import {
 import { LayoutProvider } from "@/app/providers";
 import {
   Button,
-  Icon,
+  Checkbox,
   ListItem,
   NavBar,
   Scroll,
   Typography,
 } from "@/app/components";
 import { useEffect, useState } from "react";
-import { InvolvedMember } from "@/app/types";
 
-export const BasicInfo = () => {
+export const Squad = () => {
   const translations = useTranslations();
 
-  const { members, billForm, setInvolvedMembers } = useCreateBillContext();
-  const { headerTitle, goNext, goBack } = useBillWizard();
+  const { billData, billForm, members, setInvolvedMembers } =
+    useCreateBillContext();
+  const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
+    useBillWizard();
 
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIDs, setSelectedIDs] = useState<string[]>([]);
 
   useEffect(() => {
-    const activeIds = members.map((m) => m._id);
-
-    if (activeIds.length === 0 && members.length > 0) {
-      setSelectedIds(members.map((m) => m._id));
-    } else {
-      setSelectedIds(activeIds);
+    if (billData.involvedMembers && billData.involvedMembers.length > 0) {
+      const previouslySelected = billData.involvedMembers;
+      setSelectedIDs(previouslySelected);
+    } else if (members.length > 0) {
+      setSelectedIDs(members.map((m) => m._id));
     }
-  }, [members]);
+  }, [billData.involvedMembers, members]);
 
-  const selectAll = () => setSelectedIds(members.map((m) => m._id));
-  const deselectAll = () => setSelectedIds([]);
+  const selectAll = () => setSelectedIDs(members.map((m) => m._id));
+  const deselectAll = () => setSelectedIDs([]);
 
   const toggleMember = (id: string) => {
-    setSelectedIds((prev) =>
+    setSelectedIDs((prev) =>
       prev.includes(id)
         ? prev.filter((prevId) => prevId !== id)
         : [...prev, id],
@@ -47,18 +47,13 @@ export const BasicInfo = () => {
   };
 
   const handleNext = () => {
-    const x: InvolvedMember[] = selectedIds.map((id) => ({
-      userID: id,
-      status: "picking",
-    }));
-
-    setInvolvedMembers(x);
+    setInvolvedMembers(selectedIDs);
 
     goNext();
   };
 
-  const isNextDisabled = selectedIds.length === 0;
-  const isSelectAllDisabled = selectedIds.length === members.length;
+  const isNextDisabled = selectedIDs.length === 0;
+  const isSelectAllDisabled = selectedIDs.length === members.length;
 
   const styles = useStyles();
 
@@ -99,7 +94,7 @@ export const BasicInfo = () => {
         keyboardPersist="never"
       >
         {members.map((member, i) => {
-          const isSelected = selectedIds.includes(member._id);
+          const isSelected = selectedIDs.includes(member._id);
           const isPayer = member._id === billForm.payerIDField.value;
 
           return (
@@ -112,25 +107,22 @@ export const BasicInfo = () => {
                 {isPayer && (
                   <Typography
                     text={` (${translations["payer"]})`}
-                    variant="body-small"
                     color="text-secondary"
                   />
                 )}
               </View>
 
-              <Icon
-                icon={isSelected ? "CheckboxChecked" : "CheckboxUnchecked"}
-                size="large"
-                color={isSelected ? "text-success" : "text-secondary"}
-              />
+              <Checkbox isChecked={isSelected} />
             </ListItem>
           );
         })}
       </Scroll>
 
       <Button
-        text={translations["nextStep"]}
-        onPress={handleNext}
+        text={
+          isLastStep ? translations["createBill"] : translations["nextStep"]
+        }
+        onPress={isLastStep ? exitWizard : handleNext}
         disabled={isNextDisabled}
       />
     </LayoutProvider>
@@ -148,28 +140,11 @@ const useStyles = () => {
     actionbutton: {
       flex: 1,
     },
-    listContainer: {
-      display: "flex",
-      flexDirection: "column",
-    },
     nameContainer: {
       flex: 1,
       flexDirection: "row",
     },
-    checkbox: {
-      // width: 24,
-      // height: 24,
-      // borderRadius: 6,
-      // borderWidth: 2,
-      // borderColor: "#9CA3AF",
-      // alignItems: "center",
-      // justifyContent: "center",
-    },
-    checkboxSelected: {
-      // backgroundColor: "#3B82F6",
-      // borderColor: "#3B82F6",
-    },
   });
 };
 
-export default BasicInfo;
+export default Squad;

@@ -94,7 +94,9 @@
 
   "billWizard": "Bill wizard",
   "billName": "Bill name",
+  "billNamePlaceholder": "e.g. Dinner at Mario's",
   "totalAmount": "Total amount",
+  "totalAmountPlaceholder": "0.00",
   "billCurrency": "Bill currency",
   "nextStep": "Next step",
   "createBill": "Create bill",

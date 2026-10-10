@@ -2,8 +2,7 @@ import { createNativeStackNavigator } from "expo-router/native-stack";
 import { CreateBillParamList } from "./CreateBillNavigationProps";
 import Step2 from "@/app/screens/CreateBill/steps/step2";
 import Step3 from "@/app/screens/CreateBill/steps/step3";
-import { BasicInfo } from "@/app/screens/CreateBill/steps";
-import Squad from "@/app/screens/CreateBill/steps/Squad";
+import { BasicInfo, Squad } from "@/app/screens/CreateBill/steps";
 
 const Stack = createNativeStackNavigator<CreateBillParamList>();
 

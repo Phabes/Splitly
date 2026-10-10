@@ -24,7 +24,7 @@ import { useMemo } from "react";
 
 export const BasicInfo = () => {
   const translations = useTranslations();
-  const { billForm, members, isLoading } = useCreateBillContext();
+  const { billForm, members, isLoading, setBasicInfo } = useCreateBillContext();
 
   const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
     useBillWizard();
@@ -51,6 +51,24 @@ export const BasicInfo = () => {
     return selectedCurrency ? selectedCurrency.symbol : "";
   };
 
+  const handleNext = () => {
+    setBasicInfo(
+      billForm.billNameField.value,
+      parseFloat(billForm.totalAmountField.value),
+      billForm.currencyField.value,
+      billForm.payerIDField.value,
+    );
+
+    goNext();
+  };
+
+  const isNextDisabled =
+    billForm.billNameField.value === "" ||
+    billForm.totalAmountField.value === "" ||
+    parseFloat(billForm.totalAmountField.value) <= 0 ||
+    billForm.currencyField.value === "" ||
+    billForm.payerIDField.value === "";
+
   const styles = useStyles();
 
   return (
@@ -69,7 +87,7 @@ export const BasicInfo = () => {
               <Input
                 text={billForm.billNameField.value}
                 onChange={billForm.billNameField.setValue}
-                placeholder="e.g., Dinner at Mario's"
+                placeholder={translations["billNamePlaceholder"]}
               />
             </FormData>
 
@@ -78,14 +96,16 @@ export const BasicInfo = () => {
                 <View style={styles.currencyNumber}>
                   <Input
                     text={billForm.totalAmountField.value}
-                    onChange={(value) =>
-                      formatDecimalInput(
-                        billForm.totalAmountField.setValue,
+                    onChange={(value) => {
+                      const formattedText = formatDecimalInput(
                         value,
+                        billForm.totalAmountField.value,
                         2,
-                      )
-                    }
-                    placeholder="0.00"
+                      );
+
+                      billForm.totalAmountField.setValue(formattedText);
+                    }}
+                    placeholder={translations["totalAmountPlaceholder"]}
                     keyboardType="numeric"
                   />
                 </View>
@@ -124,7 +144,8 @@ export const BasicInfo = () => {
           text={
             isLastStep ? translations["createBill"] : translations["nextStep"]
           }
-          onPress={isLastStep ? exitWizard : goNext}
+          onPress={isLastStep ? exitWizard : handleNext}
+          disabled={isNextDisabled}
         />
       </LoadingWrapper>
     </LayoutProvider>

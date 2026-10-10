@@ -53,17 +53,12 @@ export type GroupDetailsResult = {
   members: GroupMemberResult[];
 };
 
-export type InvolvedMember = {
-  userID: string;
-  status: "picking" | "pending" | "completed";
-};
-
 export type CreateBillData = {
   name: string;
   totalAmount: number;
   currency: Currency["code"];
   payerID: string;
-  involvedMembers: InvolvedMember[];
+  involvedMembers: string[];
   positions: {
     name: string;
     unitPrice: number;

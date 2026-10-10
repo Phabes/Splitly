@@ -102,7 +102,9 @@ export type TranslationKeys =
   // bills
   | "billWizard"
   | "billName"
+  | "billNamePlaceholder"
   | "totalAmount"
+  | "totalAmountPlaceholder"
   | "billCurrency"
   | "nextStep"
   | "createBill"

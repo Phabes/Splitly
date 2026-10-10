@@ -3,7 +3,6 @@ import { getGroupBillDetailsCall } from "@/app/services";
 import {
   CreateBillData,
   GroupBillDetailsResponse,
-  InvolvedMember,
   ResponseMessage,
   UserResult,
 } from "@/app/types";
@@ -35,7 +34,24 @@ export const useCreateBillDetails = (groupID: string) => {
     payerIDField,
   };
 
-  const setInvolvedMembers = (newInvolvedMembers: InvolvedMember[]) => {
+  const setBasicInfo = (
+    name: CreateBillData["name"],
+    totalAmount: CreateBillData["totalAmount"],
+    currency: CreateBillData["currency"],
+    payerID: CreateBillData["payerID"],
+  ) => {
+    setBillData((prevData) => ({
+      ...prevData,
+      name,
+      totalAmount,
+      currency,
+      payerID,
+    }));
+  };
+
+  const setInvolvedMembers = (
+    newInvolvedMembers: CreateBillData["involvedMembers"],
+  ) => {
     setBillData((prevData) => ({
       ...prevData,
       involvedMembers: newInvolvedMembers,
@@ -57,14 +73,6 @@ export const useCreateBillDetails = (groupID: string) => {
         currencyField.setValue(data.baseCurrency);
 
         setMember(data.members);
-
-        // setBillData((prevData) => ({
-        //   ...prevData,
-        //   involvedMembers: data.members.map((member) => ({
-        //     userID: member._id,
-        //     status: "picking",
-        //   })),
-        // }));
       } catch (error) {
         // Error during fetching create bill details
         console.error(error);
@@ -77,10 +85,12 @@ export const useCreateBillDetails = (groupID: string) => {
   }, [groupID]);
 
   return {
+    billData,
     billForm,
     members,
-    setInvolvedMembers,
     isLoading,
+    setBasicInfo,
+    setInvolvedMembers,
   };
 };
 

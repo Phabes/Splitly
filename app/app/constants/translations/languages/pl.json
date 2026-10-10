@@ -94,7 +94,9 @@
 
   "billWizard": "Kreator rachunku",
   "billName": "Nazwa rachunku",
+  "billNamePlaceholder": "np. Obiad u Mario",
   "totalAmount": "Sumaryczna kwota",
+  "totalAmountPlaceholder": "0.00",
   "billCurrency": "Waluta rachunku",
   "nextStep": "Następny krok",
   "createBill": "Stwórz rachunek",

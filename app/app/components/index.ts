@@ -1,5 +1,6 @@
 export * from "./BottomTabSelector";
 export * from "./Button";
+export * from "./Checkbox";
 export * from "./Fab";
 export * from "./FloatingMenu";
 export * from "./FormData";

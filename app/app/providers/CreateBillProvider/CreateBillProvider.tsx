@@ -10,12 +10,25 @@ export const CreateBillProvider: FC<CreateBillProviderProps> = ({
   children,
   groupID,
 }) => {
-  const { billForm, members, setInvolvedMembers, isLoading } =
-    useCreateBillDetails(groupID);
+  const {
+    billData,
+    billForm,
+    members,
+    isLoading,
+    setBasicInfo,
+    setInvolvedMembers,
+  } = useCreateBillDetails(groupID);
 
   return (
     <CreateBillContext.Provider
-      value={{ billForm, members, setInvolvedMembers, isLoading }}
+      value={{
+        billData,
+        billForm,
+        members,
+        isLoading,
+        setBasicInfo,
+        setInvolvedMembers,
+      }}
     >
       {children}
     </CreateBillContext.Provider>
