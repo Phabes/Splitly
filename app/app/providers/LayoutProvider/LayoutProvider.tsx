@@ -19,16 +19,18 @@ export const LayoutProvider: FC<LayoutProviderProps> = ({
   const styles = useStyles();
 
   return (
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}
-      accessible={false}
-    >
-      <BackgroundProvider>
-        {navbar}
+    <BackgroundProvider>
+      <TouchableWithoutFeedback
+        onPress={Keyboard.dismiss}
+        accessible={false}
+      >
+        <View style={styles.container}>
+          {navbar}
 
-        <View style={styles.content}>{children}</View>
-      </BackgroundProvider>
-    </TouchableWithoutFeedback>
+          <View style={styles.content}>{children}</View>
+        </View>
+      </TouchableWithoutFeedback>
+    </BackgroundProvider>
   );
 };
 
@@ -38,7 +40,6 @@ const useStyles = () => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors["background-app"],
     },
     content: {
       flex: 1,

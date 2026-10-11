@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { useBillWizard } from "../../../hooks/useBillWizard";
 import {
+  useConfirmContext,
   useCreateBillContext,
   useThemeContext,
   useTranslations,
@@ -18,6 +19,7 @@ import { useEffect, useState } from "react";
 
 export const Squad = () => {
   const translations = useTranslations();
+  const { showConfirm } = useConfirmContext();
 
   const { billData, billForm, members, setInvolvedMembers } =
     useCreateBillContext();
@@ -52,6 +54,16 @@ export const Squad = () => {
     goNext();
   };
 
+  const handleDiscardBill = () => {
+    showConfirm({
+      title: translations["discardBill"],
+      message: translations["discardBillQuestion"],
+      confirmText: translations["confirm"],
+      isDestructive: true,
+      onConfirm: exitWizard,
+    });
+  };
+
   const isNextDisabled = selectedIDs.length === 0;
   const isSelectAllDisabled = selectedIDs.length === members.length;
 
@@ -83,7 +95,7 @@ export const Squad = () => {
           <Button
             onPress={deselectAll}
             text={translations["deselectAll"]}
-            disabled={!isSelectAllDisabled}
+            disabled={isNextDisabled}
             variant="secondary"
           />
         </View>
@@ -118,13 +130,23 @@ export const Squad = () => {
         })}
       </Scroll>
 
-      <Button
-        text={
-          isLastStep ? translations["createBill"] : translations["nextStep"]
-        }
-        onPress={isLastStep ? exitWizard : handleNext}
-        disabled={isNextDisabled}
-      />
+      <View style={styles.bottomActions}>
+        <Button
+          text={translations["discardBill"]}
+          onPress={handleDiscardBill}
+          variant="destructive"
+          fullWidth
+        />
+
+        <Button
+          text={
+            isLastStep ? translations["createBill"] : translations["nextStep"]
+          }
+          onPress={isLastStep ? exitWizard : handleNext}
+          disabled={isNextDisabled}
+          fullWidth
+        />
+      </View>
     </LayoutProvider>
   );
 };
@@ -143,6 +165,10 @@ const useStyles = () => {
     nameContainer: {
       flex: 1,
       flexDirection: "row",
+    },
+    bottomActions: {
+      flexDirection: "row",
+      gap: theme.spacing(3),
     },
   });
 };

@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from "expo-router";
 export type CreateBillParamList = {
   BasicInfo: undefined;
   Squad: undefined;
+  Positions: undefined;
   Step2: undefined;
   Step3: undefined;
 };

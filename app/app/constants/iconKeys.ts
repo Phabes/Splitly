@@ -28,7 +28,8 @@ export type IconKeys =
   | "Balances"
   | "Statistics"
   | "CheckboxChecked"
-  | "CheckboxUnchecked";
+  | "CheckboxUnchecked"
+  | "Trash";
 
 export default function Index() {
   return null;

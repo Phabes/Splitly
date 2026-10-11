@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { useBillWizard } from "../../../hooks/useBillWizard";
 import {
+  useConfirmContext,
   useCreateBillContext,
   useCurrencies,
   useCurrencySelectData,
@@ -24,8 +25,9 @@ import { useMemo } from "react";
 
 export const BasicInfo = () => {
   const translations = useTranslations();
-  const { billForm, members, isLoading, setBasicInfo } = useCreateBillContext();
+  const { showConfirm } = useConfirmContext();
 
+  const { billForm, members, isLoading, setBasicInfo } = useCreateBillContext();
   const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
     useBillWizard();
 
@@ -60,6 +62,16 @@ export const BasicInfo = () => {
     );
 
     goNext();
+  };
+
+  const handleDiscardBill = () => {
+    showConfirm({
+      title: translations["discardBill"],
+      message: translations["discardBillQuestion"],
+      confirmText: translations["confirm"],
+      isDestructive: true,
+      onConfirm: exitWizard,
+    });
   };
 
   const isNextDisabled =
@@ -105,7 +117,7 @@ export const BasicInfo = () => {
 
                       billForm.totalAmountField.setValue(formattedText);
                     }}
-                    placeholder={translations["totalAmountPlaceholder"]}
+                    placeholder={translations["floatPlaceholder"]}
                     keyboardType="numeric"
                   />
                 </View>
@@ -140,13 +152,23 @@ export const BasicInfo = () => {
           </View>
         </Scroll>
 
-        <Button
-          text={
-            isLastStep ? translations["createBill"] : translations["nextStep"]
-          }
-          onPress={isLastStep ? exitWizard : handleNext}
-          disabled={isNextDisabled}
-        />
+        <View style={styles.bottomActions}>
+          <Button
+            text={translations["discardBill"]}
+            onPress={handleDiscardBill}
+            variant="destructive"
+            fullWidth
+          />
+
+          <Button
+            text={
+              isLastStep ? translations["createBill"] : translations["nextStep"]
+            }
+            onPress={isLastStep ? exitWizard : handleNext}
+            disabled={isNextDisabled}
+            fullWidth
+          />
+        </View>
       </LoadingWrapper>
     </LayoutProvider>
   );
@@ -162,6 +184,10 @@ const useStyles = () => {
     currencyContainer: { flexDirection: "row", alignItems: "center" },
     currencyNumber: { flex: 6 },
     currencySymbol: { flex: 2, alignItems: "center" },
+    bottomActions: {
+      flexDirection: "row",
+      gap: theme.spacing(3),
+    },
   });
 };
 

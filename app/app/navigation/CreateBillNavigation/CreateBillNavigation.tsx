@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from "expo-router/native-stack";
 import { CreateBillParamList } from "./CreateBillNavigationProps";
 import Step2 from "@/app/screens/CreateBill/steps/step2";
 import Step3 from "@/app/screens/CreateBill/steps/step3";
-import { BasicInfo, Squad } from "@/app/screens/CreateBill/steps";
+import { BasicInfo, Positions, Squad } from "@/app/screens/CreateBill/steps";
 
 const Stack = createNativeStackNavigator<CreateBillParamList>();
 
@@ -23,6 +23,10 @@ export const CreateBillNavigation = () => {
       <Stack.Screen
         name="Squad"
         component={Squad}
+      />
+      <Stack.Screen
+        name="Positions"
+        component={Positions}
       />
       <Stack.Screen
         name="Step2"

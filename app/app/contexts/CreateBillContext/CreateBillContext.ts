@@ -1,5 +1,5 @@
 import { useFormData } from "@/app/hooks";
-import { CreateBillData, UserResult } from "@/app/types";
+import { BillPosition, CreateBillData, UserResult } from "@/app/types";
 import { createContext } from "react";
 
 type FormField = ReturnType<typeof useFormData>;
@@ -23,6 +23,8 @@ export interface CreateBillContextValue {
   setInvolvedMembers: (
     newInvolvedMembers: CreateBillData["involvedMembers"],
   ) => void;
+  addPositions: (newPositions: BillPosition[]) => void;
+  removePosition: (indexToRemove: number) => void;
 }
 
 export const CreateBillContext = createContext<

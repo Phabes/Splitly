@@ -1,12 +1,13 @@
 import { useAuthContext, useAuthenticatedApi, useFormData } from "@/app/hooks";
 import { getGroupBillDetailsCall } from "@/app/services";
 import {
+  BillPosition,
   CreateBillData,
   GroupBillDetailsResponse,
   ResponseMessage,
   UserResult,
 } from "@/app/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export const useCreateBillDetails = (groupID: string) => {
   const request = useAuthenticatedApi();
@@ -58,6 +59,22 @@ export const useCreateBillDetails = (groupID: string) => {
     }));
   };
 
+  const addPositions = useCallback((newPositions: BillPosition[]) => {
+    setBillData((prevData) => ({
+      ...prevData,
+      positions: [...prevData.positions, ...newPositions],
+    }));
+  }, []);
+
+  const removePosition = useCallback((indexToRemove: number) => {
+    setBillData((prevData) => ({
+      ...prevData,
+      positions: prevData.positions.filter(
+        (_, index) => index !== indexToRemove,
+      ),
+    }));
+  }, []);
+
   useEffect(() => {
     const fetchGroupBillDetails = async () => {
       try {
@@ -91,6 +108,8 @@ export const useCreateBillDetails = (groupID: string) => {
     isLoading,
     setBasicInfo,
     setInvolvedMembers,
+    addPositions,
+    removePosition,
   };
 };
 

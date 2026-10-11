@@ -53,18 +53,20 @@ export type GroupDetailsResult = {
   members: GroupMemberResult[];
 };
 
+export type BillPosition = {
+  name: string;
+  unitPrice: number;
+  quantity: number;
+  isSharedByAll: boolean;
+};
+
 export type CreateBillData = {
   name: string;
   totalAmount: number;
   currency: Currency["code"];
   payerID: string;
   involvedMembers: string[];
-  positions: {
-    name: string;
-    unitPrice: number;
-    quantity: number;
-    isSharedByAll: boolean;
-  }[];
+  positions: BillPosition[];
 };
 
 export default function Index() {

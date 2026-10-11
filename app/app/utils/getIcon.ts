@@ -20,6 +20,7 @@ import {
   faRotateRight,
   faSearch,
   faSquareCheck,
+  faTrash,
   faUser,
   faUserCircle,
   faUserFriends,
@@ -65,6 +66,7 @@ const Icons: Record<IconKeys, IconDefinition> = {
   Statistics: faChartPie,
   CheckboxChecked: faSquareCheck,
   CheckboxUnchecked: faSquare,
+  Trash: faTrash,
 };
 
 export const getIcon = (name: IconKeys): IconDefinition => {
