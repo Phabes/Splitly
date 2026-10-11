@@ -17,7 +17,10 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
 export const AppNavigation = () => {
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: "transparent" },
+      }}
       initialRouteName="MainTabs"
     >
       <Stack.Screen

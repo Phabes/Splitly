@@ -12,6 +12,7 @@ export const CreateBillNavigation = () => {
       screenOptions={{
         headerShown: false,
         animation: "slide_from_right",
+        contentStyle: { backgroundColor: "transparent" },
       }}
       initialRouteName="BasicInfo"
     >
