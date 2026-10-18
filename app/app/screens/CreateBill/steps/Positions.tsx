@@ -179,6 +179,7 @@ export const Positions = () => {
                     keyboardType="numeric"
                   />
                 </View>
+
                 <View style={styles.currencySymbol}>
                   <Typography
                     text={currencySymbol}
@@ -259,6 +260,7 @@ export const Positions = () => {
             >
               <View style={styles.itemLeft}>
                 <Typography text={position.name} />
+
                 <Typography
                   text={`${position.quantity} ${translations["multiplier"]} ${position.unitPrice.toFixed(2)} ${currencySymbol}`}
                   variant="body-small"
@@ -271,6 +273,7 @@ export const Positions = () => {
                   text={`${lineTotal} ${currencySymbol}`}
                   variant="header-small"
                 />
+
                 <TouchableIcon
                   icon="Trash"
                   size="medium"

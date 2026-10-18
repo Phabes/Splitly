@@ -79,6 +79,7 @@
   "balances": "Balances",
   "members": "Members",
   "editGroup": "Edit group",
+  "edittingGroup": "Editting group...",
   "noMembersSelectedYet": "No members selected yet",
   "addingMembers": "Adding members...",
   "viewProfile": "View profile",
@@ -117,6 +118,9 @@
   "quantity": "Quantity",
   "addPosition": "Add position",
   "addedPositions": "Added positions",
+  "sharedItemsTitle": "Which items were shared by everyone?",
+  "sharedByEveryone": "Shared by everyone",
+  "individualItems": "Individual items",
 
   "country_AD": "Andorra",
   "country_AE": "United Arab Emirates",

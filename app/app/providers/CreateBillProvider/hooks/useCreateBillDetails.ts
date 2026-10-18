@@ -75,6 +75,16 @@ export const useCreateBillDetails = (groupID: string) => {
     }));
   }, []);
 
+  const updateSharedPositions = useCallback((sharedIndexes: number[]) => {
+    setBillData((prevData) => ({
+      ...prevData,
+      positions: prevData.positions.map((pos, index) => ({
+        ...pos,
+        isSharedByAll: sharedIndexes.includes(index),
+      })),
+    }));
+  }, []);
+
   useEffect(() => {
     const fetchGroupBillDetails = async () => {
       try {
@@ -110,6 +120,7 @@ export const useCreateBillDetails = (groupID: string) => {
     setInvolvedMembers,
     addPositions,
     removePosition,
+    updateSharedPositions,
   };
 };
 

@@ -59,7 +59,7 @@ export const useEditGroupForm = (
   };
 
   const handleEditGroup = async () => {
-    showLoading(translations["creatingGroup"]);
+    showLoading(translations["edittingGroup"]);
     const isError = validateEditGroup();
     if (isError) {
       hideLoading();

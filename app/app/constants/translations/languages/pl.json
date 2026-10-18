@@ -79,6 +79,7 @@
   "balances": "Saldo",
   "members": "Członkowie",
   "editGroup": "Edycja grupy",
+  "edittingGroup": "Edytowanie grupy...",
   "noMembersSelectedYet": "Nie wybrano członków",
   "addingMembers": "Dodawanie członków...",
   "viewProfile": "Zobacz profil",
@@ -117,6 +118,9 @@
   "quantity": "Ilość",
   "addPosition": "Dodaj pozycję",
   "addedPositions": "Dodane pozycje",
+  "sharedItemsTitle": "Które pozycje były dzielone na wszystkich?",
+  "sharedByEveryone": "Dzielone na wszystich",
+  "individualItems": "Indywidualne pozycje",
 
   "country_AD": "Andora",
   "country_AE": "Zjednoczone Emiraty Arabskie",

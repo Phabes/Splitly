@@ -4,8 +4,8 @@ export type CreateBillParamList = {
   BasicInfo: undefined;
   Squad: undefined;
   Positions: undefined;
-  Step2: undefined;
-  Step3: undefined;
+  SharedPositions: undefined;
+  Summary: undefined;
 };
 
 export type CreateBillNavigationProps =

@@ -87,6 +87,7 @@ export type TranslationKeys =
   | "balances"
   | "members"
   | "editGroup"
+  | "edittingGroup"
   | "noMembersSelectedYet"
   | "addingMembers"
   | "viewProfile"
@@ -125,6 +126,9 @@ export type TranslationKeys =
   | "quantity"
   | "addPosition"
   | "addedPositions"
+  | "sharedItemsTitle"
+  | "sharedByEveryone"
+  | "individualItems"
   // countries
   | "country_AD"
   | "country_AE"

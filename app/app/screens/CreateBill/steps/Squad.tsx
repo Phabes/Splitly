@@ -15,7 +15,7 @@ import {
   Scroll,
   Typography,
 } from "@/app/components";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export const Squad = () => {
   const translations = useTranslations();
@@ -26,31 +26,37 @@ export const Squad = () => {
   const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
     useBillWizard();
 
-  const [selectedIDs, setSelectedIDs] = useState<string[]>([]);
+  const selectedIDs = billData.involvedMembers || [];
+
+  const hasAutoSelected = useRef(false);
 
   useEffect(() => {
-    if (billData.involvedMembers && billData.involvedMembers.length > 0) {
-      const previouslySelected = billData.involvedMembers;
-      setSelectedIDs(previouslySelected);
-    } else if (members.length > 0) {
-      setSelectedIDs(members.map((m) => m._id));
-    }
-  }, [billData.involvedMembers, members]);
+    if (!hasAutoSelected.current && members.length > 0) {
+      if (selectedIDs.length === 0) {
+        setInvolvedMembers(members.map((m) => m._id));
+      }
 
-  const selectAll = () => setSelectedIDs(members.map((m) => m._id));
-  const deselectAll = () => setSelectedIDs([]);
+      hasAutoSelected.current = true;
+    }
+  }, [members, selectedIDs.length, setInvolvedMembers]);
+
+  const selectAll = () => {
+    setInvolvedMembers(members.map((m) => m._id));
+  };
+
+  const deselectAll = () => {
+    setInvolvedMembers([]);
+  };
 
   const toggleMember = (id: string) => {
-    setSelectedIDs((prev) =>
-      prev.includes(id)
-        ? prev.filter((prevId) => prevId !== id)
-        : [...prev, id],
-    );
+    const nextIDs = selectedIDs.includes(id)
+      ? selectedIDs.filter((prevId) => prevId !== id)
+      : [...selectedIDs, id];
+
+    setInvolvedMembers(nextIDs);
   };
 
   const handleNext = () => {
-    setInvolvedMembers(selectedIDs);
-
     goNext();
   };
 
@@ -78,25 +84,26 @@ export const Squad = () => {
         />
       }
     >
-      <Typography
-        text={translations["whoWasInvolved"]}
-        variant="header-small"
-      />
+      <View style={styles.topSection}>
+        <Typography
+          text={translations["whoWasInvolved"]}
+          variant="header-small"
+        />
 
-      <View style={styles.actionRow}>
-        <View style={styles.actionbutton}>
+        <View style={styles.actionRow}>
           <Button
             onPress={selectAll}
             text={translations["selectAll"]}
             disabled={isSelectAllDisabled}
+            fullWidth
           />
-        </View>
-        <View style={styles.actionbutton}>
+
           <Button
             onPress={deselectAll}
             text={translations["deselectAll"]}
             disabled={isNextDisabled}
             variant="secondary"
+            fullWidth
           />
         </View>
       </View>
@@ -155,12 +162,12 @@ const useStyles = () => {
   const theme = useThemeContext();
 
   return StyleSheet.create({
+    topSection: {
+      gap: theme.spacing(3),
+    },
     actionRow: {
       flexDirection: "row",
       gap: theme.spacing(3),
-    },
-    actionbutton: {
-      flex: 1,
     },
     nameContainer: {
       flex: 1,
