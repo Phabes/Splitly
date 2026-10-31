@@ -2,7 +2,7 @@ import { useThemeContext } from "@/app/hooks";
 import { FC, ReactNode } from "react";
 import { TopTabBar } from "./components/TopTabBar";
 import { StyleSheet } from "react-native";
-import { createMaterialTopTabNavigator } from "expo-router/js-top-tabs";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 const Tab = createMaterialTopTabNavigator();
 

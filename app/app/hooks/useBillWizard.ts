@@ -1,4 +1,4 @@
-import { useRoute } from "expo-router/react-navigation";
+import { useRoute } from "@react-navigation/native";
 import { CreateBillParamList } from "../navigation/CreateBillNavigation/CreateBillNavigationProps";
 import { useCreateBillNavigation } from "./useCreateBillNavigation";
 import { useTranslations } from "./useTranslations";

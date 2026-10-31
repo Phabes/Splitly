@@ -1,4 +1,4 @@
-import { createNativeStackNavigator } from "expo-router/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { CreateBillParamList } from "./CreateBillNavigationProps";
 import {
   BasicInfo,

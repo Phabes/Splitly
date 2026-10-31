@@ -1,10 +1,10 @@
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
 import { GroupProvider } from "@/app/providers";
-import { RouteProp, useRoute } from "expo-router/react-navigation";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { BottomTabScreen, BottomTabSelector } from "@/app/components";
 import { Information } from "./tabs";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 export const GroupDetails: FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, "GroupDetails">>();

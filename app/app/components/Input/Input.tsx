@@ -36,7 +36,7 @@ export const Input: FC<InputProps> = ({
 }) => {
   const theme = useThemeContext();
 
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<any>(null);
   const [type, setType] = useState<InputProps["variant"] | "active">(variant);
   const [passwordShown, setPasswordShown] = useState(password);
 

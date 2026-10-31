@@ -7,7 +7,7 @@ import {
   GroupDetails,
   GroupRequests,
 } from "@/app/screens";
-import { createNativeStackNavigator } from "expo-router/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AppStackParamList } from "./AppNavigationProps";
 import { MainTabNavigation } from "../MainTabNavigation";
 import CreateBill from "@/app/screens/CreateBill/CreateBill";

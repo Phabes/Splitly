@@ -20,7 +20,7 @@ import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useEditGroupForm } from "./hooks";
 import { AppStackParamList } from "@/app/navigation/AppNavigation/AppNavigationProps";
-import { RouteProp, useRoute } from "expo-router/react-navigation";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 export const EditGroup: FC = () => {
   const translations = useTranslations();
