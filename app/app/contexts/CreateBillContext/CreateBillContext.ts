@@ -5,6 +5,7 @@ import { createContext } from "react";
 type FormField = ReturnType<typeof useFormData>;
 
 export interface CreateBillContextValue {
+  groupID: string;
   billData: CreateBillData;
   billForm: {
     billNameField: FormField;

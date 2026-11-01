@@ -129,6 +129,7 @@ export type TranslationKeys =
   | "sharedItemsTitle"
   | "sharedByEveryone"
   | "individualItems"
+  | "creatingBill"
   // countries
   | "country_AD"
   | "country_AE"

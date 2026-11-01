@@ -6,6 +6,7 @@ import routerUser from "./routes/users.ts";
 import routerFriend from "./routes/friends.ts";
 import routerGroup from "./routes/groups.ts";
 import routerCurrency from "./routes/currencies.ts";
+import routerBill from "./routes/bills.ts";
 import { initCurrencies } from "./services/currencies.ts";
 import { setServers } from "node:dns/promises";
 
@@ -23,6 +24,7 @@ app.use("/users", routerUser);
 app.use("/friends", routerFriend);
 app.use("/groups", routerGroup);
 app.use("/currencies", routerCurrency);
+app.use("/bills", routerBill);
 
 mongoose
   .connect(MONGO_URI)

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, DeviceEventEmitter } from "react-native";
 import { useBillWizard } from "../../../hooks/useBillWizard";
 import {
   useConfirmContext,
@@ -7,14 +7,19 @@ import {
   useCurrencies,
   useThemeContext,
   useTranslations,
+  useLoadingContext,
+  useAuthenticatedApi, // Ensure this hook provides showLoading / hideLoading
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { Button, ListItem, NavBar, Scroll, Typography } from "@/app/components";
+import { createBillCall } from "@/app/services";
 
 export const Summary = () => {
   const translations = useTranslations();
   const { showConfirm } = useConfirmContext();
-  const { billData, billForm } = useCreateBillContext();
+  const { showLoading, hideLoading } = useLoadingContext();
+  const request = useAuthenticatedApi();
+  const { billData, billForm, groupID } = useCreateBillContext();
   const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
     useBillWizard();
   const { currencies } = useCurrencies();
@@ -42,9 +47,30 @@ export const Summary = () => {
   };
 
   const handleCreateBill = async () => {
-    // Call your final API creation logic here!
-    // e.g., await submitBill();
-    // exitWizard(); // Or navigate to a success screen
+    showLoading(translations["creatingBill"]);
+
+    try {
+      const response = await request(
+        createBillCall,
+        groupID,
+        billForm.billNameField.value,
+        parseFloat(billForm.totalAmountField.value),
+        billForm.currencyField.value,
+        billData.positions,
+      );
+
+      if (response.ok) {
+        DeviceEventEmitter.emit("refreshBillList");
+        exitWizard();
+      } else {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      hideLoading();
+    }
   };
 
   const styles = useStyles();

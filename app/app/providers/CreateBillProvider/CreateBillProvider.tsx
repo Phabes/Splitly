@@ -25,6 +25,7 @@ export const CreateBillProvider: FC<CreateBillProviderProps> = ({
   return (
     <CreateBillContext.Provider
       value={{
+        groupID,
         billData,
         billForm,
         members,
