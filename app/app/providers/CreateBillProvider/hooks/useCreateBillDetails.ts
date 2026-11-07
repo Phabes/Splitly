@@ -75,6 +75,18 @@ export const useCreateBillDetails = (groupID: string) => {
     }));
   }, []);
 
+  const updatePosition = useCallback(
+    (indexToUpdate: number, updatedPosition: BillPosition) => {
+      setBillData((prevData) => ({
+        ...prevData,
+        positions: prevData.positions.map((pos, index) =>
+          index === indexToUpdate ? updatedPosition : pos,
+        ),
+      }));
+    },
+    [],
+  );
+
   const updateSharedPositions = useCallback((sharedIndexes: number[]) => {
     setBillData((prevData) => ({
       ...prevData,
@@ -120,6 +132,7 @@ export const useCreateBillDetails = (groupID: string) => {
     setInvolvedMembers,
     addPositions,
     removePosition,
+    updatePosition,
     updateSharedPositions,
   };
 };

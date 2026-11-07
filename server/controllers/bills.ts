@@ -8,13 +8,23 @@ export const createBill = async (
 ): Promise<any> => {
   try {
     const currentUserID = req.userID;
-    const { groupID, name, totalAmount, currency, positions } = req.body;
+    const {
+      groupID,
+      name,
+      totalAmount,
+      currency,
+      payerID,
+      involvedMembers,
+      positions,
+    } = req.body;
 
     if (
       !groupID ||
       !name ||
       totalAmount === undefined ||
       !currency ||
+      !payerID ||
+      !involvedMembers ||
       !positions
     ) {
       return res.status(400).json({
@@ -23,24 +33,47 @@ export const createBill = async (
       });
     }
 
+    const processedPositions = positions.map((pos: any) => {
+      const quantity = Number(pos.quantity) || 1;
+      const isSharedByAll = Boolean(pos.isSharedByAll);
+      const instances = [];
+
+      if (!isSharedByAll) {
+        for (let i = 0; i < quantity; i++) {
+          instances.push({
+            isSharedByAll: false,
+            members: [],
+          });
+        }
+      }
+
+      return {
+        name: pos.name,
+        unitPrice: Number(pos.unitPrice),
+        quantity,
+        isSharedByAll,
+        ...(instances.length > 0 && { instances }),
+      };
+    });
+
     const newBill = new Bill({
       groupID,
       name,
       totalAmount: Number(totalAmount),
       currency,
-      positions,
+      payerID,
+      involvedMembers,
+      positions: processedPositions,
       createdBy: currentUserID,
     });
 
-    const savedBill = await newBill.save();
+    await newBill.save();
 
     return res.status(201).json({
       code: "createBill/success",
       message: "Bill created successfully.",
-      bill: savedBill,
     });
   } catch (error) {
-    console.error("Error creating bill:", error);
     return res.status(500).json({
       code: "createBill/error",
       message: "Server error during bill creation.",

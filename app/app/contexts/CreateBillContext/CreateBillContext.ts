@@ -26,6 +26,10 @@ export interface CreateBillContextValue {
   ) => void;
   addPositions: (newPositions: BillPosition[]) => void;
   removePosition: (indexToRemove: number) => void;
+  updatePosition: (
+    indexToUpdate: number,
+    updatedPosition: BillPosition,
+  ) => void;
   updateSharedPositions: (sharedIndexes: number[]) => void;
 }
 

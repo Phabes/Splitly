@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { StyleSheet, View, DeviceEventEmitter } from "react-native";
-import { useBillWizard } from "../../../hooks/useBillWizard";
 import {
   useConfirmContext,
   useCreateBillContext,
@@ -8,7 +7,8 @@ import {
   useThemeContext,
   useTranslations,
   useLoadingContext,
-  useAuthenticatedApi, // Ensure this hook provides showLoading / hideLoading
+  useAuthenticatedApi,
+  useBillWizard,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { Button, ListItem, NavBar, Scroll, Typography } from "@/app/components";
@@ -19,17 +19,17 @@ export const Summary = () => {
   const { showConfirm } = useConfirmContext();
   const { showLoading, hideLoading } = useLoadingContext();
   const request = useAuthenticatedApi();
-  const { billData, billForm, groupID } = useCreateBillContext();
+  const { billData, groupID } = useCreateBillContext();
   const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
     useBillWizard();
   const { currencies } = useCurrencies();
 
   const currencySymbol = useMemo(() => {
     const selectedCurrency = currencies.find(
-      (currency) => currency.code === billForm.currencyField.value,
+      (currency) => currency.code === billData.currency,
     );
     return selectedCurrency ? selectedCurrency.symbol : "";
-  }, [currencies, billForm.currencyField.value]);
+  }, [currencies, billData.currency]);
 
   const sharedPositions = billData.positions.filter((p) => p.isSharedByAll);
   const individualPositions = billData.positions.filter(
@@ -53,9 +53,11 @@ export const Summary = () => {
       const response = await request(
         createBillCall,
         groupID,
-        billForm.billNameField.value,
-        parseFloat(billForm.totalAmountField.value),
-        billForm.currencyField.value,
+        billData.name,
+        billData.totalAmount,
+        billData.currency,
+        billData.payerID,
+        billData.involvedMembers,
         billData.positions,
       );
 
@@ -86,12 +88,12 @@ export const Summary = () => {
     >
       <View style={styles.headerSection}>
         <Typography
-          text={billForm.billNameField.value}
+          text={billData.name}
           variant="header-large"
         />
 
         <Typography
-          text={`${translations["totalAmount"]}: ${parseFloat(billForm.totalAmountField.value).toFixed(2)} ${currencySymbol}`}
+          text={`${translations["totalAmount"]}: ${billData.totalAmount} ${currencySymbol}`}
           variant="header-small"
           color="text-primary"
         />

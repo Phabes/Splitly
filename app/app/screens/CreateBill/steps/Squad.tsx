@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
-import { useBillWizard } from "../../../hooks/useBillWizard";
 import {
+  useBillWizard,
   useConfirmContext,
   useCreateBillContext,
   useThemeContext,
@@ -21,8 +21,7 @@ export const Squad = () => {
   const translations = useTranslations();
   const { showConfirm } = useConfirmContext();
 
-  const { billData, billForm, members, setInvolvedMembers } =
-    useCreateBillContext();
+  const { billData, members, setInvolvedMembers } = useCreateBillContext();
   const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
     useBillWizard();
 
@@ -114,7 +113,7 @@ export const Squad = () => {
       >
         {members.map((member, i) => {
           const isSelected = selectedIDs.includes(member._id);
-          const isPayer = member._id === billForm.payerIDField.value;
+          const isPayer = member._id === billData.payerID;
 
           return (
             <ListItem

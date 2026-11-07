@@ -1,7 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { useBillWizard } from "../../../hooks/useBillWizard";
 import {
+  useBillWizard,
   useConfirmContext,
   useCreateBillContext,
   useCurrencies,
@@ -26,7 +26,7 @@ export const Positions = () => {
   const translations = useTranslations();
   const { showConfirm } = useConfirmContext();
 
-  const { billData, billForm, addPositions, removePosition } =
+  const { billData, addPositions, removePosition, updatePosition } =
     useCreateBillContext();
   const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
     useBillWizard();
@@ -37,14 +37,16 @@ export const Positions = () => {
   const positionAmountField = useFormData("");
   const positionQtyField = useFormData("1");
 
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
   const styles = useStyles();
 
   const currencySymbol = useMemo(() => {
     const selectedCurrency = currencies.find(
-      (currency) => currency.code === billForm.currencyField.value,
+      (currency) => currency.code === billData.currency,
     );
     return selectedCurrency ? selectedCurrency.symbol : "";
-  }, [currencies, billForm.currencyField.value]);
+  }, [currencies, billData.currency]);
 
   const allocatedAmount = useMemo(() => {
     return billData.positions.reduce(
@@ -53,8 +55,7 @@ export const Positions = () => {
     );
   }, [billData.positions]);
 
-  const totalBillAmount = parseFloat(billForm.totalAmountField.value) || 0;
-
+  const totalBillAmount = billData.totalAmount;
   const currentQty = parseInt(positionQtyField.value, 10) || 0;
 
   const handleDecrementQty = () => {
@@ -67,7 +68,7 @@ export const Positions = () => {
     positionQtyField.setValue(String(currentQty + 1));
   };
 
-  const handleAddSinglePosition = () => {
+  const handleSavePosition = () => {
     const parsedAmount = parseFloat(positionAmountField.value);
     const parsedQty = currentQty > 0 ? currentQty : 1;
 
@@ -79,15 +80,51 @@ export const Positions = () => {
       return;
     }
 
-    addPositions([
-      {
+    if (editingIndex !== null) {
+      // Edit existing position
+      updatePosition(editingIndex, {
         name: positionNameField.value.trim(),
         unitPrice: parsedAmount,
         quantity: parsedQty,
-        isSharedByAll: false,
-      },
-    ]);
+        isSharedByAll: billData.positions[editingIndex].isSharedByAll,
+      });
+      setEditingIndex(null);
+    } else {
+      // Add new position
+      addPositions([
+        {
+          name: positionNameField.value.trim(),
+          unitPrice: parsedAmount,
+          quantity: parsedQty,
+          isSharedByAll: false,
+        },
+      ]);
+    }
 
+    // Reset form
+    positionNameField.setValue("");
+    positionAmountField.setValue("");
+    positionQtyField.setValue("1");
+  };
+
+  const handleEditPosition = (index: number) => {
+    const pos = billData.positions[index];
+    positionNameField.setValue(pos.name);
+    positionAmountField.setValue(String(pos.unitPrice));
+    positionQtyField.setValue(String(pos.quantity));
+    setEditingIndex(index);
+  };
+
+  const handleDuplicatePosition = (index: number) => {
+    const pos = billData.positions[index];
+    positionNameField.setValue(pos.name);
+    positionAmountField.setValue(String(pos.unitPrice));
+    positionQtyField.setValue(String(pos.quantity));
+    setEditingIndex(null); // Ensure we are adding a brand new item when saved
+  };
+
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
     positionNameField.setValue("");
     positionAmountField.setValue("");
     positionQtyField.setValue("1");
@@ -235,12 +272,30 @@ export const Positions = () => {
           </View>
         </View>
 
-        <Button
-          text={translations["addPosition"]}
-          onPress={handleAddSinglePosition}
-          disabled={isAddPositionDisabled}
-          variant="secondary"
-        />
+        {editingIndex !== null ? (
+          <View style={styles.editActionsRow}>
+            <Button
+              text={translations["cancel"]}
+              onPress={handleCancelEdit}
+              variant="destructive"
+              fullWidth
+            />
+            <Button
+              text={translations["save"]}
+              onPress={handleSavePosition}
+              disabled={isAddPositionDisabled}
+              variant="secondary"
+              fullWidth
+            />
+          </View>
+        ) : (
+          <Button
+            text={translations["addPosition"]}
+            onPress={handleSavePosition}
+            disabled={isAddPositionDisabled}
+            variant="secondary"
+          />
+        )}
       </View>
 
       <Typography
@@ -252,14 +307,18 @@ export const Positions = () => {
       <Scroll gapSize="small">
         {billData.positions.map((position, i) => {
           const lineTotal = (position.unitPrice * position.quantity).toFixed(2);
+          const isEditing = i === editingIndex;
 
           return (
             <ListItem
               key={`Positions/${i}`}
-              onPress={() => {}}
+              onPress={() => handleEditPosition(i)}
             >
               <View style={styles.itemLeft}>
-                <Typography text={position.name} />
+                <Typography
+                  text={position.name}
+                  color={isEditing ? "text-primary" : undefined}
+                />
 
                 <Typography
                   text={`${position.quantity} ${translations["multiplier"]} ${position.unitPrice.toFixed(2)} ${currencySymbol}`}
@@ -272,6 +331,12 @@ export const Positions = () => {
                 <Typography
                   text={`${lineTotal} ${currencySymbol}`}
                   variant="header-small"
+                />
+
+                <TouchableIcon
+                  icon="Copy"
+                  size="medium"
+                  onPress={() => handleDuplicatePosition(i)}
                 />
 
                 <TouchableIcon
@@ -323,6 +388,10 @@ const useStyles = () => {
       gap: theme.spacing(3),
       paddingVertical: theme.spacing(2),
     },
+    editActionsRow: {
+      flexDirection: "row",
+      gap: theme.spacing(2),
+    },
     amountAndQtyRow: {
       flexDirection: "row",
       gap: theme.spacing(3),
@@ -364,7 +433,7 @@ const useStyles = () => {
     itemRight: {
       flexDirection: "row",
       alignItems: "center",
-      gap: theme.spacing(3),
+      gap: theme.spacing(2),
     },
     bottomActions: {
       flexDirection: "row",

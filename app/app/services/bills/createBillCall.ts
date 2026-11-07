@@ -1,10 +1,14 @@
+import { BillPosition, Currency } from "@/app/types";
+
 export const createBillCall = (
   token: string,
   groupID: string,
   name: string,
   totalAmount: number,
-  currency: string,
-  positions: any[],
+  currency: Currency["code"],
+  payerID: string,
+  involvedMembers: string[],
+  positions: BillPosition[],
 ) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;
@@ -23,6 +27,8 @@ export const createBillCall = (
       name,
       totalAmount,
       currency,
+      payerID,
+      involvedMembers,
       positions,
     }),
   });

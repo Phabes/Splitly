@@ -29,7 +29,8 @@ export type IconKeys =
   | "Statistics"
   | "CheckboxChecked"
   | "CheckboxUnchecked"
-  | "Trash";
+  | "Trash"
+  | "Copy";
 
 export default function Index() {
   return null;

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
-import { useBillWizard } from "../../../hooks/useBillWizard";
 import {
+  useBillWizard,
   useConfirmContext,
   useCreateBillContext,
   useCurrencies,
@@ -21,7 +21,7 @@ import {
 export const SharedPositions = () => {
   const translations = useTranslations();
   const { showConfirm } = useConfirmContext();
-  const { billData, billForm, updateSharedPositions } = useCreateBillContext();
+  const { billData, updateSharedPositions } = useCreateBillContext();
   const { headerTitle, goNext, goBack, exitWizard, isLastStep } =
     useBillWizard();
   const { currencies } = useCurrencies();
@@ -34,10 +34,10 @@ export const SharedPositions = () => {
 
   const currencySymbol = useMemo(() => {
     const selectedCurrency = currencies.find(
-      (currency) => currency.code === billForm.currencyField.value,
+      (currency) => currency.code === billData.currency,
     );
     return selectedCurrency ? selectedCurrency.symbol : "";
-  }, [currencies, billForm.currencyField.value]);
+  }, [currencies, billData.currency]);
 
   const selectAll = () => {
     updateSharedPositions(billData.positions.map((_, index) => index));

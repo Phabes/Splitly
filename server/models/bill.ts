@@ -1,5 +1,18 @@
 import mongoose from "mongoose";
 
+const InstanceSchema = new mongoose.Schema({
+  isSharedByAll: {
+    type: Boolean,
+    default: false,
+  },
+  members: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+});
+
 const PositionSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -17,12 +30,7 @@ const PositionSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  assignedUsers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
+  instances: [InstanceSchema],
 });
 
 const BillSchema = new mongoose.Schema({
@@ -43,6 +51,17 @@ const BillSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  payerID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  involvedMembers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   positions: [PositionSchema],
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,

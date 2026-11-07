@@ -18,6 +18,7 @@ export type TranslationKeys =
   | "intPlaceholder"
   | "floatPlaceholder"
   | "multiplier"
+  | "save"
   // authentication
   | "signUp"
   | "signIn"

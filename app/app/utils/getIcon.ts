@@ -7,6 +7,7 @@ import {
   faChevronDown,
   faChevronUp,
   faCog,
+  faCopy,
   faCrown,
   faEllipsisVertical,
   faEye,
@@ -67,6 +68,7 @@ const Icons: Record<IconKeys, IconDefinition> = {
   CheckboxChecked: faSquareCheck,
   CheckboxUnchecked: faSquare,
   Trash: faTrash,
+  Copy: faCopy,
 };
 
 export const getIcon = (name: IconKeys): IconDefinition => {

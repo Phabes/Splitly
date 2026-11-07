@@ -19,6 +19,7 @@ export const CreateBillProvider: FC<CreateBillProviderProps> = ({
     setInvolvedMembers,
     addPositions,
     removePosition,
+    updatePosition,
     updateSharedPositions,
   } = useCreateBillDetails(groupID);
 
@@ -34,6 +35,7 @@ export const CreateBillProvider: FC<CreateBillProviderProps> = ({
         setInvolvedMembers,
         addPositions,
         removePosition,
+        updatePosition,
         updateSharedPositions,
       }}
     >
