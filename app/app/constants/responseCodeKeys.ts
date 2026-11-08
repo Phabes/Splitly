@@ -85,7 +85,11 @@ export type ResponseCodeKeys =
   | "transferOwnership/member-not-found"
   | "transferOwnership/already-owner"
   | "transferOwnership/success"
-  | "transferOwnership/error";
+  | "transferOwnership/error"
+  // controllers/bills
+  | "createBill/missingFields"
+  | "createBill/success"
+  | "createBill/error";
 
 export default function Index() {
   return null;

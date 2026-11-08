@@ -1,10 +1,10 @@
 import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
+import { GroupRequest } from "@/middleware/groupMiddleware.ts";
 import { validCurrency } from "@/utils/validCurrency.ts";
-import Group from "@/models/group.ts";
 import User from "@/models/user.ts";
 import Friend from "@/models/friend.ts";
-import { GroupRequest } from "@/middleware/groupMiddleware.ts";
+import Group from "@/models/group.ts";
 
 export const getGroupList = async (
   req: AuthRequest,

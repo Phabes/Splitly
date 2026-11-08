@@ -1,6 +1,6 @@
+import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
 import Bill from "@/models/bill.ts";
-import { Response } from "express";
 
 export const createBill = async (
   req: AuthRequest,
