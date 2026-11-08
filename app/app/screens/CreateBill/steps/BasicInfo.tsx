@@ -103,6 +103,16 @@ export const BasicInfo = () => {
               />
             </FormData>
 
+            <FormData labelText={translations["billCurrency"]}>
+              <Select
+                selectData={sortedCurrencies}
+                value={billForm.currencyField.value}
+                onSelect={billForm.currencyField.setValue}
+                activeSearch={true}
+                searchPlaceholder={translations["searchCurrency"]}
+              />
+            </FormData>
+
             <FormData labelText={translations["totalAmount"]}>
               <View style={styles.currencyContainer}>
                 <View style={styles.currencyNumber}>
@@ -129,16 +139,6 @@ export const BasicInfo = () => {
                   />
                 </View>
               </View>
-            </FormData>
-
-            <FormData labelText={translations["billCurrency"]}>
-              <Select
-                selectData={sortedCurrencies}
-                value={billForm.currencyField.value}
-                onSelect={billForm.currencyField.setValue}
-                activeSearch={true}
-                searchPlaceholder={translations["searchCurrency"]}
-              />
             </FormData>
 
             <FormData labelText={translations["paidBy"]}>
