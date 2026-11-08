@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
-import User from "@/models/user.ts";
+import { getSafeUser } from "@/utils/getSafeUser.ts";
 import { generateTokens } from "@/utils/generateTokens.ts";
 import { verifyToken } from "@/utils/verifyToken.ts";
 import { signInValidator, signUpValidator } from "@/validators/users.ts";
-import { getSafeUser } from "@/utils/getSafeUser.ts";
+import User from "@/models/user.ts";
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "REFRESH_KEY";
 

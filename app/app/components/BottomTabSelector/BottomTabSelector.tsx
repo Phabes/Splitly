@@ -1,16 +1,15 @@
-import { FC, ReactNode } from "react";
+import { FC, PropsWithChildren } from "react";
 import { BottomTabBar } from "./components/BottomTabBar";
-import { createBottomTabNavigator } from "expo-router/js-tabs";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const Tab = createBottomTabNavigator();
 
 export const BottomTabScreen = Tab.Screen;
 
-interface BottomTabSelectorProps {
-  children: ReactNode;
-  initialRouteName: string;
+type BottomTabSelectorProps = PropsWithChildren<{
+  initialRouteName?: string;
   showTitle?: boolean;
-}
+}>;
 
 export const BottomTabSelector: FC<BottomTabSelectorProps> = ({
   children,
@@ -19,7 +18,7 @@ export const BottomTabSelector: FC<BottomTabSelectorProps> = ({
 }) => {
   return (
     <Tab.Navigator
-      tabBar={(props) => (
+      tabBar={(props: any) => (
         <BottomTabBar
           {...props}
           showTitle={showTitle}

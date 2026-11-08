@@ -1,7 +1,7 @@
 import { IconKeys } from "@/app/constants/iconKeys";
 import { TranslationKeys } from "@/app/constants/translations";
 import { useThemeContext, useTranslations } from "@/app/hooks";
-import { BottomTabBarProps } from "expo-router/js-tabs";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { FC } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "../../../Icon";
@@ -22,11 +22,14 @@ export const BottomTabBar: FC<TabProps> = ({
 
   return (
     <View style={styles.container}>
-      {state.routes.map((route, index) => {
+      {state.routes.map((route: any, index: any) => {
         const isFocused = state.index === index;
 
         const handlePlusPress = () => {
-          navigation.navigate("CreateBill");
+          const { groupID } = route.params as {
+            groupID: string;
+          };
+          navigation.navigate("CreateBill", { groupID });
         };
 
         const handleStandardPress = () => {

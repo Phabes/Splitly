@@ -1,6 +1,6 @@
 import { GroupDetailsResult, SimpleUser } from "@/app/types";
-import { NativeStackNavigationProp } from "expo-router";
-import { NavigatorScreenParams } from "expo-router/react-navigation";
+import { NavigatorScreenParams } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type TabParamList = {
   Friends: undefined;
@@ -20,6 +20,7 @@ export type AppStackParamList = {
   GroupRequests: undefined;
   GroupDetails: { groupID: string };
   EditGroup: GroupDetailsResult;
+  CreateBill: { groupID: string };
 };
 
 export type AppNavigationProps = NativeStackNavigationProp<AppStackParamList>;

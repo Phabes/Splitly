@@ -97,7 +97,7 @@ export const Select: FC<SelectProps> = ({
               />
             )}
             <Typography
-              variant="body-large"
+              variant="body-small"
               text={item.label}
               color={disabled ? "background-disabled" : "text-primary"}
             />
@@ -160,7 +160,6 @@ const useStyles = (
       borderRadius: theme.spacing(2),
     },
     placeholder: {
-      textTransform: "capitalize",
       color: theme.colors[placeholderText],
     },
     optionsContainer: {

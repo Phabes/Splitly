@@ -1,10 +1,10 @@
 import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
+import { GroupRequest } from "@/middleware/groupMiddleware.ts";
 import { validCurrency } from "@/utils/validCurrency.ts";
-import Group from "@/models/group.ts";
 import User from "@/models/user.ts";
 import Friend from "@/models/friend.ts";
-import { GroupRequest } from "@/middleware/groupMiddleware.ts";
+import Group from "@/models/group.ts";
 
 export const getGroupList = async (
   req: AuthRequest,
@@ -750,6 +750,33 @@ export const transferOwnership = async (
     return res.status(500).json({
       code: "transferOwnership/error",
       message: "Server error while transferring ownership.",
+    });
+  }
+};
+
+export const getCreateBillDetails = async (
+  req: GroupRequest,
+  res: Response,
+) => {
+  try {
+    const group = req.group!;
+
+    await group.populate("members.user", "username email");
+
+    const cleanMembers = group.members.map((member: any) => ({
+      _id: member.user._id,
+      username: member.user.username,
+      email: member.user.email,
+    }));
+
+    return res.status(200).json({
+      baseCurrency: group.baseCurrency,
+      members: cleanMembers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: "getCreateBillDetails/error",
+      message: "Server error while getting create bill details.",
     });
   }
 };

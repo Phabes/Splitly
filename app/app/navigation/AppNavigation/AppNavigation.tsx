@@ -7,21 +7,25 @@ import {
   GroupDetails,
   GroupRequests,
 } from "@/app/screens";
-import { createNativeStackNavigator } from "expo-router/build/react-navigation/native-stack";
-import { TabNavigation } from "../TabNavigation";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AppStackParamList } from "./AppNavigationProps";
+import { MainTabNavigation } from "../MainTabNavigation";
+import CreateBill from "@/app/screens/CreateBill/CreateBill";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 export const AppNavigation = () => {
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: "transparent" },
+      }}
       initialRouteName="MainTabs"
     >
       <Stack.Screen
         name="MainTabs"
-        component={TabNavigation}
+        component={MainTabNavigation}
       />
       <Stack.Screen
         name="AddFriend"
@@ -50,6 +54,10 @@ export const AppNavigation = () => {
       <Stack.Screen
         name="EditGroup"
         component={EditGroup}
+      />
+      <Stack.Screen
+        name="CreateBill"
+        component={CreateBill}
       />
     </Stack.Navigator>
   );

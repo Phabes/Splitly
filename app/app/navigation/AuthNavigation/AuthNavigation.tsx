@@ -1,4 +1,4 @@
-import { createNativeStackNavigator } from "expo-router/build/react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "./AuthNavigationProps";
 import { SignIn, SignUp } from "@/app/screens";
 
@@ -7,7 +7,10 @@ const Stack = createNativeStackNavigator<AuthStackParamList>();
 export const AuthNavigation = () => {
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: "transparent" },
+      }}
       initialRouteName="SignIn"
     >
       <Stack.Screen

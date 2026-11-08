@@ -1,6 +1,6 @@
 import { TranslationKeys } from "@/app/constants/translations";
 import { useThemeContext, useTranslations } from "@/app/hooks";
-import { MaterialTopTabBarProps } from "expo-router/js-top-tabs";
+import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
 import { FC } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Typography } from "../../../Typography";

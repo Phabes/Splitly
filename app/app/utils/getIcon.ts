@@ -7,6 +7,7 @@ import {
   faChevronDown,
   faChevronUp,
   faCog,
+  faCopy,
   faCrown,
   faEllipsisVertical,
   faEye,
@@ -19,6 +20,8 @@ import {
   faRightLeft,
   faRotateRight,
   faSearch,
+  faSquareCheck,
+  faTrash,
   faUser,
   faUserCircle,
   faUserFriends,
@@ -29,7 +32,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { IconKeys } from "../constants/iconKeys";
 
-import { faBell as faEmptyBell } from "@fortawesome/free-regular-svg-icons";
+import {
+  faBell as faEmptyBell,
+  faSquare,
+} from "@fortawesome/free-regular-svg-icons";
 
 const Icons: Record<IconKeys, IconDefinition> = {
   Bars: faBars,
@@ -59,6 +65,10 @@ const Icons: Record<IconKeys, IconDefinition> = {
   Expences: faReceipt,
   Balances: faRightLeft,
   Statistics: faChartPie,
+  CheckboxChecked: faSquareCheck,
+  CheckboxUnchecked: faSquare,
+  Trash: faTrash,
+  Copy: faCopy,
 };
 
 export const getIcon = (name: IconKeys): IconDefinition => {

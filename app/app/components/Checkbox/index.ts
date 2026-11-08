@@ -1,4 +1,4 @@
-export { TabNavigation } from "./TabNavigation";
+export { Checkbox } from "./Checkbox";
 
 export default function Index() {
   return null;

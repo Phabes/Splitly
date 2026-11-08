@@ -9,16 +9,26 @@ interface FloatingMenuProps {
 }
 
 export const FloatingMenu: FC<FloatingMenuProps> = ({ options }) => {
-  const triggerRef = useRef<View>(null);
+  // Use 'any' to safely bypass React 19 / RN 0.86 ref typing conflicts
+  const triggerRef = useRef<any>(null);
   const { showMenu } = useFloatingMenuContext();
 
   const handleOpen = () => {
-    triggerRef.current?.measure((x, y, width, height, pageX, pageY) => {
-      showMenu({
-        options,
-        trigger: { pageX, pageY, width, height },
-      });
-    });
+    triggerRef.current?.measure(
+      (
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        pageX: number,
+        pageY: number,
+      ) => {
+        showMenu({
+          options,
+          trigger: { pageX, pageY, width, height },
+        });
+      },
+    );
   };
 
   return (

@@ -1,39 +1,26 @@
-import { useState, useEffect } from "react";
-import { Currency, CurrencyListResponse, ResponseMessage } from "@/app/types";
-import useAuthenticatedApi from "./useAuthenticatedApi";
-import { getCurrencyListCall } from "../services/currencies";
+import { useMemo } from "react";
+import {
+  getSupportedCurrencies,
+  formatCurrency,
+} from "react-native-format-currency";
+import { Currency } from "../types";
 
 export const useCurrencies = () => {
-  const [currencies, setCurrencies] = useState<Currency[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const request = useAuthenticatedApi();
+  const currencies = useMemo<Currency[]>(() => {
+    const supportedCurrencies = getSupportedCurrencies();
 
-  useEffect(() => {
-    const fetchCurrencies = async () => {
-      try {
-        setIsLoading(true);
-        const response = await request(getCurrencyListCall);
+    return supportedCurrencies.map((currency) => {
+      const [, , symbol] = formatCurrency({ amount: 0, code: currency.code });
 
-        if (!response.ok) {
-          const data: ResponseMessage = await response.json();
-          throw new Error(data.message);
-        }
-
-        const data: CurrencyListResponse = await response.json();
-
-        setCurrencies(data.currencies);
-      } catch (error) {
-        // Error during fetching currencies
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCurrencies();
+      return {
+        code: currency.code,
+        name: currency.name,
+        symbol: symbol,
+      };
+    });
   }, []);
 
-  return { currencies, isLoading };
+  return { currencies };
 };
 
 export default useCurrencies;

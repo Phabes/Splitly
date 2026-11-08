@@ -1,4 +1,4 @@
-import { NativeStackNavigationProp } from "expo-router";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type AuthStackParamList = {
   SignUp: undefined;

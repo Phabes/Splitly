@@ -1,6 +1,7 @@
 export * from "./AddMembersContext";
 export * from "./AuthContext";
 export * from "./ConfirmContext";
+export * from "./CreateBillContext";
 export * from "./FloatingMenuContext";
 export * from "./GroupContext";
 export * from "./LanguageContext";
