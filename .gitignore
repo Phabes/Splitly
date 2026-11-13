@@ -11,6 +11,7 @@ app/node_modules/
 
 # Expo
 app/.expo/
+app/.vscode/
 app/dist/
 app/web-build/
 app/expo-env.d.ts

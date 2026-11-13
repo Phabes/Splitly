@@ -16,22 +16,30 @@ import { LayoutProvider } from "@/app/providers";
 export const SignUp: FC = () => {
   const translations = useTranslations();
   const navigation = useAuthNavigation();
+
   const {
     isLoading,
-    loadingText,
     emailField,
     usernameField,
     passwordField,
     repeatedPasswordField,
     handleSignUp,
   } = useSignUpData();
+
   const styles = useStyles();
 
   return (
-    <LayoutProvider navbar={<NavBar text={translations["signUp"]} />}>
+    <LayoutProvider
+      navbar={
+        <NavBar
+          text={translations["signUp"]}
+          showMenu={false}
+        />
+      }
+    >
       <LoadingWrapper
         isLoading={isLoading}
-        text={loadingText}
+        text={translations["loading"]}
       >
         <Scroll>
           <View style={styles.inputs}>

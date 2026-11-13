@@ -2,11 +2,12 @@ import { FC } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Typography } from "../Typography";
 import { useThemeContext } from "@/app/hooks";
+import { ColorKeys } from "@/app/constants/theme";
 
 type ButtonProps = {
   text: string;
   onPress: () => any;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "destructive";
   disabled?: boolean;
   fullWidth?: boolean;
 };
@@ -44,11 +45,13 @@ const useStyles = (
 ) => {
   const theme = useThemeContext();
 
-  const buttonColor = disabled
+  const buttonColor: ColorKeys = disabled
     ? "background-disabled"
     : variant === "primary"
       ? "background-primary"
-      : "background-secondary";
+      : variant === "secondary"
+        ? "background-secondary"
+        : "text-error";
 
   const addBackground = variant === "secondary" && !disabled;
 

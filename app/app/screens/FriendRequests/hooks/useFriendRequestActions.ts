@@ -3,7 +3,7 @@ import {
   useLoadingContext,
   useTranslations,
 } from "@/app/hooks";
-import { respondToFriendRequest } from "@/app/services";
+import { respondToFriendRequestCall } from "@/app/services";
 import { FriendRequestResult, ResponseMessage } from "@/app/types";
 import { Dispatch, SetStateAction } from "react";
 
@@ -19,7 +19,7 @@ export const useFriendRequestActions = (
 
     try {
       const response = await request(
-        respondToFriendRequest,
+        respondToFriendRequestCall,
         friendRequestID,
         "accepted",
       );
@@ -37,7 +37,7 @@ export const useFriendRequestActions = (
         throw new Error(data.message);
       }
     } catch (error) {
-      // Accepting friend request failed
+      // Error during accepting friend request
       console.error(error);
     } finally {
       hideLoading();
@@ -49,7 +49,7 @@ export const useFriendRequestActions = (
 
     try {
       const response = await request(
-        respondToFriendRequest,
+        respondToFriendRequestCall,
         friendRequestID,
         "rejected",
       );
@@ -67,7 +67,7 @@ export const useFriendRequestActions = (
         throw new Error(data.message);
       }
     } catch (error) {
-      // Rejecting friend request failed
+      // Error during rejecting friend request
       console.error(error);
     } finally {
       hideLoading();

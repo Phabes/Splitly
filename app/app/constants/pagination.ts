@@ -15,6 +15,9 @@ export const ADD_FRIENDS_SEARCH_DELAY = 500;
 // Groups screen constants
 export const GROUPS_SEARCH_DELAY = 500;
 
+// Add Members screen constants
+export const ADD_MEMBERS_SEARCH_DELAY = 500;
+
 export default function Index() {
   return null;
 }

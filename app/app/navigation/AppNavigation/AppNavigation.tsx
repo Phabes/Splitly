@@ -1,19 +1,31 @@
+import {
+  AddFriend,
+  AddMembers,
+  CreateGroup,
+  EditGroup,
+  FriendRequests,
+  GroupDetails,
+  GroupRequests,
+} from "@/app/screens";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AppStackParamList } from "./AppNavigationProps";
-import { TabNavigation } from "../TabNavigation";
-import { AddFriend, FriendRequests } from "@/app/screens";
+import { MainTabNavigation } from "../MainTabNavigation";
+import CreateBill from "@/app/screens/CreateBill/CreateBill";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 export const AppNavigation = () => {
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: "transparent" },
+      }}
       initialRouteName="MainTabs"
     >
       <Stack.Screen
         name="MainTabs"
-        component={TabNavigation}
+        component={MainTabNavigation}
       />
       <Stack.Screen
         name="AddFriend"
@@ -22,6 +34,30 @@ export const AppNavigation = () => {
       <Stack.Screen
         name="FriendRequests"
         component={FriendRequests}
+      />
+      <Stack.Screen
+        name="CreateGroup"
+        component={CreateGroup}
+      />
+      <Stack.Screen
+        name="AddMembers"
+        component={AddMembers}
+      />
+      <Stack.Screen
+        name="GroupRequests"
+        component={GroupRequests}
+      />
+      <Stack.Screen
+        name="GroupDetails"
+        component={GroupDetails}
+      />
+      <Stack.Screen
+        name="EditGroup"
+        component={EditGroup}
+      />
+      <Stack.Screen
+        name="CreateBill"
+        component={CreateBill}
       />
     </Stack.Navigator>
   );

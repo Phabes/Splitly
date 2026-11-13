@@ -16,7 +16,6 @@ export const useSignInData = () => {
   const passwordField = useFormData();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState(translations["loading"]);
 
   const clearAllErrors = () => {
     usernameField.setError(undefined);
@@ -55,7 +54,7 @@ export const useSignInData = () => {
 
       if (response.ok) {
         const data: SignInResponse = await response.json();
-        await signIn(data.userToken, data.refreshToken);
+        await signIn(data.userToken, data.refreshToken, data.user);
       } else if (response.status === 400) {
         const data: SignInFailResponse = await response.json();
         if (data.code === "signIn/fieldsValidationError") {
@@ -78,7 +77,7 @@ export const useSignInData = () => {
         throw new Error(data.message);
       }
     } catch (error) {
-      // Sign in error
+      // Error during sign in
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -87,7 +86,6 @@ export const useSignInData = () => {
 
   return {
     isLoading,
-    loadingText,
     usernameField,
     passwordField,
     handleSignIn,

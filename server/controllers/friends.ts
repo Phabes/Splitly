@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
-import Friend from "@/models/friend.ts";
 import User from "@/models/user.ts";
+import Friend from "@/models/friend.ts";
 
 export const searchFriendSuggestions = async (
   req: AuthRequest,
@@ -19,11 +19,11 @@ export const searchFriendSuggestions = async (
       status: { $in: ["accepted", "pending"] },
     });
 
-    const friendshipIds = existingFriendships.map((f) =>
+    const friendshipIDs = existingFriendships.map((f) =>
       f.requester!.toString() === currentUserID ? f.recipient : f.requester,
     );
 
-    const baseExclusionsSet = new Set([...friendshipIds, currentUserID]);
+    const baseExclusionsSet = new Set([...friendshipIDs, currentUserID]);
     const baseExclusions = Array.from(baseExclusionsSet);
 
     const fetchExclusionsSet = new Set([...baseExclusions, ...userIDs]);
@@ -68,13 +68,13 @@ export const sendFriendRequest = async (
   res: Response,
 ): Promise<any> => {
   try {
-    const { userToAdd } = req.body;
+    const { userToAddID } = req.body;
     const currentUserID = req.userID;
 
     const existingFriendship = await Friend.findOne({
       $or: [
-        { requester: currentUserID, recipient: userToAdd },
-        { requester: userToAdd, recipient: currentUserID },
+        { requester: currentUserID, recipient: userToAddID },
+        { requester: userToAddID, recipient: currentUserID },
       ],
     });
 
@@ -95,7 +95,7 @@ export const sendFriendRequest = async (
 
       existingFriendship.status = "pending";
       existingFriendship.requester = currentUserID as any;
-      existingFriendship.recipient = userToAdd;
+      existingFriendship.recipient = userToAddID;
       await existingFriendship.save();
 
       return res.status(200).json({
@@ -106,7 +106,7 @@ export const sendFriendRequest = async (
 
     const newFriendship = new Friend({
       requester: currentUserID,
-      recipient: userToAdd,
+      recipient: userToAddID,
       status: "pending",
     });
 
@@ -130,12 +130,12 @@ export const searchFriendRequests = async (
 ): Promise<any> => {
   try {
     const { limit = 10, friendRequestIDs = [] } = req.body;
-    const currentUserId = req.userID;
+    const currentUserID = req.userID;
 
     const limitNum = Number(limit);
 
     const baseFilter = {
-      recipient: currentUserId,
+      recipient: currentUserID,
       status: "pending",
     };
 
@@ -220,7 +220,7 @@ export const getFriendList = async (
 ): Promise<any> => {
   try {
     const { query = "", limit = 10, friendIDs = [] } = req.body;
-    const currentUserId = req.userID;
+    const currentUserID = req.userID;
 
     const limitNum = Number(limit);
     const searchQuery = String(query);
@@ -228,26 +228,26 @@ export const getFriendList = async (
     let userMatchCondition = {};
     if (searchQuery) {
       const matchingUsers = await User.find({
-        _id: { $ne: currentUserId },
+        _id: { $ne: currentUserID },
         $or: [
           { username: { $regex: searchQuery, $options: "i" } },
           { email: { $regex: searchQuery, $options: "i" } },
         ],
       }).select("_id");
 
-      const matchedUserIds = matchingUsers.map((u) => u._id);
+      const matchedUserIDs = matchingUsers.map((u) => u._id);
 
       userMatchCondition = {
         $or: [
-          { requester: { $in: matchedUserIds } },
-          { recipient: { $in: matchedUserIds } },
+          { requester: { $in: matchedUserIDs } },
+          { recipient: { $in: matchedUserIDs } },
         ],
       };
     }
 
     const baseFilter: any = {
       $and: [
-        { $or: [{ requester: currentUserId }, { recipient: currentUserId }] },
+        { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
         { status: "accepted" },
       ],
     };
@@ -261,17 +261,22 @@ export const getFriendList = async (
       _id: { $nin: friendIDs },
     };
 
-    const friends = await Friend.find(fetchFilter)
-      .populate("requester", "username email")
-      .populate("recipient", "username email")
-      .limit(limitNum);
-    // .sort({ updatedAt: -1 });
-
-    const totalCount = await Friend.countDocuments(baseFilter);
+    const pendingRequestsFilter = {
+      recipient: currentUserID,
+      status: "pending",
+    };
+    const [friends, totalCount, pendingRequestsCount] = await Promise.all([
+      Friend.find(fetchFilter)
+        .populate("requester", "username email")
+        .populate("recipient", "username email")
+        .limit(limitNum), //.sort({ updatedAt: -1 }),
+      Friend.countDocuments(baseFilter),
+      Friend.countDocuments(pendingRequestsFilter),
+    ]);
 
     const formattedFriends = friends.map((record: any) => {
       const isRequester =
-        record.requester._id.toString() === currentUserId?.toString();
+        record.requester._id.toString() === currentUserID?.toString();
       return {
         _id: record._id,
         user: isRequester ? record.recipient : record.requester,
@@ -283,10 +288,11 @@ export const getFriendList = async (
       message: "Friends fetched successfully.",
       friends: formattedFriends,
       hasMore: friendIDs.length + friends.length < totalCount,
+      pendingRequestsCount,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getFriendsList/error",
+      code: "getFriendList/error",
       message: "Server error during fetching friends.",
     });
   }

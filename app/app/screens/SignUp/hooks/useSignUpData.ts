@@ -27,7 +27,6 @@ export const useSignUpData = () => {
   const repeatedPasswordField = useFormData();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState(translations["loading"]);
 
   const clearAllErrors = () => {
     emailField.setError(undefined);
@@ -83,7 +82,7 @@ export const useSignUpData = () => {
 
       if (response.ok) {
         const data: SignInResponse = await response.json();
-        await signUp(data.userToken, data.refreshToken);
+        await signUp(data.userToken, data.refreshToken, data.user);
       } else if (response.status === 400) {
         const data: SignUpFailResponse = await response.json();
         if (data.code === "signUp/fieldsValidationError") {
@@ -106,7 +105,7 @@ export const useSignUpData = () => {
         throw new Error(data.message);
       }
     } catch (error) {
-      // Sign up error
+      // Error during sign up
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -115,7 +114,6 @@ export const useSignUpData = () => {
 
   return {
     isLoading,
-    loadingText,
     emailField,
     usernameField,
     passwordField,

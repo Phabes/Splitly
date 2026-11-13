@@ -16,15 +16,24 @@ import { useSignInData } from "./hooks";
 export const SignIn: FC = () => {
   const translations = useTranslations();
   const navigation = useAuthNavigation();
-  const { isLoading, loadingText, usernameField, passwordField, handleSignIn } =
+
+  const { isLoading, usernameField, passwordField, handleSignIn } =
     useSignInData();
+
   const styles = useStyles();
 
   return (
-    <LayoutProvider navbar={<NavBar text={translations["signIn"]} />}>
+    <LayoutProvider
+      navbar={
+        <NavBar
+          text={translations["signIn"]}
+          showMenu={false}
+        />
+      }
+    >
       <LoadingWrapper
         isLoading={isLoading}
-        text={loadingText}
+        text={translations["loading"]}
       >
         <Scroll>
           <View style={styles.inputs}>

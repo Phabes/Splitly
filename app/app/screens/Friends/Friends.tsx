@@ -1,5 +1,5 @@
 import {
-  Button,
+  Fab,
   Input,
   ListItem,
   Loading,
@@ -11,18 +11,15 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
-import { faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
-import { FC, useEffect } from "react";
-import { DeviceEventEmitter, StyleSheet, View } from "react-native";
+import { FC } from "react";
+import { StyleSheet, View } from "react-native";
 import { useFriendActions, useFriendsData } from "./hooks";
 
 export const Friends: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
@@ -35,6 +32,7 @@ export const Friends: FC = () => {
     isLoadingMore,
     loadMoreFriends,
     forceLoadMore,
+    pendingRequestsCount,
   } = useFriendsData();
   const { handleShowUserProfile } = useFriendActions();
 
@@ -42,30 +40,13 @@ export const Friends: FC = () => {
 
   const styles = useStyles();
 
-  useEffect(() => {
-    const subscription = DeviceEventEmitter.addListener(
-      "refreshFriendsList",
-      () => {
-        forceLoadMore();
-      },
-    );
-
-    return () => {
-      subscription.remove();
-    };
-  }, [forceLoadMore]);
-
   return (
     <LayoutProvider
       navbar={
         <NavBar
           text={translations["friends"]}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
+          notificationsPress={() => navigation.navigate("FriendRequests")}
+          notificationsExist={pendingRequestsCount > 0}
         />
       }
     >
@@ -73,20 +54,10 @@ export const Friends: FC = () => {
         text={searchValue}
         onChange={handleSearchChange}
         placeholder={translations["searchFriends"]}
-        beginIcon={faSearch}
+        beginIcon="Search"
+        allowClear={true}
       />
-      <View style={styles.mainButtons}>
-        <Button
-          text={translations["addFriend"]}
-          onPress={() => navigation.navigate("AddFriend")}
-          fullWidth={true}
-        />
-        <Button
-          text={translations["friendRequests"]}
-          onPress={() => navigation.navigate("FriendRequests")}
-          fullWidth={true}
-        />
-      </View>
+
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
           gapSize="small"
@@ -100,16 +71,25 @@ export const Friends: FC = () => {
             return (
               <ListItem
                 key={`Friends/${i}`}
-                text={item.user.username}
                 onPress={() => handleShowUserProfile(item.user._id)}
               >
-                <TouchableIcon
-                  icon={faUser}
-                  onPress={() => handleShowUserProfile(item.user._id)}
-                />
+                <View style={styles.listItemText}>
+                  <Typography
+                    text={item.user.username}
+                    variant="body-small"
+                  />
+                </View>
+
+                <View style={styles.listItemButtons}>
+                  <TouchableIcon
+                    icon="User"
+                    onPress={() => handleShowUserProfile(item.user._id)}
+                  />
+                </View>
               </ListItem>
             );
           })}
+
           <View style={styles.footerContainer}>
             {isLoadingMore && (
               <>
@@ -134,6 +114,7 @@ export const Friends: FC = () => {
           </View>
         </Scroll>
       </LoadingWrapper>
+      <Fab onPress={() => navigation.navigate("AddFriend")} />
     </LayoutProvider>
   );
 };
@@ -142,9 +123,14 @@ const useStyles = () => {
   const theme = useThemeContext();
 
   return StyleSheet.create({
-    mainButtons: { flexDirection: "row", gap: theme.spacing(4) },
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

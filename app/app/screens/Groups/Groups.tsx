@@ -1,5 +1,5 @@
 import {
-  Button,
+  Fab,
   Input,
   ListItem,
   Loading,
@@ -11,18 +11,15 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
-import { useGroupActions, useGroupsData } from "./hooks";
-import { faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
+import { useGroupsData } from "./hooks";
 
 export const Groups: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
@@ -35,8 +32,8 @@ export const Groups: FC = () => {
     isLoadingMore,
     loadMoreGroups,
     forceLoadMore,
+    pendingRequestsCount,
   } = useGroupsData();
-  const { handleShowGroupProfile } = useGroupActions();
 
   const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
@@ -47,12 +44,8 @@ export const Groups: FC = () => {
       navbar={
         <NavBar
           text={translations["groups"]}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
+          notificationsPress={() => navigation.navigate("GroupRequests")}
+          notificationsExist={pendingRequestsCount > 0}
         />
       }
     >
@@ -60,24 +53,13 @@ export const Groups: FC = () => {
         text={searchValue}
         onChange={handleSearchChange}
         placeholder={translations["searchGroups"]}
-        beginIcon={faSearch}
+        beginIcon="Search"
+        allowClear={true}
       />
-      <View style={styles.mainButtons}>
-        <Button
-          text={translations["addGroup"]}
-          onPress={() => navigation.navigate("AddFriend")}
-          fullWidth={true}
-        />
-        <Button
-          text={translations["friendRequests"]}
-          onPress={() => navigation.navigate("FriendRequests")}
-          fullWidth={true}
-        />
-      </View>
+
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
           gapSize="small"
-          keyboardPersist="never"
           centerContent={groups.length === 0}
           hasMore={hasMore}
           handleScrollEnd={loadMoreGroups}
@@ -87,16 +69,29 @@ export const Groups: FC = () => {
             return (
               <ListItem
                 key={`Groups/${i}`}
-                text={`${item.name} - ${item.description}`}
-                onPress={() => handleShowGroupProfile(item.name)}
+                onPress={() =>
+                  navigation.navigate("GroupDetails", { groupID: item._id })
+                }
               >
-                <TouchableIcon
-                  icon={faUser}
-                  onPress={() => handleShowGroupProfile(item.name)}
-                />
+                <View style={styles.listItemText}>
+                  <Typography
+                    text={`${item.name} - ${item.description}`}
+                    variant="body-small"
+                  />
+                </View>
+
+                <View style={styles.listItemButtons}>
+                  <TouchableIcon
+                    icon="Users"
+                    onPress={() =>
+                      navigation.navigate("GroupDetails", { groupID: item._id })
+                    }
+                  />
+                </View>
               </ListItem>
             );
           })}
+
           <View style={styles.footerContainer}>
             {isLoadingMore && (
               <>
@@ -121,6 +116,7 @@ export const Groups: FC = () => {
           </View>
         </Scroll>
       </LoadingWrapper>
+      <Fab onPress={() => navigation.navigate("CreateGroup")} />
     </LayoutProvider>
   );
 };
@@ -129,9 +125,14 @@ const useStyles = () => {
   const theme = useThemeContext();
 
   return StyleSheet.create({
-    mainButtons: { flexDirection: "row", gap: theme.spacing(4) },
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

@@ -21,9 +21,11 @@ export const validateEmail = (email: string): ValidationResult => {
   if (!email) {
     return "fieldRequired";
   }
+
   if (!EMAIL_REGEX.test(email.toLowerCase())) {
     return "notValidEmail";
   }
+
   return undefined;
 };
 
@@ -31,6 +33,7 @@ export const validateUsername = (username: string): ValidationResult => {
   if (!username) {
     return "fieldRequired";
   }
+
   return undefined;
 };
 
@@ -38,6 +41,7 @@ export const validateSignInPassword = (password: string): ValidationResult => {
   if (!password) {
     return "fieldRequired";
   }
+
   return undefined;
 };
 
@@ -70,14 +74,16 @@ export const validateSignUpPassword = (password: string): ValidationResult => {
 
 export const validateRepeatedPassword = (
   password: string,
-  repeatedPassword: string
+  repeatedPassword: string,
 ): ValidationResult => {
   if (!repeatedPassword) {
     return "confirmPassword";
   }
+
   if (repeatedPassword !== password) {
     return "matchPasswords";
   }
+
   return undefined;
 };
 

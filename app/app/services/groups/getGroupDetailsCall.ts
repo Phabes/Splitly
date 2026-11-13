@@ -1,0 +1,17 @@
+export const getGroupDetailsCall = (token: string, groupID: string) => {
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  const apiPort = process.env.EXPO_PUBLIC_API_PORT;
+  const baseUrl = `http://${apiUrl}:${apiPort}`;
+
+  const url = `${baseUrl}/groups/${groupID}`;
+
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export default getGroupDetailsCall;

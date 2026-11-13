@@ -1,11 +1,11 @@
 import { AppTheme } from "@/app/constants/theme";
 import { useThemeContext } from "@/app/hooks";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { TogglePassword } from "./components/TogglePassword";
-import { InputIcon } from "./components/InputIcon";
+import { Icon } from "../Icon";
 import { TouchableOpacity } from "react-native";
+import { IconKeys } from "@/app/constants/iconKeys";
 
 type InputProps = {
   text: string;
@@ -17,7 +17,8 @@ type InputProps = {
   centerText?: boolean;
   disabled?: boolean;
   password?: boolean;
-  beginIcon?: IconProp;
+  beginIcon?: IconKeys;
+  allowClear?: boolean;
 };
 
 export const Input: FC<InputProps> = ({
@@ -31,10 +32,11 @@ export const Input: FC<InputProps> = ({
   disabled = false,
   password = false,
   beginIcon,
+  allowClear = false,
 }) => {
   const theme = useThemeContext();
 
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<any>(null);
   const [type, setType] = useState<InputProps["variant"] | "active">(variant);
   const [passwordShown, setPasswordShown] = useState(password);
 
@@ -58,6 +60,10 @@ export const Input: FC<InputProps> = ({
     }
   };
 
+  const clearInput = () => {
+    onChangeInput("");
+  };
+
   const styles = useStyles(type, disabled, text, centerText, theme);
 
   return (
@@ -67,7 +73,11 @@ export const Input: FC<InputProps> = ({
           onPress={handleIconPress}
           activeOpacity={1}
         >
-          <InputIcon icon={beginIcon} />
+          <Icon
+            icon={beginIcon}
+            color="text-disabled"
+            size="small"
+          />
         </TouchableOpacity>
       )}
       <View style={{ flex: 1 }}>
@@ -91,6 +101,15 @@ export const Input: FC<InputProps> = ({
           status={passwordShown}
           toggleStatus={setPasswordShown}
         />
+      )}
+      {allowClear && text !== "" && (
+        <TouchableOpacity onPress={clearInput}>
+          <Icon
+            icon="X"
+            color="text-disabled"
+            size="small"
+          />
+        </TouchableOpacity>
       )}
     </View>
   );

@@ -1,5 +1,4 @@
 import {
-  Button,
   ListItem,
   Loading,
   LoadingWrapper,
@@ -10,7 +9,7 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
+  useConfirmContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
@@ -18,12 +17,12 @@ import { LayoutProvider } from "@/app/providers";
 import { FC } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from "react-native";
 import { useFriendRequests } from "./hooks";
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { formatTranslation } from "@/app/utils";
 
 export const FriendRequests: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
+  const { showConfirm } = useConfirmContext();
 
   const {
     friendRequests,
@@ -47,15 +46,9 @@ export const FriendRequests: FC = () => {
         <NavBar
           text={translations["friendRequests"]}
           onBackPress={() => {
-            DeviceEventEmitter.emit("refreshFriendsList");
+            DeviceEventEmitter.emit("refreshFriendList");
             navigation.goBack();
           }}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
         />
       }
     >
@@ -79,18 +72,41 @@ export const FriendRequests: FC = () => {
             return (
               <ListItem
                 key={`FriendRequest/${i}`}
-                text={item.requester.username}
                 onPress={() => handleShowUserProfile(item.requester._id)}
               >
-                <TouchableIcon
-                  icon={faCheck}
-                  onPress={() => handleAcceptFriendRequest(item._id)}
-                />
-                <TouchableIcon
-                  icon={faXmark}
-                  onPress={() => handleRejectFriendRequest(item._id)}
-                  color="text-error"
-                />
+                <View style={styles.listItemText}>
+                  <Typography
+                    text={item.requester.username}
+                    variant="body-small"
+                  />
+                </View>
+
+                <View style={styles.listItemButtons}>
+                  <TouchableIcon
+                    icon="Check"
+                    onPress={() => handleAcceptFriendRequest(item._id)}
+                  />
+
+                  <TouchableIcon
+                    icon="X"
+                    onPress={() => {
+                      showConfirm({
+                        title: translations["rejectFriendRequest"],
+                        message: formatTranslation(
+                          translations["rejectFriendRequestQuestion"],
+                          {
+                            username: item.requester.username,
+                          },
+                        ),
+                        isDestructive: true,
+                        onConfirm: () => {
+                          handleRejectFriendRequest(item._id);
+                        },
+                      });
+                    }}
+                    color="text-error"
+                  />
+                </View>
               </ListItem>
             );
           })}
@@ -127,9 +143,14 @@ const useStyles = () => {
   const theme = useThemeContext();
 
   return StyleSheet.create({
-    container: { flex: 1, gap: theme.spacing(2) },
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

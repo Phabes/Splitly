@@ -1,17 +1,25 @@
 import { GROUPS_SEARCH_DELAY } from "@/app/constants/pagination";
 import { useAuthenticatedApi, usePaging } from "@/app/hooks";
-import { getGroupList } from "@/app/services/groups";
-import { GroupResult, GroupsResponse, ResponseMessage } from "@/app/types";
-import { useCallback, useEffect, useState } from "react";
+import { getGroupListCall } from "@/app/services";
+import {
+  GroupDetailsResult,
+  GroupResult,
+  GroupsResponse,
+  ResponseMessage,
+} from "@/app/types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { DeviceEventEmitter } from "react-native";
 
 export const useGroupsData = () => {
   const [searchValue, setSearchValue] = useState("");
   const [groups, setGroups] = useState<GroupResult[]>([]);
-
   const [isSearching, setIsSearching] = useState(true);
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
 
   const request = useAuthenticatedApi();
   const { isLoadingMore, setIsLoadingMore, hasMore, setHasMore } = usePaging();
+
+  const latestSearchValueRef = useRef(searchValue);
 
   const fetchGroups = useCallback(
     async (
@@ -27,10 +35,14 @@ export const useGroupsData = () => {
 
       try {
         const response = await request(
-          getGroupList,
-          groupIDs,
+          getGroupListCall,
           currentSearchValue,
+          groupIDs,
         );
+        if (isInitial && currentSearchValue !== latestSearchValueRef.current) {
+          return;
+        }
+
         if (response.ok) {
           const result: GroupsResponse = await response.json();
 
@@ -45,16 +57,19 @@ export const useGroupsData = () => {
             }
             setHasMore(false);
           }
+          setPendingRequestsCount(result.pendingRequestsCount);
         } else {
           const data: ResponseMessage = await response.json();
           throw new Error(data.message);
         }
       } catch (error) {
-        // Groups fetch failed
+        // Error during fetching groups
         console.error(error);
       } finally {
         if (isInitial) {
-          setIsSearching(false);
+          if (currentSearchValue === latestSearchValueRef.current) {
+            setIsSearching(false);
+          }
         } else {
           setIsLoadingMore(false);
         }
@@ -64,6 +79,7 @@ export const useGroupsData = () => {
   );
 
   useEffect(() => {
+    latestSearchValueRef.current = searchValue;
     setIsSearching(true);
 
     const delayDebounceFn = setTimeout(() => {
@@ -91,9 +107,46 @@ export const useGroupsData = () => {
       return;
     }
 
-    const friendRecordIDs = groups.map((f) => f._id);
-    await fetchGroups(friendRecordIDs, false, searchValue);
+    const groupsRecordIDs = groups.map((f) => f._id);
+    await fetchGroups(groupsRecordIDs, false, searchValue);
   }, [isLoadingMore, isSearching, groups, fetchGroups, searchValue]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "refreshGroupList",
+      () => {
+        forceLoadMore();
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, [forceLoadMore]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "refreshGroupDetails",
+      (groupDetails: GroupDetailsResult) => {
+        setGroups((prevGroups) =>
+          prevGroups.map((group) => {
+            if (group._id === groupDetails._id) {
+              return {
+                ...group,
+                name: groupDetails.name,
+                description: groupDetails.description,
+              };
+            }
+            return group;
+          }),
+        );
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return {
     searchValue,
@@ -104,6 +157,7 @@ export const useGroupsData = () => {
     isLoadingMore,
     loadMoreGroups,
     forceLoadMore,
+    pendingRequestsCount,
   };
 };
 

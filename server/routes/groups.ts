@@ -1,10 +1,85 @@
 import { Router } from "express";
-import { getGroupList } from "@/controllers/groups.ts";
-import { protect } from "@/middleware/authMiddleware.ts";
+import {
+  addGroupMembers,
+  createGroup,
+  decideGroupRequest,
+  editGroupDetails,
+  getCreateBillDetails,
+  getGroupDetails,
+  getGroupInviteCandidates,
+  getGroupList,
+  removeGroupMember,
+  searchGroupRequests,
+  transferOwnership,
+  updateMemberRole,
+} from "@/controllers/groups.ts";
+import { authMiddleware } from "@/middleware/authMiddleware.ts";
+import { groupMiddleware } from "@/middleware/groupMiddleware.ts";
+import { roleMiddleware } from "@/middleware/roleMiddleware.ts";
 
 const routerGroup = Router();
 
 // GET - group list
-routerGroup.post("/list", protect, getGroupList);
+routerGroup.post("/list", authMiddleware, getGroupList);
+// POST - create group
+routerGroup.post("/", authMiddleware, createGroup);
+// GET - group requests
+routerGroup.post("/requests/search", authMiddleware, searchGroupRequests);
+// PATCH - accept/decline group request
+routerGroup.patch(
+  "/requests/:groupRequestID",
+  authMiddleware,
+  decideGroupRequest,
+);
+// GET - group details
+routerGroup.get("/:groupID", authMiddleware, groupMiddleware, getGroupDetails);
+// PATCH - edit group details
+routerGroup.patch(
+  "/:groupID",
+  authMiddleware,
+  groupMiddleware,
+  roleMiddleware(["owner"]),
+  editGroupDetails,
+);
+// GET - group members candidates
+routerGroup.post("/candidates", authMiddleware, getGroupInviteCandidates);
+// POST - add group members
+routerGroup.post(
+  "/members",
+  authMiddleware,
+  groupMiddleware,
+  roleMiddleware(["owner", "admin"]),
+  addGroupMembers,
+);
+// DELETE - remove group member
+routerGroup.delete(
+  "/:groupID/members/:memberID",
+  authMiddleware,
+  groupMiddleware,
+  removeGroupMember,
+);
+// PATCH - update member role
+routerGroup.patch(
+  "/:groupID/members/:memberID/role",
+  authMiddleware,
+  groupMiddleware,
+  roleMiddleware(["owner", "admin"]),
+  updateMemberRole,
+);
+// PATCH - change group owner
+routerGroup.patch(
+  "/:groupID/members/:memberID/transfer-ownership",
+  authMiddleware,
+  groupMiddleware,
+  roleMiddleware(["owner"]),
+  transferOwnership,
+);
+// GET - create bill details
+routerGroup.get(
+  "/:groupID/bill-details",
+  authMiddleware,
+  groupMiddleware,
+  getCreateBillDetails,
+);
 
 export default routerGroup;

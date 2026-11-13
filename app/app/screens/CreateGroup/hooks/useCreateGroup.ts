@@ -1,0 +1,118 @@
+import {
+  useAppNavigation,
+  useAuthenticatedApi,
+  useFormData,
+  useLoadingContext,
+  useTranslations,
+} from "@/app/hooks";
+import { createGroupCall } from "@/app/services";
+import { ResponseMessage, SimpleUser } from "@/app/types";
+
+import { fieldRequiredValidation } from "@/app/utils";
+import { useEffect, useState } from "react";
+import { DeviceEventEmitter } from "react-native";
+
+export const useCreateGroup = () => {
+  const translations = useTranslations();
+  const navigation = useAppNavigation();
+  const request = useAuthenticatedApi();
+  const { showLoading, hideLoading } = useLoadingContext();
+
+  const nameField = useFormData();
+  const descriptionField = useFormData();
+  const currencyField = useFormData();
+  const iconField = useFormData();
+
+  const [selectedMembers, setSelectedMembers] = useState<SimpleUser[]>([]);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "onMembersSelected",
+      (selectedMembers: SimpleUser[]) => {
+        setSelectedMembers(selectedMembers);
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const goToAddMembers = () => {
+    navigation.navigate("AddMembers", {
+      returnEvent: "onMembersSelected",
+      initialSelectedUsers: selectedMembers,
+    });
+  };
+
+  const validateAddGroup = () => {
+    const nameError = fieldRequiredValidation(nameField.value);
+    const descriptionError = fieldRequiredValidation(descriptionField.value);
+    const currencyError = fieldRequiredValidation(currencyField.value);
+    const iconError = fieldRequiredValidation(iconField.value);
+
+    nameField.setError(nameError ? translations[nameError] : undefined);
+    descriptionField.setError(
+      descriptionError ? translations[descriptionError] : undefined,
+    );
+    currencyField.setError(
+      currencyError ? translations[currencyError] : undefined,
+    );
+    iconField.setError(iconError ? translations[iconError] : undefined);
+
+    const isError =
+      nameError !== undefined ||
+      descriptionError !== undefined ||
+      currencyError !== undefined ||
+      iconError !== undefined;
+
+    return isError;
+  };
+
+  const handleCreateGroup = async () => {
+    showLoading(translations["creatingGroup"]);
+
+    const isError = validateAddGroup();
+    if (isError) {
+      hideLoading();
+      return;
+    }
+
+    try {
+      const members = selectedMembers.map((member) => member._id);
+
+      const response = await request(
+        createGroupCall,
+        nameField.value,
+        descriptionField.value,
+        currencyField.value,
+        iconField.value,
+        members,
+      );
+      if (response.ok) {
+        DeviceEventEmitter.emit("refreshGroupList");
+        navigation.goBack();
+      } else {
+        const data: ResponseMessage = await response.json();
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      // Error during creating group
+      console.error(error);
+    } finally {
+      hideLoading();
+    }
+  };
+
+  return {
+    nameField,
+    descriptionField,
+    currencyField,
+    iconField,
+    selectedMembers,
+    handleCreateGroup,
+    goToAddMembers,
+  };
+};
+
+export default useCreateGroup;

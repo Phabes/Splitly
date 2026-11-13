@@ -1,5 +1,4 @@
 import {
-  Button,
   Input,
   ListItem,
   Loading,
@@ -11,19 +10,16 @@ import {
 } from "@/app/components";
 import {
   useAppNavigation,
-  useAuthContext,
   useThemeContext,
   useTranslations,
 } from "@/app/hooks";
 import { LayoutProvider } from "@/app/providers";
-import { faAdd, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { useUsers } from "./hooks";
 import { ADD_FRIENDS_MIN_SEARCH_LENGTH } from "@/app/constants/pagination";
 
 export const AddFriend: FC = () => {
-  const { signOut } = useAuthContext();
   const translations = useTranslations();
   const navigation = useAppNavigation();
 
@@ -55,12 +51,6 @@ export const AddFriend: FC = () => {
         <NavBar
           text={translations["addFriend"]}
           onBackPress={navigation.goBack}
-          button={
-            <Button
-              text={translations["signOut"]}
-              onPress={signOut}
-            />
-          }
         />
       }
     >
@@ -69,8 +59,9 @@ export const AddFriend: FC = () => {
           text={searchValue}
           onChange={handleSearchChange}
           placeholder={translations["searchFriends"]}
-          beginIcon={faSearch}
+          beginIcon="Search"
         />
+
         <LoadingWrapper isLoading={isSearching}>
           <Scroll
             gapSize="small"
@@ -91,13 +82,21 @@ export const AddFriend: FC = () => {
               return (
                 <ListItem
                   key={`AddFriend/${i}`}
-                  text={item.username}
                   onPress={() => handleShowUserProfile(item._id)}
                 >
-                  <TouchableIcon
-                    icon={faAdd}
-                    onPress={() => handleAddFriend(item._id)}
-                  />
+                  <View style={styles.listItemText}>
+                    <Typography
+                      text={item.username}
+                      variant="body-small"
+                    />
+                  </View>
+
+                  <View style={styles.listItemButtons}>
+                    <TouchableIcon
+                      icon="Plus"
+                      onPress={() => handleAddFriend(item._id)}
+                    />
+                  </View>
                 </ListItem>
               );
             })}
@@ -141,6 +140,12 @@ const useStyles = () => {
     container: { flex: 1, gap: theme.spacing(2) },
     footerContainer: {
       alignItems: "center",
+    },
+    listItemText: { flex: 1 },
+    listItemButtons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
     },
   });
 };

@@ -8,12 +8,29 @@ const GroupSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    required: true,
     trim: true,
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
+  },
+  baseCurrency: {
+    type: String,
+    required: true,
+    uppercase: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 3,
+  },
+  icon: {
+    type: String,
+    required: true,
+    uppercase: true,
+    trim: true,
+    minlength: 2,
+    maxlength: 2,
   },
   members: [
     {
@@ -27,7 +44,11 @@ const GroupSchema = new mongoose.Schema({
         enum: ["pending", "accepted", "rejected"],
         default: "pending",
       },
-      role: { type: String, enum: ["admin", "member"], default: "member" },
+      role: {
+        type: String,
+        enum: ["owner", "admin", "member"],
+        default: "member",
+      },
     },
   ],
 });

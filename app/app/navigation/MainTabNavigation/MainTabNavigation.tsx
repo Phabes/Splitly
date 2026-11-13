@@ -1,0 +1,24 @@
+import { BottomTabScreen, BottomTabSelector } from "@/app/components";
+import { Friends, Groups } from "@/app/screens";
+
+export const MainTabNavigation = () => {
+  return (
+    <BottomTabSelector
+      initialRouteName="Groups"
+      showTitle={true}
+    >
+      <BottomTabScreen
+        name="Groups"
+        component={Groups}
+        options={{ tabBarAccessibilityLabel: "Groups" }}
+      />
+      <BottomTabScreen
+        name="Friends"
+        component={Friends}
+        options={{ tabBarAccessibilityLabel: "Friends" }}
+      />
+    </BottomTabSelector>
+  );
+};
+
+export default MainTabNavigation;
