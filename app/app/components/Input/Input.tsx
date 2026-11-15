@@ -36,7 +36,7 @@ export const Input: FC<InputProps> = ({
 }) => {
   const theme = useThemeContext();
 
-  const inputRef = useRef<any>(null);
+  const inputRef = useRef<React.ComponentRef<typeof TextInput>>(null);
   const [type, setType] = useState<InputProps["variant"] | "active">(variant);
   const [passwordShown, setPasswordShown] = useState(password);
 
@@ -80,7 +80,7 @@ export const Input: FC<InputProps> = ({
           />
         </TouchableOpacity>
       )}
-      <View style={{ flex: 1 }}>
+      <View style={styles.inputContainer}>
         <TextInput
           ref={inputRef}
           placeholder={type === "active" ? "" : placeholder}
@@ -147,6 +147,7 @@ const useStyles = (
       gap: theme.spacing(2),
       paddingHorizontal: theme.spacing(4),
     },
+    inputContainer: { flex: 1 },
     input: {
       color: theme.colors[textColor],
       textAlign,

@@ -3,7 +3,7 @@ import { useAuthContext } from "./useAuthContext";
 import { ResponseMessage } from "../types";
 import { useAppNavigation } from "./useAppNavigation";
 
-type ApiFunction<T extends any[]> = (
+type ApiFunction<T extends unknown[]> = (
   token: string,
   ...args: T
 ) => Promise<Response>;
@@ -13,7 +13,7 @@ export const useAuthenticatedApi = () => {
   const navigation = useAppNavigation();
 
   const request = useCallback(
-    async <T extends any[]>(
+    async <T extends unknown[]>(
       apiFunc: ApiFunction<T>,
       ...args: T
     ): Promise<Response> => {
@@ -36,7 +36,7 @@ export const useAuthenticatedApi = () => {
       }
 
       if (response.status === 403 || response.status === 404) {
-        let data: any = null;
+        let data: ResponseMessage | null = null;
         try {
           data = await response.clone().json();
         } catch (error) {

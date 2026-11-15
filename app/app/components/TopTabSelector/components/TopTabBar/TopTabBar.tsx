@@ -15,7 +15,7 @@ export const TopTabBar: FC<MaterialTopTabBarProps> = ({
 
   return (
     <View style={styles.tabsRow}>
-      {state.routes.map((route: any, index: any) => {
+      {state.routes.map((route, index) => {
         const isFocused = state.index === index;
 
         const tabKey = route.name.toLowerCase() as TranslationKeys;

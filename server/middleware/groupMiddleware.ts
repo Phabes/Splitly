@@ -25,7 +25,7 @@ export const groupMiddleware = async (
     }
 
     const isMember = group.members.some(
-      (m: any) => m.user.toString() === currentUserID?.toString(),
+      (m) => m.user.toString() === currentUserID?.toString(),
     );
 
     if (!isMember) {

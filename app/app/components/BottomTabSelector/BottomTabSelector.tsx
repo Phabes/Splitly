@@ -18,7 +18,7 @@ export const BottomTabSelector: FC<BottomTabSelectorProps> = ({
 }) => {
   return (
     <Tab.Navigator
-      tabBar={(props: any) => (
+      tabBar={(props) => (
         <BottomTabBar
           {...props}
           showTitle={showTitle}

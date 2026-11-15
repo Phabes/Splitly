@@ -30,14 +30,20 @@ export const authMiddleware = async (
       req.userID = decoded.userID;
 
       return next();
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (token === undefined) {
         return res.status(401).json({
           code: "authentication/noTokenProvided",
           message: "Not authorized. No token provided.",
         });
       }
-      if (error.name === "TokenExpiredError") {
+
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "name" in error &&
+        (error as { name: unknown }).name === "TokenExpiredError"
+      ) {
         return res.status(401).json({
           code: "authentication/tokenExpired",
           message: "Token expired.",

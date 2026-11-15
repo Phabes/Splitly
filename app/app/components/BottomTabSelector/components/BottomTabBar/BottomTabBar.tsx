@@ -22,7 +22,7 @@ export const BottomTabBar: FC<TabProps> = ({
 
   return (
     <View style={styles.container}>
-      {state.routes.map((route: any, index: any) => {
+      {state.routes.map((route, index) => {
         const isFocused = state.index === index;
 
         const handlePlusPress = () => {

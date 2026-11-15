@@ -6,7 +6,7 @@ import { ColorKeys } from "@/app/constants/theme";
 
 type ButtonProps = {
   text: string;
-  onPress: () => any;
+  onPress: () => void;
   variant?: "primary" | "secondary" | "destructive";
   disabled?: boolean;
   fullWidth?: boolean;

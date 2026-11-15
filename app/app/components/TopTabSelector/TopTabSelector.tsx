@@ -17,7 +17,7 @@ export const TopTabSelector: FC<TopTabSelectorProps> = ({ children }) => {
 
   return (
     <Tab.Navigator
-      tabBar={(props: any) => <TopTabBar {...props} />}
+      tabBar={(props) => <TopTabBar {...props} />}
       style={styles.tabs}
       screenOptions={{
         sceneStyle: styles.tabContent,

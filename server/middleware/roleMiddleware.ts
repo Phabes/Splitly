@@ -8,7 +8,7 @@ export const roleMiddleware = (allowedRoles: string[]) => {
       const group = req.group!;
 
       const currentMember = group.members.find(
-        (m: any) => m.user.toString() === currentUserID?.toString(),
+        (m) => m.user.toString() === currentUserID?.toString(),
       )!;
 
       if (!allowedRoles.includes(currentMember.role)) {

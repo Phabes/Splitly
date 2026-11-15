@@ -1,12 +1,14 @@
 import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
+import mongoose from "mongoose";
 import User from "@/models/user.ts";
 import Friend from "@/models/friend.ts";
+import { PopulatedUser } from "@/types/index.ts";
 
 export const searchFriendSuggestions = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { query = "", limit = 10, userIDs = [] } = req.body;
     const currentUserID = req.userID;
@@ -66,7 +68,7 @@ export const searchFriendSuggestions = async (
 export const sendFriendRequest = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { userToAddID } = req.body;
     const currentUserID = req.userID;
@@ -94,8 +96,8 @@ export const sendFriendRequest = async (
       }
 
       existingFriendship.status = "pending";
-      existingFriendship.requester = currentUserID as any;
-      existingFriendship.recipient = userToAddID;
+      existingFriendship.requester = new mongoose.Types.ObjectId(currentUserID);
+      existingFriendship.recipient = new userToAddID();
       await existingFriendship.save();
 
       return res.status(200).json({
@@ -127,7 +129,7 @@ export const sendFriendRequest = async (
 export const searchFriendRequests = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { limit = 10, friendRequestIDs = [] } = req.body;
     const currentUserID = req.userID;
@@ -169,7 +171,7 @@ export const searchFriendRequests = async (
 export const decideFriendRequest = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const friendRequestID = req.params.id;
     const { decision } = req.body;
@@ -217,7 +219,7 @@ export const decideFriendRequest = async (
 export const getFriendList = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { query = "", limit = 10, friendIDs = [] } = req.body;
     const currentUserID = req.userID;
@@ -245,16 +247,18 @@ export const getFriendList = async (
       };
     }
 
-    const baseFilter: any = {
-      $and: [
-        { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
-        { status: "accepted" },
-      ],
-    };
+    const andConditions: mongoose.FilterQuery<typeof Friend>[] = [
+      { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
+      { status: "accepted" },
+    ];
 
     if (searchQuery) {
-      baseFilter.$and.push(userMatchCondition);
+      andConditions.push(userMatchCondition);
     }
+
+    const baseFilter: mongoose.FilterQuery<typeof Friend> = {
+      $and: andConditions,
+    };
 
     const fetchFilter = {
       ...baseFilter,
@@ -274,12 +278,14 @@ export const getFriendList = async (
       Friend.countDocuments(pendingRequestsFilter),
     ]);
 
-    const formattedFriends = friends.map((record: any) => {
-      const isRequester =
-        record.requester._id.toString() === currentUserID?.toString();
+    const formattedFriends = friends.map((record) => {
+      const reqUser = record.requester as unknown as PopulatedUser;
+      const recUser = record.recipient as unknown as PopulatedUser;
+
+      const isRequester = reqUser._id.toString() === currentUserID?.toString();
       return {
         _id: record._id,
-        user: isRequester ? record.recipient : record.requester,
+        user: isRequester ? recUser : reqUser,
       };
     });
 

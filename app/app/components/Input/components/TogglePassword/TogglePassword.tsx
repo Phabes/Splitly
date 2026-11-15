@@ -3,7 +3,7 @@ import { TouchableIcon } from "@/app/components/TouchableIcon";
 
 type TogglePasswordProps = {
   status: boolean;
-  toggleStatus: (status: boolean) => any;
+  toggleStatus: (status: boolean) => void;
 };
 
 export const TogglePassword: FC<TogglePasswordProps> = ({

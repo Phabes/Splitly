@@ -2,21 +2,23 @@ import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
 import { GroupRequest } from "@/middleware/groupMiddleware.ts";
 import { validCurrency } from "@/utils/validCurrency.ts";
+import mongoose from "mongoose";
 import User from "@/models/user.ts";
 import Friend from "@/models/friend.ts";
 import Group from "@/models/group.ts";
+import { PopulatedUser } from "@/types/index.ts";
 
 export const getGroupList = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { query = "", limit = 10, groupIDs = [] } = req.body;
     const currentUserID = req.userID;
     const limitNum = Number(limit);
     const searchQuery = String(query);
 
-    const baseFilter: any = {
+    const baseFilter: mongoose.FilterQuery<typeof Group> = {
       members: {
         $elemMatch: {
           user: currentUserID,
@@ -64,7 +66,7 @@ export const getGroupList = async (
 export const createGroup = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { name, description, currency, icon, members } = req.body;
     const currentUserID = req.userID;
@@ -133,7 +135,7 @@ export const createGroup = async (
 export const searchGroupRequests = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { limit = 10, groupRequestIDs = [] } = req.body;
     const currentUserID = req.userID;
@@ -175,7 +177,7 @@ export const searchGroupRequests = async (
 export const decideGroupRequest = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { groupRequestID } = req.params;
     const { decision } = req.body;
@@ -222,20 +224,23 @@ export const decideGroupRequest = async (
 export const getGroupDetails = async (
   req: GroupRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const group = req.group!;
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member: any) => ({
-      _id: member.user._id,
-      username: member.user.username,
-      email: member.user.email,
-      role: member.role,
-      status: member.status,
-    }));
+    const formattedMembers = group.members.map((member) => {
+      const user = member.user as unknown as PopulatedUser;
 
+      return {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: member.role,
+        status: member.status,
+      };
+    });
     return res.status(200).json({
       code: "getGroupDetails/success",
       message: "Group details fetched successfully.",
@@ -259,7 +264,7 @@ export const getGroupDetails = async (
 export const editGroupDetails = async (
   req: GroupRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { name, description, currency, icon } = req.body;
     const group = req.group!;
@@ -321,7 +326,7 @@ export const editGroupDetails = async (
 export const getGroupInviteCandidates = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { query = "", limit = 10, friendIDs = [], groupID } = req.body;
     const currentUserID = req.userID;
@@ -335,7 +340,7 @@ export const getGroupInviteCandidates = async (
 
       if (group) {
         const isMember = group.members.some(
-          (m: any) => m.user.toString() === currentUserID?.toString(),
+          (m) => m.user.toString() === currentUserID?.toString(),
         );
 
         if (!isMember) {
@@ -346,7 +351,7 @@ export const getGroupInviteCandidates = async (
           });
         }
 
-        groupMemberIDs = group.members.map((m: any) => m.user.toString());
+        groupMemberIDs = group.members.map((m) => m.user.toString());
       }
     }
 
@@ -375,18 +380,20 @@ export const getGroupInviteCandidates = async (
       };
     }
 
-    const baseFilter: any = {
-      $and: [
-        { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
-        { status: "accepted" },
-        { requester: { $nin: excludedUserIDs } },
-        { recipient: { $nin: excludedUserIDs } },
-      ],
-    };
+    const andConditions: mongoose.FilterQuery<typeof Friend>[] = [
+      { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
+      { status: "accepted" },
+      { requester: { $nin: excludedUserIDs } },
+      { recipient: { $nin: excludedUserIDs } },
+    ];
 
     if (searchQuery) {
-      baseFilter.$and.push(userMatchCondition);
+      andConditions.push(userMatchCondition);
     }
+
+    const baseFilter: mongoose.FilterQuery<typeof Friend> = {
+      $and: andConditions,
+    };
 
     const fetchFilter = {
       ...baseFilter,
@@ -401,12 +408,14 @@ export const getGroupInviteCandidates = async (
       Friend.countDocuments(baseFilter),
     ]);
 
-    const formattedFriends = friends.map((record: any) => {
-      const isRequester =
-        record.requester._id.toString() === currentUserID?.toString();
+    const formattedFriends = friends.map((record) => {
+      const reqUser = record.requester as unknown as PopulatedUser;
+      const recUser = record.recipient as unknown as PopulatedUser;
+
+      const isRequester = reqUser._id.toString() === currentUserID?.toString();
       return {
         _id: record._id,
-        user: isRequester ? record.recipient : record.requester,
+        user: isRequester ? recUser : reqUser,
       };
     });
 
@@ -427,7 +436,7 @@ export const getGroupInviteCandidates = async (
 export const addGroupMembers = async (
   req: GroupRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { members } = req.body;
 
@@ -437,7 +446,7 @@ export const addGroupMembers = async (
 
     members.forEach((userID: string) => {
       const existingMemberIndex = group.members.findIndex(
-        (m: any) => m.user.toString() === userID,
+        (m) => m.user.toString() === userID,
       );
 
       if (existingMemberIndex >= 0) {
@@ -469,13 +478,17 @@ export const addGroupMembers = async (
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member: any) => ({
-      _id: member.user._id,
-      username: member.user.username,
-      email: member.user.email,
-      role: member.role,
-      status: member.status,
-    }));
+    const formattedMembers = group.members.map((member) => {
+      const user = member.user as unknown as PopulatedUser;
+
+      return {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: member.role,
+        status: member.status,
+      };
+    });
 
     return res.status(200).json({
       code: "addMembers/success",
@@ -493,30 +506,34 @@ export const addGroupMembers = async (
 export const removeGroupMember = async (
   req: GroupRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { memberID } = req.params;
     const currentUserID = req.userID;
     const group = req.group!;
 
     const currentMember = group.members.find(
-      (m: any) => m.user.toString() === currentUserID?.toString(),
+      (m) => m.user.toString() === currentUserID?.toString(),
     )!;
 
     const targetMember = group.members.find(
-      (m: any) => m.user.toString() === memberID?.toString(),
+      (m) => m.user.toString() === memberID?.toString(),
     );
 
     if (!targetMember) {
       await group.populate("members.user", "username email");
 
-      const formattedMembers = group.members.map((member: any) => ({
-        _id: member.user._id,
-        username: member.user.username,
-        email: member.user.email,
-        role: member.role,
-        status: member.status,
-      }));
+      const formattedMembers = group.members.map((member) => {
+        const user = member.user as unknown as PopulatedUser;
+
+        return {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          role: member.role,
+          status: member.status,
+        };
+      });
 
       return res.status(404).json({
         code: "removeMember/member-not-found",
@@ -570,13 +587,17 @@ export const removeGroupMember = async (
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member: any) => ({
-      _id: member.user._id,
-      username: member.user.username,
-      email: member.user.email,
-      role: member.role,
-      status: member.status,
-    }));
+    const formattedMembers = group.members.map((member) => {
+      const user = member.user as unknown as PopulatedUser;
+
+      return {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: member.role,
+        status: member.status,
+      };
+    });
 
     return res.status(200).json({
       code: "removeMember/success",
@@ -597,7 +618,7 @@ export const removeGroupMember = async (
 export const updateMemberRole = async (
   req: GroupRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { memberID } = req.params;
     const { newRole } = req.body;
@@ -612,23 +633,27 @@ export const updateMemberRole = async (
     }
 
     const currentMember = group.members.find(
-      (m: any) => m.user.toString() === currentUserID?.toString(),
+      (m) => m.user.toString() === currentUserID?.toString(),
     )!;
 
     const targetMember = group.members.find(
-      (m: any) => m.user.toString() === memberID?.toString(),
+      (m) => m.user.toString() === memberID?.toString(),
     );
 
     if (!targetMember) {
       await group.populate("members.user", "username email");
 
-      const formattedMembers = group.members.map((member: any) => ({
-        _id: member.user._id,
-        username: member.user.username,
-        email: member.user.email,
-        role: member.role,
-        status: member.status,
-      }));
+      const formattedMembers = group.members.map((member) => {
+        const user = member.user as unknown as PopulatedUser;
+
+        return {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          role: member.role,
+          status: member.status,
+        };
+      });
 
       return res.status(404).json({
         code: "updateRole/member-not-found",
@@ -663,13 +688,17 @@ export const updateMemberRole = async (
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member: any) => ({
-      _id: member.user._id,
-      username: member.user.username,
-      email: member.user.email,
-      role: member.role,
-      status: member.status,
-    }));
+    const formattedMembers = group.members.map((member) => {
+      const user = member.user as unknown as PopulatedUser;
+
+      return {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: member.role,
+        status: member.status,
+      };
+    });
 
     return res.status(200).json({
       code: "updateRole/success",
@@ -687,30 +716,34 @@ export const updateMemberRole = async (
 export const transferOwnership = async (
   req: GroupRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { memberID } = req.params;
     const currentUserID = req.userID;
     const group = req.group!;
 
     const currentOwner = group.members.find(
-      (m: any) => m.user.toString() === currentUserID?.toString(),
+      (m) => m.user.toString() === currentUserID?.toString(),
     )!;
 
     const targetMember = group.members.find(
-      (m: any) => m.user.toString() === memberID?.toString(),
+      (m) => m.user.toString() === memberID?.toString(),
     );
 
     if (!targetMember) {
       await group.populate("members.user", "username email");
 
-      const formattedMembers = group.members.map((member: any) => ({
-        _id: member.user._id,
-        username: member.user.username,
-        email: member.user.email,
-        role: member.role,
-        status: member.status,
-      }));
+      const formattedMembers = group.members.map((member) => {
+        const user = member.user as unknown as PopulatedUser;
+
+        return {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          role: member.role,
+          status: member.status,
+        };
+      });
 
       return res.status(404).json({
         code: "transferOwnership/member-not-found",
@@ -733,13 +766,17 @@ export const transferOwnership = async (
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member: any) => ({
-      _id: member.user._id,
-      username: member.user.username,
-      email: member.user.email,
-      role: member.role,
-      status: member.status,
-    }));
+    const formattedMembers = group.members.map((member) => {
+      const user = member.user as unknown as PopulatedUser;
+
+      return {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: member.role,
+        status: member.status,
+      };
+    });
 
     return res.status(200).json({
       code: "transferOwnership/success",
@@ -757,17 +794,21 @@ export const transferOwnership = async (
 export const getCreateBillDetails = async (
   req: GroupRequest,
   res: Response,
-) => {
+): Promise<Response> => {
   try {
     const group = req.group!;
 
     await group.populate("members.user", "username email");
 
-    const cleanMembers = group.members.map((member: any) => ({
-      _id: member.user._id,
-      username: member.user.username,
-      email: member.user.email,
-    }));
+    const cleanMembers = group.members.map((member) => {
+      const user = member.user as unknown as PopulatedUser;
+
+      return {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+      };
+    });
 
     return res.status(200).json({
       baseCurrency: group.baseCurrency,

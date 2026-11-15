@@ -9,7 +9,7 @@ import { AuthRequest } from "@/middleware/authMiddleware.ts";
 export const getCurrencyList = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   let currencies = getCachedCurrencies();
 
   if (currencies.length === 0) {
@@ -36,7 +36,7 @@ export const getCurrencyList = async (
 export const getRate = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const { from, to } = req.query;
 

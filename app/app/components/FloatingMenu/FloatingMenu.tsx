@@ -9,8 +9,7 @@ interface FloatingMenuProps {
 }
 
 export const FloatingMenu: FC<FloatingMenuProps> = ({ options }) => {
-  // Use 'any' to safely bypass React 19 / RN 0.86 ref typing conflicts
-  const triggerRef = useRef<any>(null);
+  const triggerRef = useRef<React.ComponentRef<typeof View>>(null);
   const { showMenu } = useFloatingMenuContext();
 
   const handleOpen = () => {

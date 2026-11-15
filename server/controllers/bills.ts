@@ -1,11 +1,12 @@
 import { Response } from "express";
 import { AuthRequest } from "@/middleware/authMiddleware.ts";
 import Bill from "@/models/bill.ts";
+import { IncomingPosition } from "@/types/index.ts";
 
 export const createBill = async (
   req: AuthRequest,
   res: Response,
-): Promise<any> => {
+): Promise<Response> => {
   try {
     const currentUserID = req.userID;
     const {
@@ -33,7 +34,7 @@ export const createBill = async (
       });
     }
 
-    const processedPositions = positions.map((pos: any) => {
+    const processedPositions = positions.map((pos: IncomingPosition) => {
       const quantity = Number(pos.quantity) || 1;
       const isSharedByAll = Boolean(pos.isSharedByAll);
       const instances = [];
