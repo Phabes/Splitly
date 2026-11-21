@@ -25,8 +25,8 @@ export const useFriendActions = (
       } else if (response.status === 409) {
         const data: ResponseMessage = await response.json();
         if (
-          data.code === "postFriendRequest/friendshipAlreadyExists" ||
-          data.code === "postFriendRequest/friendRequestPending"
+          data.code === "post/sendFriendRequest/friendshipAlreadyExists" ||
+          data.code === "post/sendFriendRequest/friendRequestPending"
         ) {
           setUsers((prev) => prev.filter((e) => e._id !== userID));
         }

@@ -1,5 +1,5 @@
 import {
-  Fab,
+  Button,
   FloatingMenu,
   Icon,
   ListItem,
@@ -46,6 +46,17 @@ export const Members: FC = () => {
       subscription.remove();
     };
   }, []);
+
+  const canManageMembers = userRole === "owner" || userRole === "admin";
+
+  const handleOpenAddMembers = () => {
+    if (!groupDetails) return;
+
+    navigation.navigate("AddMembers", {
+      groupID: groupDetails._id,
+      returnEvent: "onMembersSelected",
+    });
+  };
 
   const generateMenuOptions = (item: GroupMemberResult): MenuOption[] => {
     const options: MenuOption[] = [
@@ -144,10 +155,21 @@ export const Members: FC = () => {
 
   return (
     <View style={styles.tabContainer}>
-      <Typography
-        text="Members"
-        variant="header-small"
-      />
+      <View style={styles.headerRow}>
+        <Typography
+          text="Members"
+          variant="header-small"
+        />
+
+        {canManageMembers && (
+          <Button
+            onPress={handleOpenAddMembers}
+            text={translations["addMembers"]}
+            variant="secondary"
+            icon="Plus"
+          />
+        )}
+      </View>
 
       <Scroll>
         <View style={styles.scrollContent}>
@@ -193,16 +215,6 @@ export const Members: FC = () => {
           </View>
         </View>
       </Scroll>
-      {(userRole === "owner" || userRole === "admin") && (
-        <Fab
-          onPress={() =>
-            navigation.navigate("AddMembers", {
-              groupID: groupDetails!._id,
-              returnEvent: "onMembersSelected",
-            })
-          }
-        />
-      )}
     </View>
   );
 };
@@ -212,6 +224,16 @@ const useStyles = () => {
 
   return StyleSheet.create({
     tabContainer: { flex: 1, gap: theme.spacing(2) },
+    headerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    addButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing(1),
+    },
     scrollContent: {
       flex: 1,
       gap: theme.spacing(3),

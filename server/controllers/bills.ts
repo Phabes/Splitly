@@ -1,14 +1,17 @@
 import { Response } from "express";
-import { AuthRequest } from "@/middleware/authMiddleware.ts";
 import Bill from "@/models/bill.ts";
-import { IncomingPosition } from "@/types/index.ts";
+import {
+  AuthRequest,
+  BillDocument,
+  IBillInstance,
+  IncomingPosition,
+} from "@/types/index.ts";
 
 export const createBill = async (
   req: AuthRequest,
   res: Response,
 ): Promise<Response> => {
   try {
-    const currentUserID = req.userID;
     const {
       groupID,
       name,
@@ -29,7 +32,7 @@ export const createBill = async (
       !positions
     ) {
       return res.status(400).json({
-        code: "createBill/missingFields",
+        code: "post/createBill/missingFields",
         message: "Please provide all required bill fields.",
       });
     }
@@ -37,7 +40,7 @@ export const createBill = async (
     const processedPositions = positions.map((pos: IncomingPosition) => {
       const quantity = Number(pos.quantity) || 1;
       const isSharedByAll = Boolean(pos.isSharedByAll);
-      const instances = [];
+      const instances: IBillInstance[] = [];
 
       if (!isSharedByAll) {
         for (let i = 0; i < quantity; i++) {
@@ -57,7 +60,7 @@ export const createBill = async (
       };
     });
 
-    const newBill = new Bill({
+    const newBill: BillDocument = new Bill({
       groupID,
       name,
       totalAmount: Number(totalAmount),
@@ -65,18 +68,17 @@ export const createBill = async (
       payerID,
       involvedMembers,
       positions: processedPositions,
-      createdBy: currentUserID,
     });
 
     await newBill.save();
 
     return res.status(201).json({
-      code: "createBill/success",
+      code: "post/createBill/success",
       message: "Bill created successfully.",
     });
   } catch (error) {
     return res.status(500).json({
-      code: "createBill/error",
+      code: "post/createBill/error",
       message: "Server error during bill creation.",
     });
   }

@@ -13,6 +13,7 @@ import {
 import { LayoutProvider } from "@/app/providers";
 import { Button, ListItem, NavBar, Scroll, Typography } from "@/app/components";
 import { createBillCall } from "@/app/services";
+import { ResponseMessage } from "@/app/types";
 
 export const Summary = () => {
   const translations = useTranslations();
@@ -65,7 +66,7 @@ export const Summary = () => {
         DeviceEventEmitter.emit("refreshBillList");
         exitWizard();
       } else {
-        const data = await response.json();
+        const data: ResponseMessage = await response.json();
         throw new Error(data.message);
       }
     } catch (error) {

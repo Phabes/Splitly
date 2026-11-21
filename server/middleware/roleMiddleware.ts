@@ -1,24 +1,40 @@
+import { GroupRequest } from "@/types/index.ts";
 import { Response, NextFunction } from "express";
-import { GroupRequest } from "./groupMiddleware.ts";
 
 export const roleMiddleware = (allowedRoles: string[]) => {
-  return (req: GroupRequest, res: Response, next: NextFunction) => {
+  return (
+    req: GroupRequest,
+    res: Response,
+    next: NextFunction,
+  ): Response | void => {
     try {
-      const currentUserID = req.userID;
+      const currentUserID: string | undefined = req.userID;
       const group = req.group!;
 
-      const currentMember = group.members.find(
-        (m) => m.user.toString() === currentUserID?.toString(),
-      )!;
+      const currentMember =
+        typeof currentUserID === "string" && currentUserID.trim().length > 0
+          ? group.members.find((m) => {
+              if (!m?.user) {
+                return false;
+              }
 
-      if (!allowedRoles.includes(currentMember.role)) {
+              const memberUserID: string =
+                typeof m.user === "object" && "_id" in m.user
+                  ? String(m.user._id)
+                  : String(m.user);
+
+              return memberUserID === currentUserID;
+            })
+          : undefined;
+
+      if (!currentMember || !allowedRoles.includes(currentMember.role)) {
         return res.status(403).json({
           code: "roleAuthentication/forbidden",
           message: `You do not have permissions. Required roles: ${allowedRoles.join(", ")}.`,
         });
       }
 
-      next();
+      return next();
     } catch (error) {
       return res.status(500).json({
         code: "roleAuthentication/error",

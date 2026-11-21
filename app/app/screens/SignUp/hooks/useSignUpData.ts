@@ -85,7 +85,7 @@ export const useSignUpData = () => {
         await signUp(data.userToken, data.refreshToken, data.user);
       } else if (response.status === 400) {
         const data: SignUpFailResponse = await response.json();
-        if (data.code === "signUp/fieldsValidationError") {
+        if (data.code === "post/signUp/fieldsValidationError") {
           data.errorFields.forEach((errorField) => {
             if (
               errorField.field === "email" &&

@@ -91,10 +91,16 @@ export type RemoveMemberResponse = GroupMembersResponse & {
   isSelfLeave: boolean;
 };
 
-export type GroupBillDetailsResponse = {
+export type GroupBillDetailsResponse = ResponseMessage & {
   baseCurrency: string;
   members: UserResult[];
 };
+
+export type UpdateMemberRoleResponse = ResponseMessage & {
+  members: GroupMemberResult[];
+};
+
+export type TransferOwnershipResponse = UpdateMemberRoleResponse;
 
 export default function Index() {
   return null;

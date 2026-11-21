@@ -1,54 +1,47 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { verifyToken } from "@/utils/verifyToken.ts";
+import { requestContext } from "@/utils/requestContext.ts";
+import { AuthRequest, JwtPayload } from "@/types/index.ts";
 
-export type AuthRequest = Request & {
-  userID?: string;
-};
-
-const JWT_SECRET = process.env.JWT_SECRET || "SECRET_KEY";
+const JWT_SECRET: string = process.env.JWT_SECRET || "SECRET_KEY";
 
 export const authMiddleware = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
-) => {
-  let token;
+): Promise<Response | void> => {
+  const authHeader: string | undefined = req.headers.authorization;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    try {
-      token = req.headers.authorization.split(" ")[1];
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      code: "authentication/noTokenProvided",
+      message: "Not authorized. No token provided.",
+    });
+  }
 
-      if (token === undefined) {
-        throw new Error("noTokenProvided");
-      }
+  const token: string | undefined = authHeader.split(" ")[1];
 
-      const decoded = verifyToken(token, JWT_SECRET);
+  if (!token) {
+    return res.status(401).json({
+      code: "authentication/noTokenProvided",
+      message: "Not authorized. No token provided.",
+    });
+  }
 
-      req.userID = decoded.userID;
+  try {
+    const decoded: JwtPayload = verifyToken(token, JWT_SECRET);
 
+    req.userID = decoded.userID;
+
+    return requestContext.run({ userID: decoded.userID }, () => {
       return next();
-    } catch (error: unknown) {
-      if (token === undefined) {
-        return res.status(401).json({
-          code: "authentication/noTokenProvided",
-          message: "Not authorized. No token provided.",
-        });
-      }
-
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "name" in error &&
-        (error as { name: unknown }).name === "TokenExpiredError"
-      ) {
-        return res.status(401).json({
-          code: "authentication/tokenExpired",
-          message: "Token expired.",
-        });
-      }
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        code: "authentication/tokenExpired",
+        message: "Token expired.",
+      });
     }
 
     return res.status(401).json({

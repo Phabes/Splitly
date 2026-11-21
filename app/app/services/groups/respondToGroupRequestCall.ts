@@ -1,7 +1,7 @@
 export const respondToGroupRequestCall = (
   token: string,
   groupRequestID: string,
-  decision: "accepted" | "declined",
+  decision: "accepted" | "rejected",
 ) => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const apiPort = process.env.EXPO_PUBLIC_API_PORT;

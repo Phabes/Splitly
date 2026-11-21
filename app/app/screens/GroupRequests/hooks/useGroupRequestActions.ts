@@ -51,7 +51,7 @@ export const useGroupRequestActions = (
       const response = await request(
         respondToGroupRequestCall,
         groupRequestID,
-        "declined",
+        "rejected",
       );
 
       if (response.ok) {

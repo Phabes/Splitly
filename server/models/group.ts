@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { IGroup } from "@/types/index.ts";
 
-const GroupSchema = new mongoose.Schema({
+const GroupSchema = new mongoose.Schema<IGroup>({
   name: {
     type: String,
     required: true,
@@ -53,6 +54,6 @@ const GroupSchema = new mongoose.Schema({
   ],
 });
 
-const Group = mongoose.model("Group", GroupSchema, "Groups");
+const Group = mongoose.model<IGroup>("Group", GroupSchema, "Groups");
 
 export default Group;

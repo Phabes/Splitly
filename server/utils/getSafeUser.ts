@@ -1,6 +1,8 @@
-import User from "@/models/user.ts";
+import { SafeUser, UserDocument } from "@/types/index.ts";
 
-// User model automatically deletes "password" and "__v" when "toJSON" method is called
-export const getSafeUser = (user: InstanceType<typeof User>) => {
-  return user.toJSON();
+export const getSafeUser = (user: UserDocument): SafeUser => {
+  const rawUser = user.toJSON();
+  const { password: _password, __v: _version, ...rest } = rawUser;
+
+  return rest as SafeUser;
 };

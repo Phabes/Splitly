@@ -1,35 +1,54 @@
 import { Response } from "express";
-import { AuthRequest } from "@/middleware/authMiddleware.ts";
 import mongoose from "mongoose";
 import User from "@/models/user.ts";
 import Friend from "@/models/friend.ts";
-import { PopulatedUser } from "@/types/index.ts";
+import {
+  AuthRequest,
+  DecideFriendRequestBody,
+  FormattedFriend,
+  FriendshipStatus,
+  GetFriendListBody,
+  PopulatedFriendDoc,
+  PopulatedUser,
+  SearchFriendRequestsBody,
+  SearchFriendSuggestionsBody,
+  SendFriendRequestBody,
+} from "@/types/index.ts";
 
 export const searchFriendSuggestions = async (
   req: AuthRequest,
   res: Response,
 ): Promise<Response> => {
   try {
-    const { query = "", limit = 10, userIDs = [] } = req.body;
-    const currentUserID = req.userID;
+    const {
+      query = "",
+      limit = 10,
+      userIDs = [],
+    }: SearchFriendSuggestionsBody = req.body;
+    const currentUserID = req.userID!;
 
-    const limitNum = Number(limit);
-    const searchQuery = String(query);
+    const limitNum: number = Number(limit);
+    const searchQuery: string = String(query);
 
     const existingFriendships = await Friend.find({
       $or: [{ requester: currentUserID }, { recipient: currentUserID }],
-      status: { $in: ["accepted", "pending"] },
+      status: { $in: ["accepted", "pending"] satisfies FriendshipStatus[] },
     });
 
-    const friendshipIDs = existingFriendships.map((f) =>
-      f.requester!.toString() === currentUserID ? f.recipient : f.requester,
+    const friendshipIDs: string[] = existingFriendships.map((f) =>
+      f.requester.toString() === currentUserID
+        ? f.recipient.toString()
+        : f.requester.toString(),
     );
 
-    const baseExclusionsSet = new Set([...friendshipIDs, currentUserID]);
-    const baseExclusions = Array.from(baseExclusionsSet);
+    const baseExclusionsSet = new Set<string>([
+      ...friendshipIDs,
+      currentUserID,
+    ]);
+    const baseExclusions: string[] = Array.from(baseExclusionsSet);
 
-    const fetchExclusionsSet = new Set([...baseExclusions, ...userIDs]);
-    const fetchExclusions = Array.from(fetchExclusionsSet);
+    const fetchExclusionsSet = new Set<string>([...baseExclusions, ...userIDs]);
+    const fetchExclusions: string[] = Array.from(fetchExclusionsSet);
 
     const searchMatch = {
       $or: [
@@ -46,20 +65,20 @@ export const searchFriendSuggestions = async (
       .limit(limitNum)
       .sort({ username: 1 });
 
-    const totalCount = await User.countDocuments({
+    const totalCount: number = await User.countDocuments({
       _id: { $nin: baseExclusions },
       ...searchMatch,
     });
 
     return res.status(200).json({
-      code: "getFriendSuggestions/success",
+      code: "post/searchFriendSuggestions/success",
       message: "Users found.",
       users,
       hasMore: userIDs.length + users.length < totalCount,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getFriendSuggestions/error",
+      code: "post/searchFriendSuggestions/error",
       message: "Server error during search.",
     });
   }
@@ -70,8 +89,22 @@ export const sendFriendRequest = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { userToAddID } = req.body;
-    const currentUserID = req.userID;
+    const { userToAddID }: SendFriendRequestBody = req.body;
+    const currentUserID = req.userID!;
+
+    if (!userToAddID || !mongoose.Types.ObjectId.isValid(userToAddID)) {
+      return res.status(400).json({
+        code: "post/sendFriendRequest/invalidUserID",
+        message: "Valid userToAddID is required.",
+      });
+    }
+
+    if (userToAddID === currentUserID) {
+      return res.status(400).json({
+        code: "post/sendFriendRequest/selfRequest",
+        message: "You cannot send a friend request to yourself.",
+      });
+    }
 
     const existingFriendship = await Friend.findOne({
       $or: [
@@ -83,25 +116,25 @@ export const sendFriendRequest = async (
     if (existingFriendship) {
       if (existingFriendship.status === "accepted") {
         return res.status(409).json({
-          code: "postFriendRequest/friendshipAlreadyExists",
+          code: "post/sendFriendRequest/friendshipAlreadyExists",
           message: "You are already friends with this user.",
         });
       }
 
       if (existingFriendship.status === "pending") {
         return res.status(409).json({
-          code: "postFriendRequest/friendRequestPending",
+          code: "post/sendFriendRequest/friendRequestPending",
           message: "A friend request is already pending.",
         });
       }
 
       existingFriendship.status = "pending";
       existingFriendship.requester = new mongoose.Types.ObjectId(currentUserID);
-      existingFriendship.recipient = new userToAddID();
+      existingFriendship.recipient = new mongoose.Types.ObjectId(userToAddID);
       await existingFriendship.save();
 
       return res.status(200).json({
-        code: "postFriendRequest/requestRenewalSuccess",
+        code: "post/sendFriendRequest/requestRenewalSuccess",
         message: "Friend request sent.",
       });
     }
@@ -109,18 +142,18 @@ export const sendFriendRequest = async (
     const newFriendship = new Friend({
       requester: currentUserID,
       recipient: userToAddID,
-      status: "pending",
+      status: "pending" satisfies FriendshipStatus,
     });
 
     await newFriendship.save();
 
     return res.status(200).json({
-      code: "postFriendRequest/requestSuccess",
+      code: "post/sendFriendRequest/requestSuccess",
       message: "Friend request sent.",
     });
   } catch (error) {
     return res.status(500).json({
-      code: "postFriendRequest/requestError",
+      code: "post/sendFriendRequest/requestError",
       message: "Server error during sending request.",
     });
   }
@@ -131,14 +164,15 @@ export const searchFriendRequests = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { limit = 10, friendRequestIDs = [] } = req.body;
-    const currentUserID = req.userID;
+    const { limit = 10, friendRequestIDs = [] }: SearchFriendRequestsBody =
+      req.body;
+    const currentUserID = req.userID!;
 
-    const limitNum = Number(limit);
+    const limitNum: number = Number(limit);
 
     const baseFilter = {
       recipient: currentUserID,
-      status: "pending",
+      status: "pending" satisfies FriendshipStatus,
     };
 
     const fetchFilter = {
@@ -148,21 +182,20 @@ export const searchFriendRequests = async (
 
     const requests = await Friend.find(fetchFilter)
       .select("id")
-      .populate("requester", "username email")
+      .populate<{ requester: PopulatedUser }>("requester", "username email")
       .limit(limitNum);
-    // .sort({ createdAt: -1 });
 
-    const totalCount = await Friend.countDocuments(baseFilter);
+    const totalCount: number = await Friend.countDocuments(baseFilter);
 
     return res.status(200).json({
-      code: "getFriendRequests/success",
+      code: "post/searchFriendRequests/success",
       message: "Friend requests found.",
       requests,
       hasMore: friendRequestIDs.length + requests.length < totalCount,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getFriendRequests/error",
+      code: "post/searchFriendRequests/error",
       message: "Server error during fetching friend requests.",
     });
   }
@@ -173,29 +206,48 @@ export const decideFriendRequest = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const friendRequestID = req.params.id;
-    const { decision } = req.body;
-    const currentUserID = req.userID;
+    const rawFriendRequestID: string | string[] | undefined = req.params.id;
+    const friendRequestID: string | undefined = Array.isArray(
+      rawFriendRequestID,
+    )
+      ? rawFriendRequestID[0]
+      : rawFriendRequestID;
+    const { decision }: DecideFriendRequestBody = req.body;
+    const currentUserID = req.userID!;
+
+    if (!friendRequestID || !mongoose.Types.ObjectId.isValid(friendRequestID)) {
+      return res.status(400).json({
+        code: "patch/decideFriendRequest/invalidID",
+        message: "Valid friend request ID is required.",
+      });
+    }
+
+    if (decision !== "accepted" && decision !== "rejected") {
+      return res.status(400).json({
+        code: "patch/decideFriendRequest/invalidDecision",
+        message: "Decision must be 'accepted' or 'rejected'.",
+      });
+    }
 
     const friendRequest = await Friend.findById(friendRequestID);
 
     if (!friendRequest) {
       return res.status(404).json({
-        code: "patchFriendRequest/notFound",
+        code: "patch/decideFriendRequest/notFound",
         message: "Friend request not found.",
       });
     }
 
-    if (friendRequest.recipient!.toString() !== currentUserID) {
+    if (friendRequest.recipient.toString() !== currentUserID) {
       return res.status(403).json({
-        code: "patchFriendRequest/noAuthorizedRecipient",
+        code: "patch/decideFriendRequest/unauthorizedRecipient",
         message: "You are not authorized to respond to this request.",
       });
     }
 
     if (friendRequest.status !== "pending") {
       return res.status(400).json({
-        code: "patchFriendRequest/alreadyResponded",
+        code: "patch/decideFriendRequest/alreadyResponded",
         message: `This friend request has already been ${friendRequest.status}.`,
       });
     }
@@ -205,12 +257,12 @@ export const decideFriendRequest = async (
     await friendRequest.save();
 
     return res.status(200).json({
-      code: "patchFriendRequest/success",
+      code: "patch/decideFriendRequest/success",
       message: `Friend request has been successfully ${decision}.`,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "patchFriendRequest/error",
+      code: "patch/decideFriendRequest/error",
       message: "Server error while processing friend request decision.",
     });
   }
@@ -221,13 +273,21 @@ export const getFriendList = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { query = "", limit = 10, friendIDs = [] } = req.body;
-    const currentUserID = req.userID;
+    const {
+      query = "",
+      limit = 10,
+      friendIDs = [],
+    }: GetFriendListBody = req.body;
+    const currentUserID = req.userID!;
 
-    const limitNum = Number(limit);
-    const searchQuery = String(query);
+    const limitNum: number = Number(limit);
+    const searchQuery: string = String(query);
 
-    let userMatchCondition = {};
+    const andConditions: Record<string, unknown>[] = [
+      { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
+      { status: "accepted" satisfies FriendshipStatus },
+    ];
+
     if (searchQuery) {
       const matchingUsers = await User.find({
         _id: { $ne: currentUserID },
@@ -237,60 +297,57 @@ export const getFriendList = async (
         ],
       }).select("_id");
 
-      const matchedUserIDs = matchingUsers.map((u) => u._id);
+      const matchedUserIDs: mongoose.Types.ObjectId[] = matchingUsers.map(
+        (u) => u._id,
+      );
 
-      userMatchCondition = {
+      andConditions.push({
         $or: [
           { requester: { $in: matchedUserIDs } },
           { recipient: { $in: matchedUserIDs } },
         ],
-      };
+      });
     }
 
-    const andConditions: mongoose.FilterQuery<typeof Friend>[] = [
-      { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
-      { status: "accepted" },
-    ];
-
-    if (searchQuery) {
-      andConditions.push(userMatchCondition);
-    }
-
-    const baseFilter: mongoose.FilterQuery<typeof Friend> = {
+    const baseFilter: Record<string, unknown> = {
       $and: andConditions,
     };
 
-    const fetchFilter = {
+    const fetchFilter: Record<string, unknown> = {
       ...baseFilter,
       _id: { $nin: friendIDs },
     };
 
     const pendingRequestsFilter = {
       recipient: currentUserID,
-      status: "pending",
+      status: "pending" satisfies FriendshipStatus,
     };
-    const [friends, totalCount, pendingRequestsCount] = await Promise.all([
+
+    const [friends, totalCount, pendingRequestsCount]: [
+      PopulatedFriendDoc[],
+      number,
+      number,
+    ] = await Promise.all([
       Friend.find(fetchFilter)
-        .populate("requester", "username email")
-        .populate("recipient", "username email")
-        .limit(limitNum), //.sort({ updatedAt: -1 }),
+        .populate<{ requester: PopulatedUser }>("requester", "username email")
+        .populate<{ recipient: PopulatedUser }>("recipient", "username email")
+        .limit(limitNum),
       Friend.countDocuments(baseFilter),
       Friend.countDocuments(pendingRequestsFilter),
     ]);
 
-    const formattedFriends = friends.map((record) => {
-      const reqUser = record.requester as unknown as PopulatedUser;
-      const recUser = record.recipient as unknown as PopulatedUser;
+    const formattedFriends: FormattedFriend[] = friends.map((record) => {
+      const isRequester: boolean =
+        record.requester._id.toString() === currentUserID;
 
-      const isRequester = reqUser._id.toString() === currentUserID?.toString();
       return {
         _id: record._id,
-        user: isRequester ? recUser : reqUser,
+        user: isRequester ? record.recipient : record.requester,
       };
     });
 
     return res.status(200).json({
-      code: "getFriendList/success",
+      code: "post/getFriendList/success",
       message: "Friends fetched successfully.",
       friends: formattedFriends,
       hasMore: friendIDs.length + friends.length < totalCount,
@@ -298,7 +355,7 @@ export const getFriendList = async (
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getFriendList/error",
+      code: "post/getFriendList/error",
       message: "Server error during fetching friends.",
     });
   }

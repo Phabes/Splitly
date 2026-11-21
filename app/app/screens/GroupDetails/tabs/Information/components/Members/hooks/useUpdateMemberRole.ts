@@ -5,7 +5,7 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { updateMemberRoleCall } from "@/app/services";
-import { UserGroupRole } from "@/app/types";
+import { UpdateMemberRoleResponse, UserGroupRole } from "@/app/types";
 
 export const useUpdateMemberRole = () => {
   const translations = useTranslations();
@@ -30,13 +30,13 @@ export const useUpdateMemberRole = () => {
         memberID,
         newRole,
       );
-      const data = await response.json();
+      const data: UpdateMemberRoleResponse = await response.json();
 
       if (response.ok) {
         setGroupMembers(data.members);
       } else if (
         response.status === 404 &&
-        data.code === "updateRole/member-not-found"
+        data.code === "patch/updateMemberRole/memberNotFound"
       ) {
         setGroupMembers(data.members);
       } else {

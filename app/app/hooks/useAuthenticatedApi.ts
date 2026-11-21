@@ -45,8 +45,8 @@ export const useAuthenticatedApi = () => {
 
         if (
           data &&
-          (data.code === "groupAuthentication/access-denied" ||
-            data.code === "groupAuthentication/not-found")
+          (data.code === "groupAuthentication/accessDenied" ||
+            data.code === "groupAuthentication/notFound")
         ) {
           navigation.reset({
             index: 0,

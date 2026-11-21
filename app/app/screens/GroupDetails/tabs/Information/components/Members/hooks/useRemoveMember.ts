@@ -41,7 +41,7 @@ export const useRemoveMember = () => {
       } else if (response.status === 404) {
         const data: GroupMembersResponse = await response.json();
 
-        if (data.code === "removeMember/member-not-found") {
+        if (data.code === "delete/removeGroupMember/memberNotFound") {
           setGroupMembers(data.members);
         } else {
           throw new Error(data.message);

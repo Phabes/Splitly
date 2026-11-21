@@ -1,28 +1,67 @@
 import { Response } from "express";
-import { AuthRequest } from "@/middleware/authMiddleware.ts";
-import { GroupRequest } from "@/middleware/groupMiddleware.ts";
 import { validCurrency } from "@/utils/validCurrency.ts";
 import mongoose from "mongoose";
 import User from "@/models/user.ts";
-import Friend from "@/models/friend.ts";
 import Group from "@/models/group.ts";
-import { PopulatedUser } from "@/types/index.ts";
+import {
+  AddGroupMembersBody,
+  AuthRequest,
+  CreateGroupBody,
+  DecideGroupRequestBody,
+  EditGroupDetailsBody,
+  FormattedFriend,
+  FormattedGroupMember,
+  FriendshipStatus,
+  GetGroupInviteCandidatesBody,
+  GetGroupListBody,
+  GroupDocument,
+  GroupMemberRole,
+  GroupMemberStatus,
+  GroupRequest,
+  IGroupMember,
+  PopulatedFriendDoc,
+  PopulatedUser,
+  SearchGroupRequestsBody,
+  UpdateMemberRoleBody,
+} from "@/types/index.ts";
+import Friend from "@/models/friend.ts";
+
+const extractSingleParam = (
+  param: string | string[] | undefined,
+): string | undefined => (Array.isArray(param) ? param[0] : param);
+
+const formatGroupMembers = (group: GroupDocument): FormattedGroupMember[] =>
+  group.members.map((member: IGroupMember): FormattedGroupMember => {
+    const user = member.user as unknown as PopulatedUser;
+
+    return {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: member.role,
+      status: member.status,
+    };
+  });
 
 export const getGroupList = async (
   req: AuthRequest,
   res: Response,
 ): Promise<Response> => {
   try {
-    const { query = "", limit = 10, groupIDs = [] } = req.body;
-    const currentUserID = req.userID;
-    const limitNum = Number(limit);
-    const searchQuery = String(query);
+    const {
+      query = "",
+      limit = 10,
+      groupIDs = [],
+    }: GetGroupListBody = req.body;
+    const currentUserID = req.userID!;
+    const limitNum: number = Number(limit);
+    const searchQuery: string = String(query);
 
-    const baseFilter: mongoose.FilterQuery<typeof Group> = {
+    const baseFilter: Record<string, unknown> = {
       members: {
         $elemMatch: {
           user: currentUserID,
-          status: "accepted",
+          status: "accepted" satisfies GroupMemberStatus,
         },
       },
     };
@@ -31,25 +70,28 @@ export const getGroupList = async (
       baseFilter.name = { $regex: searchQuery, $options: "i" };
     }
 
-    const fetchFilter = {
+    const fetchFilter: Record<string, unknown> = {
       ...baseFilter,
       _id: { $nin: groupIDs },
     };
 
-    const pendingRequestsFilter = {
+    const pendingRequestsFilter: Record<string, unknown> = {
       members: {
-        $elemMatch: { user: currentUserID, status: "pending" },
+        $elemMatch: {
+          user: currentUserID,
+          status: "pending" satisfies GroupMemberStatus,
+        },
       },
     };
 
     const [groups, totalCount, pendingRequestsCount] = await Promise.all([
-      Group.find(fetchFilter).select("id name description").limit(limitNum), //.sort({ updatedAt: -1 }),
+      Group.find(fetchFilter).select("id name description").limit(limitNum),
       Group.countDocuments(baseFilter),
       Group.countDocuments(pendingRequestsFilter),
     ]);
 
     return res.status(200).json({
-      code: "getGroupList/success",
+      code: "post/getGroupList/success",
       message: "Groups fetched successfully.",
       groups,
       hasMore: groupIDs.length + groups.length < totalCount,
@@ -57,7 +99,7 @@ export const getGroupList = async (
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getGroupList/error",
+      code: "post/getGroupList/error",
       message: "Server error during fetching groups.",
     });
   }
@@ -68,30 +110,38 @@ export const createGroup = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { name, description, currency, icon, members } = req.body;
-    const currentUserID = req.userID;
+    const { name, description, currency, icon, members }: CreateGroupBody =
+      req.body;
+    const currentUserID = req.userID!;
+
+    if (typeof name !== "string" || name.trim().length === 0) {
+      return res.status(400).json({
+        code: "post/createGroup/invalidName",
+        message: "A group name is required.",
+      });
+    }
 
     if (
-      !currency ||
+      typeof currency !== "string" ||
       currency.trim().length !== 3 ||
       !validCurrency(currency.toUpperCase())
     ) {
       return res.status(400).json({
-        code: "postGroup/invalid-currency",
+        code: "post/createGroup/invalidCurrency",
         message: "A valid 3-letter currency code is required.",
       });
     }
 
-    if (!icon || typeof icon !== "string" || icon.trim().length !== 2) {
+    if (typeof icon !== "string" || icon.trim().length !== 2) {
       return res.status(400).json({
-        code: "postGroup/invalid-icon",
+        code: "post/createGroup/invalidIcon",
         message: "A valid 2-letter country code icon is required.",
       });
     }
 
-    const groupMembers = [
+    const groupMembers: IGroupMember[] = [
       {
-        user: currentUserID,
+        user: new mongoose.Types.ObjectId(currentUserID),
         status: "accepted",
         role: "owner",
       },
@@ -99,9 +149,12 @@ export const createGroup = async (
 
     if (Array.isArray(members) && members.length > 0) {
       members.forEach((memberID: string) => {
-        if (memberID !== currentUserID?.toString()) {
+        if (
+          memberID !== currentUserID &&
+          mongoose.Types.ObjectId.isValid(memberID)
+        ) {
           groupMembers.push({
-            user: memberID,
+            user: new mongoose.Types.ObjectId(memberID),
             status: "pending",
             role: "member",
           });
@@ -109,10 +162,10 @@ export const createGroup = async (
       });
     }
 
-    const newGroup = new Group({
+    const newGroup: GroupDocument = new Group({
       name: name.trim(),
-      description: description ? description.trim() : "",
-      creator: currentUserID,
+      description: typeof description === "string" ? description.trim() : "",
+      creator: new mongoose.Types.ObjectId(currentUserID),
       baseCurrency: currency.toUpperCase(),
       icon: icon.toUpperCase(),
       members: groupMembers,
@@ -121,12 +174,12 @@ export const createGroup = async (
     await newGroup.save();
 
     return res.status(201).json({
-      code: "postGroup/success",
+      code: "post/createGroup/success",
       message: "Group created successfully.",
     });
   } catch (error) {
     return res.status(500).json({
-      code: "postGroup/error",
+      code: "post/createGroup/error",
       message: "An unexpected error occurred while creating the group.",
     });
   }
@@ -137,38 +190,41 @@ export const searchGroupRequests = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { limit = 10, groupRequestIDs = [] } = req.body;
-    const currentUserID = req.userID;
-    const limitNum = Number(limit);
+    const { limit = 10, groupRequestIDs = [] }: SearchGroupRequestsBody =
+      req.body;
+    const currentUserID = req.userID!;
+    const limitNum: number = Number(limit);
 
-    const baseFilter = {
+    const baseFilter: Record<string, unknown> = {
       members: {
-        $elemMatch: { user: currentUserID, status: "pending" },
+        $elemMatch: {
+          user: currentUserID,
+          status: "pending" satisfies GroupMemberStatus,
+        },
       },
     };
 
-    const fetchFilter = {
+    const fetchFilter: Record<string, unknown> = {
       ...baseFilter,
       _id: { $nin: groupRequestIDs },
     };
 
     const requests = await Group.find(fetchFilter)
       .select("id name description")
-      .populate("creator", "username email")
+      .populate<{ creator: PopulatedUser }>("creator", "username email")
       .limit(limitNum);
-    // .sort({ createdAt: -1 });
 
-    const totalCount = await Group.countDocuments(baseFilter);
+    const totalCount: number = await Group.countDocuments(baseFilter);
 
     return res.status(200).json({
-      code: "getGroupRequests/success",
+      code: "post/searchGroupRequests/success",
       message: "Group requests found.",
       requests,
       hasMore: groupRequestIDs.length + requests.length < totalCount,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getGroupRequests/error",
+      code: "post/searchGroupRequests/error",
       message: "Server error during fetching group requests.",
     });
   }
@@ -179,20 +235,39 @@ export const decideGroupRequest = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { groupRequestID } = req.params;
-    const { decision } = req.body;
-    const currentUserID = req.userID;
+    const groupRequestID: string | undefined = extractSingleParam(
+      req.params.groupRequestID,
+    );
+    const { decision }: DecideGroupRequestBody = req.body;
+    const currentUserID = req.userID!;
+
+    if (!groupRequestID || !mongoose.Types.ObjectId.isValid(groupRequestID)) {
+      return res.status(400).json({
+        code: "patch/decideGroupRequest/invalidID",
+        message: "Valid group request ID is required.",
+      });
+    }
+
+    if (decision !== "accepted" && decision !== "rejected") {
+      return res.status(400).json({
+        code: "patch/decideGroupRequest/invalidDecision",
+        message: "Decision must be 'accepted' or 'rejected'.",
+      });
+    }
 
     const group = await Group.findOne({
       _id: groupRequestID,
       members: {
-        $elemMatch: { user: currentUserID, status: "pending" },
+        $elemMatch: {
+          user: currentUserID,
+          status: "pending" satisfies GroupMemberStatus,
+        },
       },
     });
 
     if (!group) {
       return res.status(404).json({
-        code: "patchGroupRequest/not-found",
+        code: "patch/decideGroupRequest/notFound",
         message: "Group request not found or has already been processed.",
       });
     }
@@ -200,7 +275,11 @@ export const decideGroupRequest = async (
     if (decision === "accepted") {
       await Group.updateOne(
         { _id: groupRequestID, "members.user": currentUserID },
-        { $set: { "members.$.status": "accepted" } },
+        {
+          $set: {
+            "members.$.status": "accepted" satisfies GroupMemberStatus,
+          },
+        },
       );
     } else {
       await Group.updateOne(
@@ -210,12 +289,12 @@ export const decideGroupRequest = async (
     }
 
     return res.status(200).json({
-      code: "patchGroupRequest/success",
-      message: `Group request has been successfully processed.`,
+      code: "patch/decideGroupRequest/success",
+      message: "Group request has been successfully processed.",
     });
   } catch (error) {
     return res.status(500).json({
-      code: "patchGroupRequest/error",
+      code: "patch/decideGroupRequest/error",
       message: "Server error while processing group request decision.",
     });
   }
@@ -226,23 +305,14 @@ export const getGroupDetails = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const group = req.group!;
+    const group: GroupDocument = req.group!;
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member) => {
-      const user = member.user as unknown as PopulatedUser;
+    const formattedMembers: FormattedGroupMember[] = formatGroupMembers(group);
 
-      return {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: member.role,
-        status: member.status,
-      };
-    });
     return res.status(200).json({
-      code: "getGroupDetails/success",
+      code: "get/getGroupDetails/success",
       message: "Group details fetched successfully.",
       groupDetails: {
         _id: group._id,
@@ -255,7 +325,7 @@ export const getGroupDetails = async (
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getGroupDetails/error",
+      code: "get/getGroupDetails/error",
       message: "Server error during fetching group details.",
     });
   }
@@ -266,24 +336,33 @@ export const editGroupDetails = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { name, description, currency, icon } = req.body;
-    const group = req.group!;
+    const { name, description, currency, icon }: EditGroupDetailsBody =
+      req.body;
+    const group: GroupDocument = req.group!;
 
     if (name !== undefined) {
+      if (typeof name !== "string" || name.trim().length === 0) {
+        return res.status(400).json({
+          code: "patch/editGroupDetails/invalidName",
+          message: "Group name cannot be empty.",
+        });
+      }
       group.name = name.trim();
     }
 
     if (description !== undefined) {
-      group.description = description.trim();
+      group.description =
+        typeof description === "string" ? description.trim() : "";
     }
 
     if (currency !== undefined) {
       if (
+        typeof currency !== "string" ||
         currency.trim().length !== 3 ||
         !validCurrency(currency.toUpperCase())
       ) {
         return res.status(400).json({
-          code: "editGroup/invalid-currency",
+          code: "patch/editGroupDetails/invalidCurrency",
           message: "A valid 3-letter currency code is required.",
         });
       }
@@ -294,7 +373,7 @@ export const editGroupDetails = async (
     if (icon !== undefined) {
       if (typeof icon !== "string" || icon.trim().length !== 2) {
         return res.status(400).json({
-          code: "editGroup/invalid-icon",
+          code: "patch/editGroupDetails/invalidIcon",
           message: "A valid 2-letter country code icon is required.",
         });
       }
@@ -305,7 +384,7 @@ export const editGroupDetails = async (
     await group.save();
 
     return res.status(200).json({
-      code: "editGroup/success",
+      code: "patch/editGroupDetails/success",
       message: "Group updated successfully.",
       groupDetails: {
         _id: group._id,
@@ -317,7 +396,7 @@ export const editGroupDetails = async (
     });
   } catch (error) {
     return res.status(500).json({
-      code: "editGroup/error",
+      code: "patch/editGroupDetails/error",
       message: "Server error during group update.",
     });
   }
@@ -328,10 +407,15 @@ export const getGroupInviteCandidates = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { query = "", limit = 10, friendIDs = [], groupID } = req.body;
-    const currentUserID = req.userID;
-    const limitNum = Number(limit);
-    const searchQuery = String(query);
+    const {
+      query = "",
+      limit = 10,
+      friendIDs = [],
+      groupID,
+    }: GetGroupInviteCandidatesBody = req.body;
+    const currentUserID = req.userID!;
+    const limitNum: number = Number(limit);
+    const searchQuery: string = String(query);
 
     let groupMemberIDs: string[] = [];
 
@@ -339,27 +423,28 @@ export const getGroupInviteCandidates = async (
       const group = await Group.findById(groupID).select("members");
 
       if (group) {
-        const isMember = group.members.some(
-          (m) => m.user.toString() === currentUserID?.toString(),
+        const isMember: boolean = group.members.some(
+          (m: IGroupMember) => m.user.toString() === currentUserID,
         );
 
         if (!isMember) {
-          // return same message as in "groupMiddleware"
           return res.status(403).json({
-            code: "groupAuthentication/access-denied",
+            code: "post/getGroupInviteCandidates/accessDenied",
             message: "You do not have permission to view this group's data.",
           });
         }
 
-        groupMemberIDs = group.members.map((m) => m.user.toString());
+        groupMemberIDs = group.members.map((m: IGroupMember) =>
+          m.user.toString(),
+        );
       }
     }
 
-    const excludedUserIDs = groupMemberIDs.filter(
-      (id) => id !== currentUserID?.toString(),
+    const excludedUserIDs: string[] = groupMemberIDs.filter(
+      (id: string) => id !== currentUserID,
     );
 
-    let userMatchCondition = {};
+    let userMatchCondition: Record<string, unknown> = {};
 
     if (searchQuery) {
       const matchingUsers = await User.find({
@@ -370,7 +455,9 @@ export const getGroupInviteCandidates = async (
         ],
       }).select("_id");
 
-      const matchedUserIDs = matchingUsers.map((u) => u._id);
+      const matchedUserIDs: mongoose.Types.ObjectId[] = matchingUsers.map(
+        (u) => u._id,
+      );
 
       userMatchCondition = {
         $or: [
@@ -380,9 +467,9 @@ export const getGroupInviteCandidates = async (
       };
     }
 
-    const andConditions: mongoose.FilterQuery<typeof Friend>[] = [
+    const andConditions: Record<string, unknown>[] = [
       { $or: [{ requester: currentUserID }, { recipient: currentUserID }] },
-      { status: "accepted" },
+      { status: "accepted" satisfies FriendshipStatus },
       { requester: { $nin: excludedUserIDs } },
       { recipient: { $nin: excludedUserIDs } },
     ];
@@ -391,43 +478,44 @@ export const getGroupInviteCandidates = async (
       andConditions.push(userMatchCondition);
     }
 
-    const baseFilter: mongoose.FilterQuery<typeof Friend> = {
+    const baseFilter: Record<string, unknown> = {
       $and: andConditions,
     };
 
-    const fetchFilter = {
+    const fetchFilter: Record<string, unknown> = {
       ...baseFilter,
       _id: { $nin: friendIDs },
     };
 
-    const [friends, totalCount] = await Promise.all([
-      Friend.find(fetchFilter)
-        .populate("requester", "username email")
-        .populate("recipient", "username email")
-        .limit(limitNum),
-      Friend.countDocuments(baseFilter),
-    ]);
+    const [friends, totalCount]: [PopulatedFriendDoc[], number] =
+      await Promise.all([
+        Friend.find<PopulatedFriendDoc>(fetchFilter)
+          .populate("requester", "username email")
+          .populate("recipient", "username email")
+          .limit(limitNum)
+          .lean<PopulatedFriendDoc[]>(),
+        Friend.countDocuments(baseFilter),
+      ]);
 
-    const formattedFriends = friends.map((record) => {
-      const reqUser = record.requester as unknown as PopulatedUser;
-      const recUser = record.recipient as unknown as PopulatedUser;
+    const formattedFriends: FormattedFriend[] = friends.map((record) => {
+      const isRequester: boolean =
+        record.requester._id.toString() === currentUserID;
 
-      const isRequester = reqUser._id.toString() === currentUserID?.toString();
       return {
         _id: record._id,
-        user: isRequester ? recUser : reqUser,
+        user: isRequester ? record.recipient : record.requester,
       };
     });
 
     return res.status(200).json({
-      code: "getAddMembersCandidates/success",
+      code: "post/getGroupInviteCandidates/success",
       message: "Candidates fetched successfully.",
       friends: formattedFriends,
       hasMore: friendIDs.length + friends.length < totalCount,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getAddMembersCandidates/error",
+      code: "post/getGroupInviteCandidates/error",
       message: "Server error during fetching candidates.",
     });
   }
@@ -438,19 +526,30 @@ export const addGroupMembers = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { members } = req.body;
+    const { members }: AddGroupMembersBody = req.body;
+    const group: GroupDocument = req.group!;
 
-    const group = req.group!;
+    if (!Array.isArray(members)) {
+      return res.status(400).json({
+        code: "post/addGroupMembers/invalidMembers",
+        message: "Members must be provided as an array of user IDs.",
+      });
+    }
 
-    let addedOrUpdatedCount = 0;
+    let addedOrUpdatedCount: number = 0;
 
     members.forEach((userID: string) => {
-      const existingMemberIndex = group.members.findIndex(
-        (m) => m.user.toString() === userID,
+      if (!mongoose.Types.ObjectId.isValid(userID)) {
+        return;
+      }
+
+      const existingMemberIndex: number = group.members.findIndex(
+        (m: IGroupMember) => m.user.toString() === userID,
       );
 
       if (existingMemberIndex >= 0) {
-        const currentStatus = group.members[existingMemberIndex].status;
+        const currentStatus: GroupMemberStatus =
+          group.members[existingMemberIndex].status;
 
         if (currentStatus === "rejected") {
           group.members[existingMemberIndex].status = "pending";
@@ -458,7 +557,7 @@ export const addGroupMembers = async (
         }
       } else {
         group.members.push({
-          user: userID,
+          user: new mongoose.Types.ObjectId(userID),
           status: "pending",
           role: "member",
         });
@@ -468,7 +567,7 @@ export const addGroupMembers = async (
 
     if (addedOrUpdatedCount === 0) {
       return res.status(400).json({
-        code: "addMembers/already-invited",
+        code: "post/addGroupMembers/alreadyInvited",
         message:
           "All selected users are already members or have pending invites.",
       });
@@ -478,26 +577,16 @@ export const addGroupMembers = async (
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member) => {
-      const user = member.user as unknown as PopulatedUser;
-
-      return {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: member.role,
-        status: member.status,
-      };
-    });
+    const formattedMembers: FormattedGroupMember[] = formatGroupMembers(group);
 
     return res.status(200).json({
-      code: "addMembers/success",
+      code: "post/addGroupMembers/success",
       message: `Successfully sent invites to ${addedOrUpdatedCount} users.`,
       members: formattedMembers,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "addMembers/error",
+      code: "post/addGroupMembers/error",
       message: "Server error while sending group requests.",
     });
   }
@@ -508,48 +597,41 @@ export const removeGroupMember = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { memberID } = req.params;
-    const currentUserID = req.userID;
-    const group = req.group!;
+    const memberID: string | undefined = extractSingleParam(
+      req.params.memberID,
+    );
+    const currentUserID = req.userID!;
+    const group: GroupDocument = req.group!;
 
-    const currentMember = group.members.find(
-      (m) => m.user.toString() === currentUserID?.toString(),
-    )!;
+    const currentMember: IGroupMember | undefined = group.members.find(
+      (m: IGroupMember) => m.user.toString() === currentUserID,
+    );
 
-    const targetMember = group.members.find(
-      (m) => m.user.toString() === memberID?.toString(),
+    const targetMember: IGroupMember | undefined = group.members.find(
+      (m: IGroupMember) => m.user.toString() === memberID,
     );
 
     if (!targetMember) {
       await group.populate("members.user", "username email");
 
-      const formattedMembers = group.members.map((member) => {
-        const user = member.user as unknown as PopulatedUser;
-
-        return {
-          _id: user._id,
-          username: user.username,
-          email: user.email,
-          role: member.role,
-          status: member.status,
-        };
-      });
+      const formattedMembers: FormattedGroupMember[] =
+        formatGroupMembers(group);
 
       return res.status(404).json({
-        code: "removeMember/member-not-found",
+        code: "delete/removeGroupMember/memberNotFound",
         message: "User is no longer a member of this group.",
         members: formattedMembers,
       });
     }
 
-    const isSelfLeave = currentUserID?.toString() === memberID?.toString();
-    const requesterRole = currentMember.role;
-    const targetRole = targetMember.role;
+    const isSelfLeave: boolean = currentUserID === memberID;
+    const requesterRole: GroupMemberRole | undefined = currentMember?.role;
+    const targetRole: GroupMemberRole = targetMember.role;
 
     if (isSelfLeave) {
       if (requesterRole === "owner" && group.members.length > 1) {
         return res.status(403).json({
-          code: "removeMember/owner-cannot-leave",
+          code: "delete/removeGroupMember/ownerCannotLeave",
           message:
             "Owner cannot leave the group. You must designate a new owner first.",
         });
@@ -557,50 +639,31 @@ export const removeGroupMember = async (
     } else {
       if (requesterRole === "member") {
         return res.status(403).json({
-          code: "removeMember/member-forbidden",
+          code: "delete/removeGroupMember/memberForbidden",
           message: "Members do not have permission to remove users.",
         });
       }
 
       if (requesterRole === "admin" && targetRole !== "member") {
         return res.status(403).json({
-          code: "removeMember/admin-forbidden",
+          code: "delete/removeGroupMember/adminForbidden",
           message: "Admins can only remove regular members.",
         });
       }
     }
 
-    // --- TODO: Future Validations (e.g., unpaid bills) ---
-    /*
-    const hasUnpaidBills = false; // Replace with actual check
-    if (hasUnpaidBills) {
-      return res.status(400).json({
-        code: "removeMember/unpaid-bills",
-        message: "Cannot remove member. They have unsettled balances in this group.",
-      });
-    }
-    */
-
-    group.members.pull(targetMember._id);
+    group.members = group.members.filter(
+      (m: IGroupMember) => m.user.toString() !== targetMember.user.toString(),
+    );
 
     await group.save();
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member) => {
-      const user = member.user as unknown as PopulatedUser;
-
-      return {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: member.role,
-        status: member.status,
-      };
-    });
+    const formattedMembers: FormattedGroupMember[] = formatGroupMembers(group);
 
     return res.status(200).json({
-      code: "removeMember/success",
+      code: "delete/removeGroupMember/success",
       message: isSelfLeave
         ? "Successfully left the group."
         : "Successfully removed the member.",
@@ -609,7 +672,7 @@ export const removeGroupMember = async (
     });
   } catch (error) {
     return res.status(500).json({
-      code: "removeMember/error",
+      code: "delete/removeGroupMember/error",
       message: "Server error while removing group member.",
     });
   }
@@ -620,67 +683,58 @@ export const updateMemberRole = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { memberID } = req.params;
-    const { newRole } = req.body;
-    const currentUserID = req.userID;
-    const group = req.group!;
+    const memberID: string | undefined = extractSingleParam(
+      req.params.memberID,
+    );
+    const { newRole }: UpdateMemberRoleBody = req.body;
+    const currentUserID = req.userID!;
+    const group: GroupDocument = req.group!;
 
-    if (!["admin", "member"].includes(newRole)) {
+    if (newRole !== "admin" && newRole !== "member") {
       return res.status(400).json({
-        code: "updateRole/invalid-role",
+        code: "patch/updateMemberRole/invalidRole",
         message: "Invalid role specified.",
       });
     }
 
-    const currentMember = group.members.find(
-      (m) => m.user.toString() === currentUserID?.toString(),
-    )!;
+    const currentMember: IGroupMember | undefined = group.members.find(
+      (m: IGroupMember) => m.user.toString() === currentUserID,
+    );
 
-    const targetMember = group.members.find(
-      (m) => m.user.toString() === memberID?.toString(),
+    const targetMember: IGroupMember | undefined = group.members.find(
+      (m: IGroupMember) => m.user.toString() === memberID,
     );
 
     if (!targetMember) {
       await group.populate("members.user", "username email");
 
-      const formattedMembers = group.members.map((member) => {
-        const user = member.user as unknown as PopulatedUser;
-
-        return {
-          _id: user._id,
-          username: user.username,
-          email: user.email,
-          role: member.role,
-          status: member.status,
-        };
-      });
+      const formattedMembers: FormattedGroupMember[] =
+        formatGroupMembers(group);
 
       return res.status(404).json({
-        code: "updateRole/member-not-found",
+        code: "patch/updateMemberRole/memberNotFound",
         message: "User is no longer a member of this group.",
         members: formattedMembers,
       });
     }
 
-    const requesterRole = currentMember.role;
-    const targetRole = targetMember.role;
+    const requesterRole: GroupMemberRole | undefined = currentMember?.role;
+    const targetRole: GroupMemberRole = targetMember.role;
 
-    if (targetRole === "owner" || newRole === "owner") {
+    if (targetRole === "owner") {
       return res.status(403).json({
-        code: "updateRole/owner-protected",
+        code: "patch/updateMemberRole/ownerProtected",
         message:
           "Owner role cannot be modified through this action. Use 'Transfer Ownership' instead.",
       });
     }
 
-    if (requesterRole === "admin") {
-      if (targetRole === "admin" || newRole !== "admin") {
-        return res.status(403).json({
-          code: "updateRole/admin-forbidden",
-          message:
-            "Admins can only promote members to admins. Only the Owner can revoke admin rights.",
-        });
-      }
+    if (requesterRole === "admin" && targetRole === "admin") {
+      return res.status(403).json({
+        code: "patch/updateMemberRole/adminForbidden",
+        message:
+          "Admins can only promote members to admins. Only the Owner can revoke admin rights.",
+      });
     }
 
     targetMember.role = newRole;
@@ -688,26 +742,16 @@ export const updateMemberRole = async (
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member) => {
-      const user = member.user as unknown as PopulatedUser;
-
-      return {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: member.role,
-        status: member.status,
-      };
-    });
+    const formattedMembers: FormattedGroupMember[] = formatGroupMembers(group);
 
     return res.status(200).json({
-      code: "updateRole/success",
+      code: "patch/updateMemberRole/success",
       message: `Successfully changed role to '${newRole}'.`,
       members: formattedMembers,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "updateRole/error",
+      code: "patch/updateMemberRole/error",
       message: "Server error while updating role.",
     });
   }
@@ -718,74 +762,62 @@ export const transferOwnership = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { memberID } = req.params;
-    const currentUserID = req.userID;
-    const group = req.group!;
+    const memberID: string | undefined = extractSingleParam(
+      req.params.memberID,
+    );
+    const currentUserID = req.userID!;
+    const group: GroupDocument = req.group!;
 
-    const currentOwner = group.members.find(
-      (m) => m.user.toString() === currentUserID?.toString(),
-    )!;
+    const currentOwner: IGroupMember | undefined = group.members.find(
+      (m: IGroupMember) => m.user.toString() === currentUserID,
+    );
 
-    const targetMember = group.members.find(
-      (m) => m.user.toString() === memberID?.toString(),
+    const targetMember: IGroupMember | undefined = group.members.find(
+      (m: IGroupMember) => m.user.toString() === memberID,
     );
 
     if (!targetMember) {
       await group.populate("members.user", "username email");
 
-      const formattedMembers = group.members.map((member) => {
-        const user = member.user as unknown as PopulatedUser;
-
-        return {
-          _id: user._id,
-          username: user.username,
-          email: user.email,
-          role: member.role,
-          status: member.status,
-        };
-      });
+      const formattedMembers: FormattedGroupMember[] =
+        formatGroupMembers(group);
 
       return res.status(404).json({
-        code: "transferOwnership/member-not-found",
+        code: "patch/transferOwnership/memberNotFound",
         message: "User is no longer a member of this group.",
         members: formattedMembers,
       });
     }
 
-    if (currentOwner.user.toString() === targetMember.user.toString()) {
+    if (
+      currentOwner &&
+      currentOwner.user.toString() === targetMember.user.toString()
+    ) {
       return res.status(400).json({
-        code: "transferOwnership/already-owner",
+        code: "patch/transferOwnership/alreadyOwner",
         message: "You are already the owner of this group.",
       });
     }
 
-    currentOwner.role = "admin";
+    if (currentOwner) {
+      currentOwner.role = "admin";
+    }
     targetMember.role = "owner";
 
     await group.save();
 
     await group.populate("members.user", "username email");
 
-    const formattedMembers = group.members.map((member) => {
-      const user = member.user as unknown as PopulatedUser;
-
-      return {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: member.role,
-        status: member.status,
-      };
-    });
+    const formattedMembers: FormattedGroupMember[] = formatGroupMembers(group);
 
     return res.status(200).json({
-      code: "transferOwnership/success",
+      code: "patch/transferOwnership/success",
       message: "Ownership successfully transferred.",
       members: formattedMembers,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "transferOwnership/error",
+      code: "patch/transferOwnership/error",
       message: "Server error while transferring ownership.",
     });
   }
@@ -796,11 +828,11 @@ export const getCreateBillDetails = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const group = req.group!;
+    const group: GroupDocument = req.group!;
 
     await group.populate("members.user", "username email");
 
-    const cleanMembers = group.members.map((member) => {
+    const cleanMembers = group.members.map((member: IGroupMember) => {
       const user = member.user as unknown as PopulatedUser;
 
       return {
@@ -811,12 +843,14 @@ export const getCreateBillDetails = async (
     });
 
     return res.status(200).json({
+      code: "get/getCreateBillDetails/success",
+      message: "Bill details retrieved.",
       baseCurrency: group.baseCurrency,
       members: cleanMembers,
     });
   } catch (error) {
     return res.status(500).json({
-      code: "getCreateBillDetails/error",
+      code: "get/getCreateBillDetails/error",
       message: "Server error while getting create bill details.",
     });
   }

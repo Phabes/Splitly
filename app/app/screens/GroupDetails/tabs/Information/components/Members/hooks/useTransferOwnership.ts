@@ -5,6 +5,7 @@ import {
   useTranslations,
 } from "@/app/hooks";
 import { transferOwnershipCall } from "@/app/services";
+import { TransferOwnershipResponse } from "@/app/types";
 
 export const useTransferOwnership = () => {
   const translations = useTranslations();
@@ -19,13 +20,13 @@ export const useTransferOwnership = () => {
 
     try {
       const response = await request(transferOwnershipCall, groupID, memberID);
-      const data = await response.json();
+      const data: TransferOwnershipResponse = await response.json();
 
       if (response.ok) {
         setGroupMembers(data.members);
       } else if (
         response.status === 404 &&
-        data.code === "transferOwnership/member-not-found"
+        data.code === "patch/transferOwnership/memberNotFound"
       ) {
         setGroupMembers(data.members);
       } else {

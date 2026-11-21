@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { IBill, IBillInstance, IBillPosition } from "@/types/index.ts";
 
-const InstanceSchema = new mongoose.Schema({
+const InstanceSchema = new mongoose.Schema<IBillInstance>({
   isSharedByAll: {
     type: Boolean,
     default: false,
@@ -13,7 +14,7 @@ const InstanceSchema = new mongoose.Schema({
   ],
 });
 
-const PositionSchema = new mongoose.Schema({
+const PositionSchema = new mongoose.Schema<IBillPosition>({
   name: {
     type: String,
     required: true,
@@ -33,7 +34,7 @@ const PositionSchema = new mongoose.Schema({
   instances: [InstanceSchema],
 });
 
-const BillSchema = new mongoose.Schema({
+const BillSchema = new mongoose.Schema<IBill>({
   groupID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Group",
@@ -63,13 +64,8 @@ const BillSchema = new mongoose.Schema({
     },
   ],
   positions: [PositionSchema],
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
 });
 
-const Bill = mongoose.model("Bill", BillSchema, "Bills");
+const Bill = mongoose.model<IBill>("Bill", BillSchema, "Bills");
 
 export default Bill;

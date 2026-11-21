@@ -3,6 +3,8 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { Typography } from "../Typography";
 import { useThemeContext } from "@/app/hooks";
 import { ColorKeys } from "@/app/constants/theme";
+import { IconKeys } from "@/app/constants/iconKeys";
+import { Icon } from "../Icon";
 
 type ButtonProps = {
   text: string;
@@ -10,6 +12,8 @@ type ButtonProps = {
   variant?: "primary" | "secondary" | "destructive";
   disabled?: boolean;
   fullWidth?: boolean;
+  icon?: IconKeys;
+  iconPosition?: "left" | "right";
 };
 
 export const Button: FC<ButtonProps> = ({
@@ -18,10 +22,20 @@ export const Button: FC<ButtonProps> = ({
   variant = "primary",
   disabled = false,
   fullWidth = false,
+  icon,
+  iconPosition = "left",
 }) => {
   const styles = useStyles(variant, disabled, fullWidth);
 
-  const textColor = disabled ? "text-disabled" : "text-primary";
+  const contentColor = disabled ? "text-disabled" : "text-primary";
+
+  const iconElement = icon ? (
+    <Icon
+      icon={icon}
+      color={contentColor}
+      size="small"
+    />
+  ) : null;
 
   return (
     <TouchableOpacity
@@ -30,10 +44,12 @@ export const Button: FC<ButtonProps> = ({
       activeOpacity={0.5}
       style={styles.container}
     >
+      {iconPosition === "left" && iconElement}
       <Typography
         text={text}
-        color={textColor}
+        color={contentColor}
       />
+      {iconPosition === "right" && iconElement}
     </TouchableOpacity>
   );
 };
@@ -65,8 +81,10 @@ const useStyles = (
 
   return StyleSheet.create({
     container: {
+      flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
+      gap: theme.spacing(2),
       backgroundColor: theme.colors[buttonColor],
       paddingHorizontal: theme.spacing(4) - borderWidth,
       paddingVertical: theme.spacing(2) - borderWidth,

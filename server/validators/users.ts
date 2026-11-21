@@ -1,11 +1,19 @@
 import bcrypt from "bcrypt";
 import User from "@/models/user.ts";
 import { getSafeUser } from "@/utils/getSafeUser.ts";
+import {
+  FieldValidationError,
+  SignInValidationResult,
+  UserDocument,
+} from "@/types/index.ts";
 
-export const signUpValidator = async (email: string, username: string) => {
-  const validationErrors = [];
+export const signUpValidator = async (
+  email: string,
+  username: string,
+): Promise<FieldValidationError[]> => {
+  const validationErrors: FieldValidationError[] = [];
 
-  const existingEmail = await User.findOne({ email });
+  const existingEmail: UserDocument | null = await User.findOne({ email });
   if (existingEmail) {
     validationErrors.push({
       field: "email",
@@ -14,7 +22,9 @@ export const signUpValidator = async (email: string, username: string) => {
     });
   }
 
-  const existingUsername = await User.findOne({ username });
+  const existingUsername: UserDocument | null = await User.findOne({
+    username,
+  });
   if (existingUsername) {
     validationErrors.push({
       field: "username",
@@ -26,20 +36,24 @@ export const signUpValidator = async (email: string, username: string) => {
   return validationErrors;
 };
 
-export const signInValidator = async (username: string, password: string) => {
-  const validationErrors = [];
+export const signInValidator = async (
+  username: string,
+  password: string,
+): Promise<SignInValidationResult> => {
+  const validationErrors: FieldValidationError[] = [];
 
-  const user = await User.findOne({ username });
+  const user: UserDocument | null = await User.findOne({ username });
   if (!user) {
     validationErrors.push({
       field: "username",
       code: "userNotFound",
       message: "No account found with this username.",
     });
-    return { validationErrors, user };
+
+    return { validationErrors, user: null };
   }
 
-  const isMatch = await bcrypt.compare(password, user.password as string);
+  const isMatch: boolean = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     validationErrors.push({
       field: "password",
