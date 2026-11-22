@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IGroup } from "@/types/index.ts";
+import { auditPlugin } from "@/plugins/auditPlugin.ts";
 
 const GroupSchema = new mongoose.Schema<IGroup>({
   name: {
@@ -53,6 +54,8 @@ const GroupSchema = new mongoose.Schema<IGroup>({
     },
   ],
 });
+
+GroupSchema.plugin(auditPlugin);
 
 const Group = mongoose.model<IGroup>("Group", GroupSchema, "Groups");
 

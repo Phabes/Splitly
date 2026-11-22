@@ -193,6 +193,7 @@ export const Positions = () => {
             text={positionNameField.value}
             onChange={positionNameField.setValue}
             placeholder={translations["positionNamePlaceholder"]}
+            autoCapitalize="sentences"
           />
         </FormData>
 

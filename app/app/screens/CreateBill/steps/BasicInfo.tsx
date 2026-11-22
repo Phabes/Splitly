@@ -100,6 +100,7 @@ export const BasicInfo = () => {
                 text={billForm.billNameField.value}
                 onChange={billForm.billNameField.setValue}
                 placeholder={translations["billNamePlaceholder"]}
+                autoCapitalize="sentences"
               />
             </FormData>
 

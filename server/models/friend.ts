@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IFriend } from "@/types/index.ts";
+import { auditPlugin } from "@/plugins/auditPlugin.ts";
 
 const FriendSchema = new mongoose.Schema<IFriend>({
   requester: {
@@ -21,6 +22,8 @@ const FriendSchema = new mongoose.Schema<IFriend>({
 });
 
 FriendSchema.index({ requester: 1, recipient: 1 }, { unique: true });
+
+FriendSchema.plugin(auditPlugin);
 
 const Friend = mongoose.model<IFriend>("Friend", FriendSchema, "Friends");
 

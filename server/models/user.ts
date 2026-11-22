@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import { IUser } from "@/types/index.ts";
+import { auditPlugin } from "@/plugins/auditPlugin.ts";
 
 const UserSchema = new mongoose.Schema<IUser>({
   email: {
@@ -36,6 +37,8 @@ UserSchema.set("toJSON", {
     return safeRet;
   },
 });
+
+UserSchema.plugin(auditPlugin);
 
 const User = mongoose.model<IUser>("User", UserSchema, "Users");
 

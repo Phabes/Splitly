@@ -1,15 +1,14 @@
 import "dotenv/config";
+import { setServers } from "node:dns/promises";
 import express, { Express, Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { setServers } from "node:dns/promises";
 import routerUser from "./routes/users.ts";
 import routerFriend from "./routes/friends.ts";
 import routerGroup from "./routes/groups.ts";
 import routerCurrency from "./routes/currencies.ts";
 import routerBill from "./routes/bills.ts";
 import { initCurrencies } from "./services/currencies.ts";
-import { auditPlugin } from "./plugins/auditPlugin.ts";
 
 const MONGO_URI: string =
   process.env.MONGO_URI || "mongodb://localhost:27017/App";
@@ -37,7 +36,6 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 const startServer = async (): Promise<void> => {
   try {
     setServers(["1.1.1.1", "8.8.8.8"]);
-    mongoose.plugin(auditPlugin);
 
     await mongoose.connect(MONGO_URI);
     await initCurrencies();

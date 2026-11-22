@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IBill, IBillInstance, IBillPosition } from "@/types/index.ts";
+import { auditPlugin } from "@/plugins/auditPlugin.ts";
 
 const InstanceSchema = new mongoose.Schema<IBillInstance>({
   isSharedByAll: {
@@ -65,6 +66,8 @@ const BillSchema = new mongoose.Schema<IBill>({
   ],
   positions: [PositionSchema],
 });
+
+BillSchema.plugin(auditPlugin);
 
 const Bill = mongoose.model<IBill>("Bill", BillSchema, "Bills");
 
