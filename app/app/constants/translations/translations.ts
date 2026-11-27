@@ -32,6 +32,7 @@ export type TranslationKeys =
   | "usernameTaken"
   | "userNotFound"
   | "invalidPassword"
+  | "signOutQuestion"
   // users
   | "email"
   | "username"

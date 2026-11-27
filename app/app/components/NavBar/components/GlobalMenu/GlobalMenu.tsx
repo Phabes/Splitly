@@ -8,7 +8,12 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import { useAuthContext, useThemeContext, useTranslations } from "@/app/hooks";
+import {
+  useAuthContext,
+  useConfirmContext,
+  useThemeContext,
+  useTranslations,
+} from "@/app/hooks";
 import { Icon } from "@/app/components/Icon";
 import { Typography } from "@/app/components/Typography";
 import { Button } from "@/app/components/Button";
@@ -43,6 +48,7 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
   customActions = [],
 }) => {
   const { userData, signOut } = useAuthContext();
+  const { showConfirm } = useConfirmContext();
   const translations = useTranslations();
 
   const [renderModal, setRenderModal] = useState(isVisible);
@@ -69,6 +75,19 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
       });
     }
   }, [isVisible, slideAnim]);
+
+  const handleSignOutPress = () => {
+    onClose();
+
+    showConfirm({
+      title: translations["signOut"],
+      message: translations["signOutQuestion"],
+      isDestructive: true,
+      onConfirm: () => {
+        signOut();
+      },
+    });
+  };
 
   const styles = useStyles();
 
@@ -154,7 +173,7 @@ export const GlobalMenu: FC<GlobalMenuProps> = ({
           <View style={styles.footerSection}>
             <Button
               text={translations["signOut"]}
-              onPress={signOut}
+              onPress={handleSignOutPress}
             />
           </View>
         </Animated.View>

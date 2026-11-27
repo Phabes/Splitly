@@ -24,6 +24,7 @@
   "usernameTaken": "Nazwa użytkownika zajęta",
   "userNotFound": "Użytkownik nie istnieje",
   "invalidPassword": "Złe hasło",
+  "signOutQuestion": "Czy na pewno chcesz się wylogować?",
 
   "email": "Email",
   "username": "Nazwa użytkownika",
