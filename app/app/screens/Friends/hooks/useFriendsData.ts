@@ -88,36 +88,27 @@ export const useFriendsData = () => {
     setSearchValue(text);
   };
 
-  const loadMoreFriends = async () => {
-    if (isLoadingMore || isSearching || !hasMore) {
+  const loadMoreFriends = useCallback(async () => {
+    if (isSearching) {
       return;
     }
 
     const friendRecordIDs = friends.map((f) => f._id);
     await fetchFriends(friendRecordIDs, false, searchValue);
-  };
-
-  const forceLoadMore = useCallback(async () => {
-    if (isLoadingMore || isSearching) {
-      return;
-    }
-
-    const friendRecordIDs = friends.map((f) => f._id);
-    await fetchFriends(friendRecordIDs, false, searchValue);
-  }, [isLoadingMore, isSearching, friends, fetchFriends, searchValue]);
+  }, [isSearching, friends, fetchFriends, searchValue]);
 
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener(
       "refreshFriendList",
       () => {
-        forceLoadMore();
+        loadMoreFriends();
       },
     );
 
     return () => {
       subscription.remove();
     };
-  }, [forceLoadMore]);
+  }, [loadMoreFriends]);
 
   return {
     searchValue,
@@ -127,7 +118,6 @@ export const useFriendsData = () => {
     isSearching,
     isLoadingMore,
     loadMoreFriends,
-    forceLoadMore,
     pendingRequestsCount,
   };
 };

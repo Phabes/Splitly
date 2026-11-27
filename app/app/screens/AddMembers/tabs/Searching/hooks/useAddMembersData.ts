@@ -25,22 +25,13 @@ export const useAddMembersData = (groupID?: string) => {
   }, [searchQuery, fetchFriends, setIsSearching]);
 
   const loadMoreUsers = useCallback(() => {
-    if (isLoadingMore || isSearching || !hasMore) {
+    if (isSearching) {
       return;
     }
 
     const friendRecordIDs = friends.map((f) => f._id);
     fetchFriends(false, friendRecordIDs, searchQuery);
-  }, [isLoadingMore, isSearching, hasMore, friends, searchQuery, fetchFriends]);
-
-  const forceLoadMore = useCallback(() => {
-    if (isLoadingMore || isSearching) {
-      return;
-    }
-
-    const friendRecordIDs = friends.map((f) => f._id);
-    fetchFriends(false, friendRecordIDs, searchQuery);
-  }, [isLoadingMore, isSearching, friends, searchQuery, fetchFriends]);
+  }, [isSearching, friends, searchQuery, fetchFriends]);
 
   return {
     searchQuery,
@@ -50,7 +41,6 @@ export const useAddMembersData = (groupID?: string) => {
     isSearching,
     isLoadingMore,
     loadMoreUsers,
-    forceLoadMore,
   };
 };
 

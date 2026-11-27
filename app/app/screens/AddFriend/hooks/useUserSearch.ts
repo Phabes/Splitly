@@ -97,27 +97,14 @@ export const useUserSearch = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchValue, fetchUsers]);
 
-  const loadMoreUsers = async () => {
-    if (isLoadingMore || isSearching || !hasMore) {
+  const loadMoreUsers = useCallback(async () => {
+    if (isSearching) {
       return;
     }
 
     const userIDs = users.map((user) => user._id);
     await fetchUsers(userIDs, false, searchValue);
-  };
-
-  const forceLoadMore = useCallback(async () => {
-    if (
-      isLoadingMore ||
-      isSearching ||
-      searchValue.trim().length < ADD_FRIENDS_MIN_SEARCH_LENGTH
-    ) {
-      return;
-    }
-
-    const userIDs = users.map((user) => user._id);
-    await fetchUsers(userIDs, false, searchValue);
-  }, [isLoadingMore, isSearching, searchValue, users, fetchUsers]);
+  }, [isSearching, users, fetchUsers, searchValue]);
 
   return {
     searchValue,
@@ -128,7 +115,6 @@ export const useUserSearch = () => {
     hasMore,
     handleSearchChange,
     loadMoreUsers,
-    forceLoadMore,
   };
 };
 

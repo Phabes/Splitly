@@ -72,6 +72,7 @@ export const CreateGroup: FC = () => {
               allowClear={true}
             />
           </FormData>
+
           <FormData
             labelText={translations["groupDescription"]}
             messageText={descriptionField.error}
@@ -84,6 +85,7 @@ export const CreateGroup: FC = () => {
               allowClear={true}
             />
           </FormData>
+
           <FormData
             labelText={translations["defaultGroupCurrency"]}
             messageText={currencyField.error}
@@ -98,6 +100,7 @@ export const CreateGroup: FC = () => {
               variant={currencyField.error ? "error" : "default"}
             />
           </FormData>
+
           <FormData
             labelText={translations["groupIcon"]}
             messageText={iconField.error}
@@ -114,11 +117,13 @@ export const CreateGroup: FC = () => {
             />
           </FormData>
         </View>
+
         <View style={styles.buttons}>
           <Button
             text={translations["createGroup"]}
             onPress={handleCreateGroup}
           />
+
           <Button
             text={`${translations["addMembers"]} (${selectedMembers.length})`}
             variant="secondary"

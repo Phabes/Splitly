@@ -58,8 +58,8 @@ export const useGroupRequestsData = () => {
     fetchRequests([], true);
   }, [fetchRequests]);
 
-  const loadMoreGroupRequests = async () => {
-    if (isLoadingMore || isSearching || !hasMore) {
+  const loadMoreGroupRequests = useCallback(async () => {
+    if (isSearching) {
       return;
     }
 
@@ -68,19 +68,7 @@ export const useGroupRequestsData = () => {
     );
 
     await fetchRequests(groupRequestIDs, false);
-  };
-
-  const forceLoadMore = useCallback(async () => {
-    if (isLoadingMore || isSearching) {
-      return;
-    }
-
-    const groupRequestIDs = groupRequests.map(
-      (groupRequest) => groupRequest._id,
-    );
-
-    await fetchRequests(groupRequestIDs, false);
-  }, [isLoadingMore, isSearching, groupRequests, fetchRequests]);
+  }, [isSearching, groupRequests, fetchRequests]);
 
   return {
     groupRequests,
@@ -89,7 +77,6 @@ export const useGroupRequestsData = () => {
     isSearching,
     isLoadingMore,
     loadMoreGroupRequests,
-    forceLoadMore,
   };
 };
 

@@ -31,11 +31,8 @@ export const Groups: FC = () => {
     isSearching,
     isLoadingMore,
     loadMoreGroups,
-    forceLoadMore,
     pendingRequestsCount,
   } = useGroupsData();
-
-  const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   const styles = useStyles();
 
@@ -62,8 +59,9 @@ export const Groups: FC = () => {
           gapSize="small"
           centerContent={groups.length === 0}
           hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
           handleScrollEnd={loadMoreGroups}
-          onManualRefresh={handleManualRefresh}
+          manualBottomRefresh={true}
         >
           {groups.map((item, i) => {
             return (

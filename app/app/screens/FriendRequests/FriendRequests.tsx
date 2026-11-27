@@ -30,15 +30,12 @@ export const FriendRequests: FC = () => {
     isSearching,
     isLoadingMore,
     loadMoreFriendRequests,
-    forceLoadMore,
     handleAcceptFriendRequest,
     handleRejectFriendRequest,
     handleShowUserProfile,
   } = useFriendRequests();
 
   const styles = useStyles();
-
-  const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   return (
     <LayoutProvider
@@ -58,8 +55,9 @@ export const FriendRequests: FC = () => {
           keyboardPersist="never"
           centerContent={friendRequests.length === 0}
           hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
           handleScrollEnd={loadMoreFriendRequests}
-          onManualRefresh={handleManualRefresh}
+          manualBottomRefresh={true}
         >
           {friendRequests.length > 0 && (
             <Typography

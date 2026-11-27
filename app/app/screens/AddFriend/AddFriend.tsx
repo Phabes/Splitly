@@ -31,19 +31,13 @@ export const AddFriend: FC = () => {
     hasMore,
     handleSearchChange,
     loadMoreUsers,
-    forceLoadMore,
     handleAddFriend,
     handleShowUserProfile,
   } = useUsers();
 
   const styles = useStyles();
 
-  const isManualRefreshDisabled =
-    isLoadingMore || searchValue.length < ADD_FRIENDS_MIN_SEARCH_LENGTH;
-
-  const handleManualRefresh = isManualRefreshDisabled
-    ? undefined
-    : forceLoadMore;
+  const canManualRefresh = searchValue.length >= ADD_FRIENDS_MIN_SEARCH_LENGTH;
 
   return (
     <LayoutProvider
@@ -68,8 +62,9 @@ export const AddFriend: FC = () => {
             keyboardPersist="never"
             centerContent={users.length === 0}
             hasMore={hasMore}
+            isLoadingMore={isLoadingMore}
             handleScrollEnd={loadMoreUsers}
-            onManualRefresh={handleManualRefresh}
+            manualBottomRefresh={canManualRefresh}
           >
             {users.length > 0 && (
               <Typography

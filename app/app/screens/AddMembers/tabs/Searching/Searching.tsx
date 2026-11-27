@@ -27,13 +27,10 @@ export const Searching: FC = () => {
     hasMore,
     isLoadingMore,
     loadMoreUsers,
-    forceLoadMore,
   } = useAddMembersData(groupID);
 
   const translations = useTranslations();
   const styles = useStyles();
-
-  const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   return (
     <View style={styles.container}>
@@ -44,13 +41,15 @@ export const Searching: FC = () => {
         beginIcon="Search"
         allowClear={true}
       />
+
       <LoadingWrapper isLoading={isSearching}>
         <Scroll
           gapSize="small"
           centerContent={friends.length === 0}
           hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
           handleScrollEnd={loadMoreUsers}
-          onManualRefresh={handleManualRefresh}
+          manualBottomRefresh={true}
         >
           {friends.length > 0 && (
             <Typography

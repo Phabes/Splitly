@@ -21,8 +21,9 @@ type ScrollProps = {
   keyboardPersist?: "never" | "handled" | "always";
   centerContent?: boolean;
   hasMore?: boolean;
+  isLoadingMore?: boolean;
   handleScrollEnd?: () => void;
-  onManualRefresh?: () => void;
+  manualBottomRefresh?: boolean;
 };
 
 export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
@@ -31,8 +32,9 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   keyboardPersist = "handled",
   centerContent = false,
   hasMore = false,
+  isLoadingMore = false,
   handleScrollEnd,
-  onManualRefresh,
+  manualBottomRefresh = false,
 }) => {
   const size = gapSize === "large" ? 5 : 2;
 
@@ -46,6 +48,9 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
 
   const styles = useStyles(size, pullAmount);
 
+  const canManualRefresh =
+    manualBottomRefresh && !isLoadingMore && Boolean(handleScrollEnd);
+
   const handleScrollBeginDrag = () => {
     setIsTouched(true);
   };
@@ -54,17 +59,18 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
 
     const scrollBottom = layoutMeasurement.height + contentOffset.y;
-
     const actualContentHeight = contentSize.height;
     const overScroll = scrollBottom - actualContentHeight + REFRESH_THRESHOLD;
 
-    if (!hasMore && onManualRefresh) {
+    if (canManualRefresh) {
       if (overScroll > 0) {
         setPullAmount(Math.min(overScroll, REFRESH_THRESHOLD));
       } else {
         setPullAmount(0);
       }
-    } else if (hasMore && handleScrollEnd) {
+    }
+
+    if (hasMore && !isLoadingMore && handleScrollEnd) {
       const isCloseToBottom =
         scrollBottom >= actualContentHeight - layoutMeasurement.height;
       if (isCloseToBottom) {
@@ -77,10 +83,11 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
     setIsTouched(false);
 
     if (
-      onManualRefresh &&
+      canManualRefresh &&
+      handleScrollEnd &&
       pullAmount >= REFRESH_THRESHOLD - TOUCH_ADDITIONAL_REFRESH_THRESHOLD
     ) {
-      onManualRefresh();
+      handleScrollEnd();
     }
 
     setPullAmount(0);
@@ -97,7 +104,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
   };
 
   const handleTouchMove = (e: GestureResponderEvent) => {
-    if (onManualRefresh) {
+    if (canManualRefresh) {
       const currentY = e.nativeEvent.pageY;
       const deltaY = touchStartY.current - currentY;
       const deltaYWithThreshold = deltaY - TOUCH_ADDITIONAL_REFRESH_THRESHOLD;
@@ -119,7 +126,7 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
     setLayoutHeight(height);
   };
 
-  const onContentSizeChange = (w: number, h: number) => {
+  const onContentSizeChange = (_w: number, h: number) => {
     setContentHeight(h);
   };
 
@@ -150,10 +157,10 @@ export const Scroll: FC<PropsWithChildren<ScrollProps>> = ({
         >
           {children}
         </View>
-        {isTouched && onManualRefresh && contentHeight > layoutHeight && (
-          <View style={{ height: REFRESH_THRESHOLD }}></View>
+        {isTouched && canManualRefresh && contentHeight > layoutHeight && (
+          <View style={{ height: REFRESH_THRESHOLD }} />
         )}
-        {isTouched && onManualRefresh && (
+        {isTouched && canManualRefresh && (
           <View style={styles.pullUpContainer}>
             <View
               style={{

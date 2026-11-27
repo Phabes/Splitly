@@ -31,12 +31,9 @@ export const Friends: FC = () => {
     isSearching,
     isLoadingMore,
     loadMoreFriends,
-    forceLoadMore,
     pendingRequestsCount,
   } = useFriendsData();
   const { handleShowUserProfile } = useFriendActions();
-
-  const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   const styles = useStyles();
 
@@ -64,8 +61,9 @@ export const Friends: FC = () => {
           keyboardPersist="never"
           centerContent={friends.length === 0}
           hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
           handleScrollEnd={loadMoreFriends}
-          onManualRefresh={handleManualRefresh}
+          manualBottomRefresh={true}
         >
           {friends.map((item, i) => {
             return (
@@ -114,6 +112,7 @@ export const Friends: FC = () => {
           </View>
         </Scroll>
       </LoadingWrapper>
+
       <Fab onPress={() => navigation.navigate("AddFriend")} />
     </LayoutProvider>
   );

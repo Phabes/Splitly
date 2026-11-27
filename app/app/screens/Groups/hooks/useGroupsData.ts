@@ -93,36 +93,27 @@ export const useGroupsData = () => {
     setSearchValue(text);
   };
 
-  const loadMoreGroups = async () => {
-    if (isLoadingMore || isSearching || !hasMore) {
+  const loadMoreGroups = useCallback(async () => {
+    if (isSearching) {
       return;
     }
 
     const groupRecordIDs = groups.map((f) => f._id);
     await fetchGroups(groupRecordIDs, false, searchValue);
-  };
-
-  const forceLoadMore = useCallback(async () => {
-    if (isLoadingMore || isSearching) {
-      return;
-    }
-
-    const groupsRecordIDs = groups.map((f) => f._id);
-    await fetchGroups(groupsRecordIDs, false, searchValue);
-  }, [isLoadingMore, isSearching, groups, fetchGroups, searchValue]);
+  }, [isSearching, groups, fetchGroups, searchValue]);
 
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener(
       "refreshGroupList",
       () => {
-        forceLoadMore();
+        loadMoreGroups();
       },
     );
 
     return () => {
       subscription.remove();
     };
-  }, [forceLoadMore]);
+  }, [loadMoreGroups]);
 
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener(
@@ -156,7 +147,6 @@ export const useGroupsData = () => {
     isSearching,
     isLoadingMore,
     loadMoreGroups,
-    forceLoadMore,
     pendingRequestsCount,
   };
 };

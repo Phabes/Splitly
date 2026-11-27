@@ -60,8 +60,8 @@ export const useFriendRequestsData = () => {
     fetchRequests([], true);
   }, [fetchRequests]);
 
-  const loadMoreFriendRequests = async () => {
-    if (isLoadingMore || isSearching || !hasMore) {
+  const loadMoreFriendRequests = useCallback(async () => {
+    if (isSearching) {
       return;
     }
 
@@ -70,19 +70,7 @@ export const useFriendRequestsData = () => {
     );
 
     await fetchRequests(friendRequestIDs, false);
-  };
-
-  const forceLoadMore = useCallback(async () => {
-    if (isLoadingMore || isSearching) {
-      return;
-    }
-
-    const friendRequestIDs = friendRequests.map(
-      (friendRequest) => friendRequest._id,
-    );
-
-    await fetchRequests(friendRequestIDs, false);
-  }, [isLoadingMore, isSearching, friendRequests, fetchRequests]);
+  }, [isSearching, friendRequests, fetchRequests]);
 
   return {
     friendRequests,
@@ -91,7 +79,6 @@ export const useFriendRequestsData = () => {
     isSearching,
     isLoadingMore,
     loadMoreFriendRequests,
-    forceLoadMore,
   };
 };
 

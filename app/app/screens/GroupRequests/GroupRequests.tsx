@@ -30,14 +30,11 @@ export const GroupRequests: FC = () => {
     isSearching,
     isLoadingMore,
     loadMoreGroupRequests,
-    forceLoadMore,
     handleAcceptGroupRequest,
     handleRejectGroupRequest,
   } = useGroupRequests();
 
   const styles = useStyles();
-
-  const handleManualRefresh = isLoadingMore ? undefined : forceLoadMore;
 
   return (
     <LayoutProvider
@@ -57,8 +54,9 @@ export const GroupRequests: FC = () => {
           keyboardPersist="never"
           centerContent={groupRequests.length === 0}
           hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
           handleScrollEnd={loadMoreGroupRequests}
-          onManualRefresh={handleManualRefresh}
+          manualBottomRefresh={true}
         >
           {groupRequests.length > 0 && (
             <Typography

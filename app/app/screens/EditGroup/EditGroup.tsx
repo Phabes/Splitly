@@ -73,6 +73,7 @@ export const EditGroup: FC = () => {
               allowClear={true}
             />
           </FormData>
+
           <FormData
             labelText={translations["groupDescription"]}
             messageText={descriptionField.error}
@@ -85,6 +86,7 @@ export const EditGroup: FC = () => {
               allowClear={true}
             />
           </FormData>
+
           <FormData
             labelText={translations["defaultGroupCurrency"]}
             messageText={currencyField.error}
@@ -116,6 +118,7 @@ export const EditGroup: FC = () => {
             />
           </FormData>
         </View>
+
         <View style={styles.buttons}>
           <Button
             text={translations["editGroup"]}
